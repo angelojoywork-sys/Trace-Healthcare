@@ -9,11 +9,19 @@ Born from a toothache that wouldn't go away, and nobody knowing who to call.
 | Phase | Status | Where |
 |-------|--------|-------|
 | 1 · Research | ✅ Desk research done (validation instruments ready) | [`research/`](research/) |
-| 2 · Sketching | ⏳ Next | `design/01-sketches/` |
-| 3 · Wireframes | ⏳ | `design/02-wireframes/` |
-| 4 · Prototype | ⏳ | `design/03-prototype/` |
+| 4 · Prototype (MVP built first) | ✅ Working, deployable MVP | [`app/`](app/) · [screenshots](design/03-prototype/screenshots/) |
+| 2 · Sketching | ⏳ Retro-documented for the case study | `design/01-sketches/` |
+| 3 · Wireframes | ⏳ Retro-documented for the case study | `design/02-wireframes/` |
 | 5 · Usability testing | ⏳ | `research/09-usability/` |
 | 6 · Case study write-up | ⏳ | angelo-portfolio |
+
+## Run the MVP
+
+```bash
+cd app && npm install && npm run dev
+```
+
+Deploy: import the repo at [vercel.com/new](https://vercel.com/new) and leave the defaults (the root `vercel.json` builds `app/`). Details are in [`app/README.md`](app/README.md).
 
 ## Research index
 

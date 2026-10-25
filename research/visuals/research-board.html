@@ -1,0 +1,303 @@
+<title>Trace Research Board</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: a research wall. Narrow reading column for story, full-width board for the affinity map, side-by-side journey curves. */
+:root{
+  --bg:#f3f2f7; --surface:#ffffff; --ink:#221b33; --muted:#625a75; --line:#d9d5e4;
+  --accent:#0f7a6c; --accent-ink:#ffffff; --alarm:#b3261e;
+  --n1:#ffe7a3; --n2:#cdeee3; --n3:#dcd6ff; --n4:#ffd2cf; --n5:#d3e6ff; --n6:#e9e3d6; --n7:#f6d6f0; --n8:#d9f0b8;
+  --note-ink:#221b33;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#16131f; --surface:#211d2d; --ink:#ece8f6; --muted:#a69fba; --line:#383247;
+  --accent:#4cc9b4; --accent-ink:#0d1f1c; --alarm:#ff8a80;
+  --n1:#5a4a1c; --n2:#1f4a3f; --n3:#3a3366; --n4:#5c2f2c; --n5:#22395c; --n6:#3f3a2f; --n7:#4f2c48; --n8:#34481f;
+  --note-ink:#f2eff9; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#16131f; --surface:#211d2d; --ink:#ece8f6; --muted:#a69fba; --line:#383247;
+  --accent:#4cc9b4; --accent-ink:#0d1f1c; --alarm:#ff8a80;
+  --n1:#5a4a1c; --n2:#1f4a3f; --n3:#3a3366; --n4:#5c2f2c; --n5:#22395c; --n6:#3f3a2f; --n7:#4f2c48; --n8:#34481f;
+  --note-ink:#f2eff9; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 1.0625rem/1.6 var(--body);
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 4rem}
+.wrap{max-width:1180px;margin:0 auto}
+.read{max-width:68ch}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.1;margin:0}
+h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(1.6rem,3.2vw,2.2rem);font-weight:700}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.eyebrow{font:500 .75rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.id{font:500 .72rem/1 var(--mono);color:var(--muted);letter-spacing:.02em}
+section{padding-block:3.5rem 0;display:grid;gap:1.5rem}
+
+/* hero */
+header{padding-block:3.5rem 1rem;display:grid;gap:1.25rem}
+.quote{font-size:1.25rem;line-height:1.5;border-left:3px solid var(--accent);padding-left:1rem;max-width:62ch}
+.meta{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{font:500 .78rem/1 var(--mono);padding:.45rem .65rem;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+
+/* spine */
+.spine{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.moment{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.25rem;display:grid;gap:.5rem;align-content:start}
+.moment .q{font-family:var(--display);font-size:1.35rem;font-weight:500}
+.moment .ans{color:var(--muted)}
+@media (max-width:760px){.spine{grid-template-columns:1fr}}
+
+/* affinity board */
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem}
+.cluster{display:grid;gap:.6rem;align-content:start}
+.cluster h3{display:flex;gap:.5rem;align-items:baseline}
+.cluster h3 .num{font:500 .8rem/1 var(--mono);color:var(--muted)}
+.notes{display:grid;gap:.5rem}
+.note{background:var(--c);color:var(--note-ink);padding:.6rem .75rem;border-radius:3px;font-size:.95rem;line-height:1.35;
+  box-shadow:0 1px 0 rgba(0,0,0,.06),0 6px 14px -10px rgba(0,0,0,.35);display:grid;gap:.25rem}
+.note:nth-child(odd){transform:rotate(-.6deg)} .note:nth-child(even){transform:rotate(.5deg)}
+.note .id{color:inherit;opacity:.7}
+.hmw{font-size:.92rem;border:1.5px dashed var(--line);border-radius:8px;padding:.6rem .75rem;color:var(--ink)}
+.hmw b{font-family:var(--mono);font-weight:500;font-size:.72rem;letter-spacing:.08em;color:var(--accent);display:block;margin-bottom:.15rem}
+@media (prefers-reduced-motion:reduce){.note{transform:none!important}}
+
+/* personas */
+.personas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.persona{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.25rem;display:grid;gap:.75rem;align-content:start}
+.persona .who{display:flex;gap:.85rem;align-items:center}
+.avatar{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font:700 1.3rem/1 var(--display);background:var(--c);color:var(--note-ink);flex:none}
+.persona .sub{font-size:.88rem;color:var(--muted);line-height:1.4}
+.persona blockquote{margin:0;font-style:italic}
+.persona ul{margin:0;padding-left:1.1rem;display:grid;gap:.2rem;font-size:.95rem}
+.tag{display:inline-block;font:500 .7rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:.3rem .5rem;border-radius:4px;background:var(--bg);color:var(--muted)}
+@media (max-width:900px){.personas{grid-template-columns:1fr}}
+
+/* journeys */
+.journeys{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.journey{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.25rem;display:grid;gap:1rem;min-width:0}
+.journey svg{width:100%;height:auto;display:block}
+.stages{display:grid;gap:.5rem;margin:0;padding:0;list-style:none}
+.stages li{display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:.75rem;font-size:.93rem;line-height:1.4;padding-top:.5rem;border-top:1px solid var(--line)}
+.stages li b{font-family:var(--mono);font-weight:500;font-size:.75rem;letter-spacing:.04em;color:var(--muted);padding-top:.15rem}
+@media (max-width:900px){.journeys{grid-template-columns:1fr}}
+
+.redflag{background:var(--surface);border:2px solid var(--alarm);border-radius:14px;padding:1.25rem;display:grid;gap:.5rem}
+.redflag h3{color:var(--alarm)}
+
+/* moscow */
+.moscow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}
+.col{display:grid;gap:.5rem;align-content:start}
+.col h3{font-size:1rem;display:flex;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:.4rem}
+.col.must h3{border-color:var(--accent)}
+.col ul{margin:0;padding:0;list-style:none;display:grid;gap:.4rem;font-size:.93rem;line-height:1.35}
+.col li{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:.5rem .6rem}
+.col.wont li{background:transparent;color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+@media (max-width:900px){.moscow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.moscow{grid-template-columns:1fr}}
+
+.principles{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.75rem;counter-reset:p;margin:0;padding:0;list-style:none}
+.principles li{counter-increment:p;padding:.85rem 1rem;border-left:3px solid var(--accent);background:var(--surface);border-radius:0 8px 8px 0}
+.principles li::before{content:counter(p);font:500 .75rem/1 var(--mono);color:var(--muted);display:block;margin-bottom:.3rem}
+.principles strong{font-family:var(--display);font-weight:500;font-size:1.05rem}
+
+footer{padding-block:3.5rem 0;color:var(--muted);font-size:.9rem;display:grid;gap:.5rem}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">Trace · Phase 1 research · Ireland · Oct 2026</span>
+  <h1>Describe it. Find the right door. Remember what they said.</h1>
+  <p class="quote">“My girlfriend had a toothache that wasn't going away. She didn't know what it was, whether to see a GP or a dentist, what it would cost, or who was open. And afterwards, nothing helped her remember what they said.”</p>
+  <div class="meta">
+    <span class="chip">Desk research · 30 findings</span>
+    <span class="chip">8 affinity clusters</span>
+    <span class="chip">3 proto-personas</span>
+    <span class="chip">Women-first · every body</span>
+  </div>
+</header>
+
+<section>
+  <span class="eyebrow">The spine of the product</span>
+  <h2>Three moments nobody joins up</h2>
+  <div class="spine">
+    <div class="moment"><span class="id">Before the visit</span><p class="q">“What is this, and where do I go?”</p><p class="ans">AI intake with a tap-to-point body map, then an Irish routing card: pharmacy, GP, dentist, GP co-op, injury unit or ED, with cost and entitlements.</p></div>
+    <div class="moment"><span class="id">Right after the visit</span><p class="q">“What did they say?”</p><p class="ans">Speak a 60-second recap. Trace structures it into symptoms, advice, medicines and dose, next steps, follow-up date and how you feel.</p></div>
+    <div class="moment"><span class="id">The next visit</span><p class="q">“Here’s my story so far.”</p><p class="ans">A one-screen show-my-doctor view: the issue, how long, what’s been tried, current medicines, last advice.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Affinity map</span>
+  <h2>What the research says, clustered</h2>
+  <p class="read">Each note is one finding. <span class="id">D</span> numbers are cited desk-research findings; <span class="id">S</span> numbers come from the founding story. Clusters 1 → 3 → 4 form the product’s core path; 5–8 are qualities every screen needs.</p>
+  <div class="board">
+    <div class="cluster" style="--c:var(--n1)"><h3><span class="num">1</span>Which door do I knock on?</h3><div class="notes">
+      <div class="note">Toothache is hard to place, even for clinicians<span class="id">D1 D2 S1</span></div>
+      <div class="note">HSE: dental pain needs a dentist. Procedures fix it, prescriptions don’t<span class="id">D1</span></div>
+      <div class="note">The right door depends on age, card, PRSI, time and county<span class="id">D3 D4 D7</span></div>
+      <div class="note">Pharmacists can now treat 8 common conditions<span class="id">D8</span></div>
+      <div class="note">No out-of-hours dental in Cork &amp; Kerry (2024)<span class="id">D6</span></div>
+      <div class="note">61% of GPs surveyed not taking new patients<span class="id">D13</span></div>
+    </div><p class="hmw"><b>HOW MIGHT WE</b>help someone find the right door in Ireland in under two minutes?</p></div>
+
+    <div class="cluster" style="--c:var(--n2)"><h3><span class="num">2</span>What will this cost me?</h3><div class="notes">
+      <div class="note">A GP visit costs €40–€80<span class="id">D10</span></div>
+      <div class="note">Charges deter people from going<span class="id">D11</span></div>
+      <div class="note">~70% of eligible people miss the free PRSI dental check-up<span class="id">D5</span></div>
+      <div class="note">Free contraception 17–35 includes the GP visit<span class="id">D19</span></div>
+      <div class="note">“Am I paying to be told to go elsewhere?”<span class="id">S3</span></div>
+    </div><p class="hmw"><b>HOW MIGHT WE</b>show likely cost and entitlements at the moment of decision?</p></div>
+
+    <div class="cluster" style="--c:var(--n3)"><h3><span class="num">3</span>I forgot what they said</h3><div class="notes">
+      <div class="note">40–80% of medical information is forgotten right away<span class="id">D20</span></div>
+      <div class="note">Half of what is remembered is wrong<span class="id">D20</span></div>
+      <div class="note">Recordings improve recall and trust<span class="id">D21</span></div>
+      <div class="note">HSE recommends keeping a medicines list<span class="id">D23</span></div>
+      <div class="note">No record of the first episode<span class="id">S4</span></div>
+    </div><p class="hmw"><b>HOW MIGHT WE</b>turn a messy voice note into a summary she can rely on?</p></div>
+
+    <div class="cluster" style="--c:var(--n4)"><h3><span class="num">4</span>They didn’t believe me</h3><div class="notes">
+      <div class="note">Women 13–25% less likely to get opioid pain relief for the same score<span class="id">D15</span></div>
+      <div class="note">Women’s pain scores less often recorded at triage<span class="id">D16</span></div>
+      <div class="note">Endometriosis: 7–10 years to diagnosis<span class="id">D17</span></div>
+      <div class="note">Every new clinician starts from zero<span class="id">S6</span></div>
+    </div><p class="hmw"><b>HOW MIGHT WE</b>give people a record of their own words that makes them easier to believe?</p></div>
+
+    <div class="cluster" style="--c:var(--n5)"><h3><span class="num">5</span>Can I trust an AI with this?</h3><div class="notes">
+      <div class="note">Symptom checkers named the right diagnosis first 34% of the time<span class="id">D24</span></div>
+      <div class="note">Triage advice tends to over-send people to care<span class="id">D24</span></div>
+      <div class="note">Better now, still a complement to a clinician<span class="id">D25</span></div>
+      <div class="note">Intended purpose decides medical-device class<span class="id">D26</span></div>
+    </div><p class="hmw"><b>HOW MIGHT WE</b>be helpful and honest about limits, without panic or false calm?</p></div>
+
+    <div class="cluster" style="--c:var(--n6)"><h3><span class="num">6</span>Who sees my data?</h3><div class="notes">
+      <div class="note">Flo shared health data despite privacy promises<span class="id">D27</span></div>
+      <div class="note">Transparency (59%) and security (57%) beat cost and ease<span class="id">D28</span></div>
+      <div class="note">HSE App is trusted but needs MyGovID<span class="id">D14</span></div>
+    </div><p class="hmw"><b>HOW MIGHT WE</b>prove privacy in the interface, not only in the policy?</p></div>
+
+    <div class="cluster" style="--c:var(--n7)"><h3><span class="num">7</span>Ask about my body, not my gender</h3><div class="notes">
+      <div class="note">Trans people report mistreatment by medical staff<span class="id">D29</span></div>
+      <div class="note">Negative GP experiences now being studied for training<span class="id">D30</span></div>
+      <div class="note">Free contraception open to trans and non-binary people<span class="id">D19</span></div>
+    </div><p class="hmw"><b>HOW MIGHT WE</b>be women-first in content while welcoming every body?</p></div>
+
+    <div class="cluster" style="--c:var(--n8)"><h3><span class="num">8</span>Make it easy when I’m in pain</h3><div class="notes">
+      <div class="note">28–40% of people in Ireland have limited health literacy<span class="id">D22</span></div>
+      <div class="note">Anxiety makes recall worse<span class="id">D20</span></div>
+      <div class="note">One hand, 11pm, in pain<span class="id">assumption</span></div>
+      <div class="note">A partner often searches on her behalf<span class="id">S5</span></div>
+    </div><p class="hmw"><b>HOW MIGHT WE</b>design for someone tired, anxious and using one hand?</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Proto-personas · built from desk research, to validate</span>
+  <h2>Who we’re designing for</h2>
+  <div class="personas">
+    <article class="persona" style="--c:var(--n3)">
+      <div class="who"><span class="avatar">A</span><div><h3>Ana, 28</h3><p class="sub">she/her · Dublin · in Ireland 2 years · PRSI, no medical card</p></div></div>
+      <span class="tag">Primary · founding story</span>
+      <blockquote>“Is this a dentist thing or a doctor thing, and is it tonight or tomorrow?”</blockquote>
+      <ul><li>Molar pain reaching her ear for a week</li><li>Two local GP lists closed</li><li>Didn’t know about the free PRSI check-up</li><li>Remembers “antibiotics, come back in two weeks”</li></ul>
+    </article>
+    <article class="persona" style="--c:var(--n4)">
+      <div class="who"><span class="avatar">S</span><div><h3>Siobhán, 42</h3><p class="sub">she/her · Kilkenny · two kids · symptoms 3+ years</p></div></div>
+      <span class="tag">Secondary · the long story</span>
+      <blockquote>“If I could hand them three years on one screen, they’d stop saying it’s stress.”</blockquote>
+      <ul><li>Heavy, painful periods, fatigue, brain fog</li><li>Three GPs and a gynaecologist so far</li><li>Freezes in appointments, forgets her list</li><li>Wants menopause and See-and-Treat options</li></ul>
+    </article>
+    <article class="persona" style="--c:var(--n7)">
+      <div class="who"><span class="avatar">R</span><div><h3>Rory, 24</h3><p class="sub">they/them · Galway · student · GP visit card</p></div></div>
+      <span class="tag">Inclusive edge case</span>
+      <blockquote>“Ask me about my body, not my gender. And don’t sell my data.”</blockquote>
+      <ul><li>Recurring UTI-like symptoms</li><li>Avoids GPs after being misgendered</li><li>Doesn’t know pharmacists can treat UTIs</li><li>Leaves apps that force male/female</li></ul>
+    </article>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">User journeys · Ana’s toothache</span>
+  <h2>Today, and with Trace</h2>
+  <div class="journeys">
+    <div class="journey">
+      <h3>Current state</h3>
+      <svg viewBox="0 0 360 150" role="img" aria-label="Emotion curve for the current journey: neutral, then worried, then very distressed at deciding, worried at visit and after, very distressed when the pain returns">
+        <g stroke="var(--line)" stroke-width="1"><line x1="20" y1="20" x2="350" y2="20"/><line x1="20" y1="55" x2="350" y2="55"/><line x1="20" y1="90" x2="350" y2="90"/><line x1="20" y1="125" x2="350" y2="125"/></g>
+        <g fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="9"><text x="2" y="23">+2</text><text x="6" y="58">0</text><text x="2" y="128">−2</text></g>
+        <polyline fill="none" stroke="var(--alarm)" stroke-width="2.5" stroke-linejoin="round" points="40,55 98,90 156,125 214,90 272,90 330,125"/>
+        <g fill="var(--alarm)"><circle cx="40" cy="55" r="4"/><circle cx="98" cy="90" r="4"/><circle cx="156" cy="125" r="4"/><circle cx="214" cy="90" r="4"/><circle cx="272" cy="90" r="4"/><circle cx="330" cy="125" r="5"/></g>
+        <g fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="9" text-anchor="middle"><text x="40" y="144">Notice</text><text x="98" y="144">Search</text><text x="156" y="144">Decide</text><text x="214" y="144">Visit</text><text x="272" y="144">After</text><text x="330" y="144">Returns</text></g>
+      </svg>
+      <ul class="stages">
+        <li><b>Search</b>Googles “tooth pain ear”, gets NHS and US pages.</li>
+        <li><b>Decide</b>GP list closed. Dentist on Thursday. Wonders about ED. Worries about €60.</li>
+        <li><b>After</b>“Was it twice a day or three times? When do I go back?”</li>
+        <li><b>Returns</b>New dentist asks what happened before. She can’t say.</li>
+      </ul>
+    </div>
+    <div class="journey">
+      <h3>Future state with Trace</h3>
+      <svg viewBox="0 0 360 150" role="img" aria-label="Emotion curve with Trace: neutral, then positive, then calm at routing, positive at visit, calm after and at next visit">
+        <g stroke="var(--line)" stroke-width="1"><line x1="20" y1="20" x2="350" y2="20"/><line x1="20" y1="55" x2="350" y2="55"/><line x1="20" y1="90" x2="350" y2="90"/><line x1="20" y1="125" x2="350" y2="125"/></g>
+        <g fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="9"><text x="2" y="23">+2</text><text x="6" y="58">0</text><text x="2" y="128">−2</text></g>
+        <polyline fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" points="40,55 98,37 156,20 214,37 272,20 330,20"/>
+        <g fill="var(--accent)"><circle cx="40" cy="55" r="4"/><circle cx="98" cy="37" r="4"/><circle cx="156" cy="20" r="4"/><circle cx="214" cy="37" r="4"/><circle cx="272" cy="20" r="4"/><circle cx="330" cy="20" r="5"/></g>
+        <g fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="9" text-anchor="middle"><text x="40" y="144">Notice</text><text x="98" y="144">Describe</text><text x="156" y="144">Route</text><text x="214" y="144">Visit</text><text x="272" y="144">Recap</text><text x="330" y="144">Next</text></g>
+      </svg>
+      <ul class="stages">
+        <li><b>Describe</b>Taps lower-right jaw; answers by voice: how long, worse with hot or cold, any swelling or fever?</li>
+        <li><b>Route</b>“This sounds like a dentist, not a GP. Within 1–2 days. Your PRSI may cover a free check-up.”</li>
+        <li><b>Recap</b>“Possible abscess, amoxicillin 500 three times a day for 7 days, X-ray next week.” Reminder set.</li>
+        <li><b>Next</b>Opens show-my-doctor: timeline, last advice, medicines, how she’s felt.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="redflag">
+    <span class="eyebrow">Safety path · overrides every screen</span>
+    <h3>Red flag → Call 112 / 999 or go to the ED now</h3>
+    <p>Spreading facial swelling, trouble breathing or swallowing, high fever with swelling, chest pain or stroke signs stop the conversation. Out of hours, Trace points to the regional GP co-op, the Dublin Dental Hospital emergency line, or the ED.</p>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Design principles</span>
+  <h2>Eight rules for every screen</h2>
+  <ol class="principles">
+    <li><strong>Ask, don’t tell.</strong><br>The AI interviews. It never names a diagnosis.</li>
+    <li><strong>Point to a real door.</strong><br>Every chat ends with an Irish next step, cost and HSE source.</li>
+    <li><strong>Safety interrupts.</strong><br>Red flags take over the screen instantly.</li>
+    <li><strong>Capture now, tidy later.</strong><br>Voice in, structured summary out. The user confirms.</li>
+    <li><strong>One screen for the doctor.</strong><br>Readable across a desk in 10 seconds.</li>
+    <li><strong>Private, visibly.</strong><br>On-device, no trackers, lock, export and delete.</li>
+    <li><strong>Calm, plain, kind.</strong><br>Plain English, large targets, no blame.</li>
+    <li><strong>Every body.</strong><br>Neutral map and language. Women’s health surfaced, never imposed.</li>
+  </ol>
+</section>
+
+<section>
+  <span class="eyebrow">MVP scope · MoSCoW</span>
+  <h2>What goes into the first build</h2>
+  <div class="moscow">
+    <div class="col must"><h3>Must <span class="id">10</span></h3><ul>
+      <li>AI symptom intake, text and voice</li><li>Tap-to-point body and face map</li><li>Red-flag interrupt</li><li>Ireland routing card with cost and entitlements</li><li>Visit recap → structured summary</li><li>Follow-up reminder</li><li>Show-my-doctor view</li><li>Timeline of symptoms, visits, feelings</li><li>Lock, export, delete</li><li>Name, pronouns, anatomy-first profile</li></ul></div>
+    <div class="col"><h3>Should <span class="id">5</span></h3><ul>
+      <li>Prepare-for-appointment questions</li><li>Daily “How are you feeling?”</li><li>Nearby services with hours</li><li>Log for someone else</li><li>Opt-in cycle context</li></ul></div>
+    <div class="col"><h3>Could <span class="id">4</span></h3><ul>
+      <li>Pattern insights</li><li>Time-limited share link</li><li>Irish-language UI</li><li>Consented in-visit recording</li></ul></div>
+    <div class="col wont"><h3>Won’t <span class="id">4</span></h3><ul>
+      <li>Diagnosis or probabilities</li><li>Booking integration</li><li>HSE record sync</li><li>Telehealth calls</li></ul></div>
+  </div>
+</section>
+
+<footer>
+  <p>Trace is not a diagnostic tool and does not replace a clinician. In an emergency call 112 or 999.</p>
+  <p>Full cited findings, competitor matrix, journeys and research instruments live in the Trace-Healthcare repository under <span class="id">research/</span>.</p>
+</footer>
+</div>

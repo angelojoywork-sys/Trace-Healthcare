@@ -1,0 +1,9 @@
+{
+  "name": "Trace · your health, remembered",
+  "short_name": "Trace",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3f2f7",
+  "theme_color": "#0f7a6c",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

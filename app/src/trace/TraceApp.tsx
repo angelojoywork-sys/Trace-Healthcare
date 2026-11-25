@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { track } from "@/lib/analytics";
-import { loadEntries, saveEntry, type Entry } from "@/lib/entries";
+import { deleteEntry, loadEntries, restoreEntry, saveEntry, type Entry } from "@/lib/entries";
+import { purgeOrphans, removeFilesFor } from "@/lib/files";
+import { Button } from "@/components/ui/button";
 import { loadProfile, saveProfile, type Profile } from "@/lib/profile";
 import { BodyScreen } from "./BodyScreen";
 import { BottomNav, type Tab } from "./BottomNav";
@@ -24,7 +26,29 @@ export function TraceApp() {
   const [tab, setTab] = useState<Tab>("summary");
   const [saved, setSaved] = useState(false);
   const [query, setQuery] = useState("");
-  useEffect(() => { track("app_open"); }, []);
+  const [undo, setUndo] = useState<Entry | null>(null);
+  const undoTimer = useRef<number | undefined>(undefined);
+  useEffect(() => { track("app_open"); purgeOrphans(loadEntries().map((e) => e.id)); }, []);
+
+  // Delete is undoable for 10 seconds. The entry leaves the list at once; its photos are only removed when the time is up.
+  const finishDelete = (e: Entry) => { window.clearTimeout(undoTimer.current); removeFilesFor(e.id); };
+  const removeEntry = (entry: Entry) => {
+    if (undo) finishDelete(undo);
+    deleteEntry(entry.id);
+    setEntries(loadEntries());
+    setUndo(entry);
+    track("entry_deleted");
+    setStep({ name: "home" });
+    undoTimer.current = window.setTimeout(() => { removeFilesFor(entry.id); setUndo(null); }, 10_000);
+  };
+  const undoDelete = () => {
+    if (!undo) return;
+    window.clearTimeout(undoTimer.current);
+    restoreEntry(undo);
+    setEntries(loadEntries());
+    setUndo(null);
+    track("entry_delete_undone");
+  };
 
   const startLog = (from: string) => { setSaved(false); track("log_started", { from }); setStep({ name: "body" }); };
   const changeBody = (body: BodyView) => {
@@ -78,7 +102,7 @@ export function TraceApp() {
 
       {step.name === "entry" && (() => {
         const entry = entries.find((e) => e.id === step.id);
-        return entry ? <EntryScreen entry={entry} onBack={() => { setEntries(loadEntries()); setStep({ name: "home" }); }} onShare={() => { setEntries(loadEntries()); setStep({ name: "share", id: entry.id }); }} /> : null;
+        return entry ? <EntryScreen entry={entry} onBack={() => { setEntries(loadEntries()); setStep({ name: "home" }); }} onShare={() => { setEntries(loadEntries()); setStep({ name: "share", id: entry.id }); }} onDelete={() => removeEntry(entry)} /> : null;
       })()}
 
       {step.name === "share" && (() => {
@@ -91,6 +115,12 @@ export function TraceApp() {
           {tab === "summary" && <SummaryScreen name={profile?.name ?? ""} entries={entries} saved={saved} onLog={() => startLog("summary")} onOpen={(id) => { setSaved(false); setStep({ name: "entry", id }); }} />}
           {tab === "gp" && <GpScreen />}
           {tab === "browse" && <BrowseScreen entries={entries} query={query} onQuery={setQuery} onOpen={(id) => setStep({ name: "entry", id })} />}
+          {undo && (
+            <div role="status" className="flex items-center justify-between gap-3 border-t border-highlight bg-background px-5 py-2">
+              <span className="font-mono text-xs tracking-widest uppercase">Deleted {undo.area}</span>
+              <Button variant="ghost" onClick={undoDelete} className="h-11 rounded-sm font-mono text-xs tracking-widest text-highlight uppercase underline underline-offset-4">Undo</Button>
+            </div>
+          )}
           <BottomNav tab={tab} onTab={(t) => { setSaved(false); setTab(t); track("tab_changed", { tab: t }); }} />
         </>
       )}

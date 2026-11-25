@@ -46,3 +46,21 @@ export function knownGps(): string[] {
 }
 
 export const hasVisit = (e: Entry): boolean => !!(e.gp?.trim() || e.visitDate || e.gpSaid?.trim());
+
+export function deleteEntry(id: string): void {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(loadEntries().filter((e) => e.id !== id)));
+  } catch {
+    /* storage unavailable */
+  }
+}
+
+/** Put a deleted entry back (undo), keeping the list newest first. */
+export function restoreEntry(entry: Entry): void {
+  try {
+    const list = [...loadEntries().filter((e) => e.id !== entry.id), entry].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    localStorage.setItem(KEY, JSON.stringify(list));
+  } catch {
+    /* storage unavailable */
+  }
+}

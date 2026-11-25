@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06n Delete a log (with undo)
+- **What we did:** Added "Delete this log" at the bottom of Entry detail. The log leaves the list immediately and a bar on Summary or Browse offers Undo for 10 seconds. Photos are kept until the time is up, then removed. On every app start, photos whose log no longer exists are purged (covers closing the tab during the undo window).
+- **Why:** Testers will log mistakes; prescription photos are hard to recreate, so deletion must be forgiving. Also a privacy point: deleted means gone from the phone.
+- **Decisions:** Undo bar instead of a confirmation dialog (fewer taps, recoverable). The delete button is outlined, not filled, and sits away from the main actions.
+- **Verified:** headless run: delete, toast, undo restores the entry and its photo; waiting 10 s removes the photo; orphaned photos purged on reload; no console errors.
+- **Open:** Resize photos at capture; test the share sheet on real phones; HSE API reply; measure with real testers.
+- **Artifacts saved in:** `app/src/trace/TraceApp.tsx`, `EntryScreen.tsx`, `app/src/lib/entries.ts`, `app/src/lib/files.ts`
+
 ## 2026-11-25 — 06m Share pack for claims
 - **What we did:** Built Share visit (a share icon on Entry detail). The person ticks what to include (visit details always; name, symptom note, what the GP said, each file), then taps Share (phone share sheet, with the PDF and any PDF attachments as files), Save PDF, or Copy summary. The PDF is made on the phone: one summary page, then each selected photo on its own page (photos are resized to 1600 px and compressed).
 - **Why:** Insurance claims were part of the original problem (the girlfriend needing the prescription and visit details to claim).

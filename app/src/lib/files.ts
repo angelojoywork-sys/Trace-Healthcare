@@ -54,3 +54,22 @@ export function fileCounts(): Promise<Record<string, number>> {
     req.onerror = () => resolve(counts);
   })).catch(() => ({}));
 }
+
+/** Delete every file attached to an entry. */
+export function removeFilesFor(entryId: string): Promise<void> {
+  return open().then((db) => new Promise<void>((resolve) => {
+    const tx = db.transaction(STORE, "readwrite");
+    const store = tx.objectStore(STORE);
+    const keys = store.index("entryId").getAllKeys(entryId);
+    keys.onsuccess = () => (keys.result as string[]).forEach((k) => store.delete(k));
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => resolve();
+  })).catch(() => undefined);
+}
+
+/** Remove files whose entry no longer exists, for example after a deletion that was never undone. */
+export async function purgeOrphans(validIds: string[]): Promise<void> {
+  const valid = new Set(validIds);
+  const counts = await fileCounts();
+  await Promise.all(Object.keys(counts).filter((id) => !valid.has(id)).map(removeFilesFor));
+}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Camera, ChevronLeft, FileText, Share2, Upload, X } from "lucide-react";
+import { Camera, ChevronLeft, FileText, Share2, Trash2, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -33,9 +33,9 @@ function Thumb({ rec, onRemove }: { rec: FileRec; onRemove: () => void }) {
   );
 }
 
-type Props = { entry: Entry; onBack: () => void; onShare: () => void };
+type Props = { entry: Entry; onBack: () => void; onShare: () => void; onDelete: () => void };
 
-export function EntryScreen({ entry, onBack, onShare }: Props) {
+export function EntryScreen({ entry, onBack, onShare, onDelete }: Props) {
   const [gp, setGp] = useState(entry.gp ?? "");
   const [visitDate, setVisitDate] = useState(entry.visitDate ?? "");
   const [said, setSaid] = useState(entry.gpSaid ?? "");
@@ -117,6 +117,13 @@ export function EntryScreen({ entry, onBack, onShare }: Props) {
           <input ref={fileInput} type="file" accept="image/*,application/pdf" multiple hidden aria-label="Choose files" onChange={(e) => { attach(e.target.files, "upload"); e.target.value = ""; }} />
           {fileError && <p role="alert" className="text-sm text-destructive">Couldn't save that file on this phone. Check that you have storage space and try again.</p>}
           <p className="text-xs text-muted-foreground">Everything here is saved on this phone as you type.</p>
+        </section>
+
+        <section aria-label="Delete" className="flex flex-col gap-2 border-t border-line pt-6">
+          <Button type="button" variant="outline" onClick={onDelete} className="h-12 rounded-sm border-destructive font-mono text-xs tracking-widest text-destructive uppercase hover:text-destructive">
+            <Trash2 className="size-4" />Delete this log
+          </Button>
+          <p className="text-xs text-muted-foreground">You can undo for a few seconds. After that, the log and its photos are gone from this phone.</p>
         </section>
       </div>
     </div>

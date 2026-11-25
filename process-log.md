@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 04 User flow (draft v1)
+- **What we did:** Drafted a 5-screen happy path: sign in, profile, hologram body log, home (Log / Find GP tabs + search), entry detail (date, GP, notes, photo).
+- **Why:** User wants a 1-tap log via a hologram body that zooms to body areas.
+- **Decisions:** Log before login if possible; ask location only at Find GP; build hologram look in 2D first (tap accuracy risk in 3D); Find GP v1 = nearby clinics, not symptom-matched; add "what the GP said" notes field.
+- **Open:** Country (decides GP data source and insurance export). Mobbin search blocked (paid plan), inspiration to be gathered manually.
+- **Tools used / where AI helped (and what a human verified):** Claude drafted flow; human to verify with 3-5 user chats.
+- **Artifacts saved in:** `design/` (next: flow diagram)
+
 ## 2026-11-25 — 02 Problem framing (restart)
 - **What we did:** Restarted from step 1. Captured the origin story and drafted problem statement, core features, happy paths, and a stress test (all assumptions, not yet validated).
 - **Why:** Idea came from one person (partner seeing multiple GPs, forgetting symptoms, what each GP said, and prescriptions needed for insurance claims).

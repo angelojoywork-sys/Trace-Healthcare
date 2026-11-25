@@ -123,12 +123,13 @@ export function SeverityBall({ level }: { level: number }) {
         for (let i = i0; i < i1; i++) {
           const x = (i + 0.5) * cell - cx, y = (j + 0.5) * cell - cy;
           const th = Math.atan2(y, x);
-          const edge = R * (1 + s * 0.3 * (vnoise(Math.cos(th) * 1.6 + 5, Math.sin(th) * 1.6 + t * 0.5) - 0.5) * 2);
+          const edge = R * (1 + s * 0.025 * (vnoise(Math.cos(th) * 1.6 + 5, Math.sin(th) * 1.6 + t * 0.5) - 0.5) * 2); // a true circle; only the faintest wobble
           const nx = x / edge, ny = y / edge, rr = nx * nx + ny * ny;
           if (rr >= 1) continue;
           const lam = Math.max(0, nx * L[0] + ny * L[1] + Math.sqrt(1 - rr) * L[2]);
-          const shade = 0.2 + 0.8 * lam;
-          const d = shade * (0.12 + 0.88 * s) + (vnoise(i * 0.35 + t * 0.4, j * 0.35 - t * 0.3) - 0.5) * 0.5 * s;
+          const shade = 0.7 + 0.3 * lam;
+          const ring = rr > 0.84 ? 0.3 + 0.3 * s : 0; // a thin rim of squares keeps the circle readable even at 1
+          const d = shade * (0.08 + 0.97 * s) + (vnoise(i * 0.35 + t * 0.4, j * 0.35 - t * 0.3) - 0.5) * 0.45 * s + ring;
           if (hash(i + bucket * 7.31, j + bucket * 3.17) >= d) continue;
           const size = Math.max(2, cell * (0.32 + 0.5 * Math.min(1, d)));
           const jit = (hash(i * 1.7 + bucket, j * 2.3) - 0.5) * s * cell * 0.4;

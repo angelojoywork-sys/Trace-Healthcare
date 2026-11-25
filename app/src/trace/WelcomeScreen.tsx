@@ -30,6 +30,7 @@ export function WelcomeScreen({ onLog }: { onLog: () => void }) {
           Continue with Google
         </Button>
         <p id="google-note" className="text-center text-xs text-muted-foreground">Google back-up is coming soon. Your symptom notes stay on this phone.</p>
+        <p className="text-center text-xs text-muted-foreground">Test version. We measure how the app is used (which screens, how long, whether it worked), never what you log or write.</p>
       </div>
     </div>
   );

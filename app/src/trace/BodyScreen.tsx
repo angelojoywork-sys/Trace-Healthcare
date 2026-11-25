@@ -18,7 +18,7 @@ export function BodyScreen({ view, onViewChange, onDone, onClose }: Props) {
   const [sel, setSel] = useState<Sel | null>(null);
   const [picking, setPicking] = useState(false);
 
-  const choose = (s: Sel) => { setSel(s); track("area_selected", { area: s.area, via: s.via }); };
+  const choose = (s: Sel) => { setSel(s); track("area_selected", { via: s.via }); };
   const fail = () => { setGl(false); setList(true); track("webgl_unavailable"); };
   const showList = list || !gl;
 

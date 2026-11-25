@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { hasVisit, SEVERITY, type Entry } from "@/lib/entries";
+import { loadFeedback, saveFeedback } from "@/lib/feedback";
+import { FeedbackCard } from "./FeedbackCard";
 import { isThisMonth, relativeDay, severityTone } from "./dates";
 
 const cap = "font-mono text-[11px] tracking-widest text-muted-foreground uppercase";
@@ -19,6 +22,8 @@ export function SeverityTag({ value }: { value: number }) {
 type Props = { name: string; entries: Entry[]; saved: boolean; onLog: () => void; onOpen: (id: string) => void };
 
 export function SummaryScreen({ name, entries, saved, onLog, onOpen }: Props) {
+  const [fb, setFb] = useState(loadFeedback);
+  const [fbOpen, setFbOpen] = useState(false);
   const last = entries[0];
   const month = entries.filter((e) => isThisMonth(e.createdAt)).length;
   const visits = entries.filter(hasVisit).length;
@@ -36,6 +41,8 @@ export function SummaryScreen({ name, entries, saved, onLog, onOpen }: Props) {
             Saved. Noted, take care.
           </p>
         )}
+
+        {last && (fb === "open" || fbOpen) && <FeedbackCard onClose={() => { setFbOpen(false); setFb(loadFeedback()); }} />}
 
         {!last ? (
           <section className="bracket flex flex-col gap-4 px-5 py-8">
@@ -78,6 +85,9 @@ export function SummaryScreen({ name, entries, saved, onLog, onOpen }: Props) {
                 ))}
               </ul>
             </section>
+            {fb === "dismissed" && !fbOpen && (
+              <Button variant="ghost" onClick={() => { saveFeedback("open"); setFb("open"); }} className="self-start font-mono text-xs underline underline-offset-4">Share feedback on this test</Button>
+            )}
           </>
         )}
       </div>

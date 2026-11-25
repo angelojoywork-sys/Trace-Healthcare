@@ -2,6 +2,15 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06o In-app feedback prompt and measurement clean-up
+- **What we did:** Added a feedback card on Summary after the first saved log: "How easy was it to log that?" (1-5), "Would you use this after a GP visit?" (1-5), then an optional comment. Can be dismissed ("Not now") and reopened from a link on Summary. Added a one-line test notice on the welcome screen. Updated `research/test-plan.md`.
+- **Why:** The case study needs "did it help" evidence: ease and intent scores, plus quotes.
+- **Privacy fix:** Found that analytics was also sending the body area, the severity value and the chosen body view. Removed them, so events are behaviour only. The only free text sent is the optional feedback comment, which asks people not to include health details.
+- **Bug fix:** Leaving the hologram screen disposed the 3D context and fired a false "webgl_unavailable" event on every log. Now only a context loss while the screen is visible counts.
+- **Verified:** headless run with analytics intercepted: events correct, scores 4 and 5 and the comment captured, no area/value/view properties, card stays gone after finishing and after reload, dismiss then reopen link works; no console errors.
+- **Open:** Needs `VITE_POSTHOG_KEY` in Vercel or scores go nowhere. Photo resizing. Share sheet on real phones. A contact line for testers.
+- **Artifacts saved in:** `app/src/trace/FeedbackCard.tsx`, `app/src/lib/feedback.ts`
+
 ## 2026-11-25 — 06n Delete a log (with undo)
 - **What we did:** Added "Delete this log" at the bottom of Entry detail. The log leaves the list immediately and a bar on Summary or Browse offers Undo for 10 seconds. Photos are kept until the time is up, then removed. On every app start, photos whose log no longer exists are purged (covers closing the tab during the undo window).
 - **Why:** Testers will log mistakes; prescription photos are hard to recreate, so deletion must be forgiving. Also a privacy point: deleted means gone from the phone.

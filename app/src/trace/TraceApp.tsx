@@ -55,7 +55,7 @@ export function TraceApp() {
     const next: Profile = { name: profile?.name ?? "", gender: profile?.gender ?? null, body };
     setProfile(next);
     saveProfile(next);
-    track("body_changed", { view: body });
+    track("body_changed");
   };
 
   return (
@@ -91,7 +91,7 @@ export function TraceApp() {
             const entry: Entry = { id: crypto.randomUUID(), area: d.area, note: d.note, severity, createdAt: new Date().toISOString() };
             saveEntry(entry);
             setEntries(loadEntries());
-            track("severity_set", { value: severity });
+            track("severity_set");
             track("log_saved", { has_note: !!d.note, via: d.via });
             setTab("summary");
             setSaved(true);

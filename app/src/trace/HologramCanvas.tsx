@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo, useRef, useState, type ElementRef } from "react";
+import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState, type ElementRef } from "react";
 import { Canvas, useFrame, type ThreeEvent } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
@@ -179,13 +179,16 @@ type Props = { view?: BodyView; focus: Focus | null; onPick: (p: Pick3D) => void
 export default function HologramCanvas({ view = "neutral", focus, onPick, onFail }: Props) {
   const controls = useRef<Controls>(null);
   const [auto, setAuto] = useState(true);
+  // Leaving the screen disposes the GL context on purpose; only a loss while visible counts as a failure.
+  const alive = useRef(true);
+  useLayoutEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
   return (
     <Canvas
       dpr={[1, 2]}
       camera={{ position: HOME_POS.toArray(), fov: 38 }}
       gl={{ antialias: false, powerPreference: "high-performance" }}
       onCreated={({ gl }) => {
-        gl.domElement.addEventListener("webglcontextlost", (ev) => { ev.preventDefault(); onFail(); });
+        gl.domElement.addEventListener("webglcontextlost", (ev) => { ev.preventDefault(); if (alive.current) onFail(); });
       }}
       aria-label="3D body. Drag to turn, tap a spot to log a symptom."
     >

@@ -1,4 +1,3 @@
-import { Feedback } from "../components/Feedback";
 import { TopBar } from "../components/ui";
 import { fmtDate } from "../lib/format";
 import { findOption, regionById } from "../lib/regions";
@@ -134,8 +133,6 @@ export function Result({ id }: { id: string }) {
         </p>
       )}
       <p className="tiny muted">{r.disclaimer}</p>
-
-      <Feedback entryId={e.id} />
 
       <div className="stack no-print">
         <a className="btn primary block" href={`#/recap?episode=${e.id}`}>🎙️ After the visit: log what they said</a>

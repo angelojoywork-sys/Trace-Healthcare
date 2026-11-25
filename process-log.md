@@ -2,6 +2,13 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — Reverted the extra analytics and feedback code on main
+- **What we did:** Removed the Vercel Analytics, the "Did this help?" prompt and the reworded onboarding line that PR #3 added to the old prototype on `main`. The README keeps the live URL.
+- **Why:** The live app is built from `claude/pensive-thompson-djxj50`, which already has PostHog analytics and a feedback card. The PR #3 code duplicated it and never reached the live site.
+- **What we learned:** Check every branch (`git branch -r`) before saying something isn't built. Work on unmerged branches is invisible to a new session. Keep `main` as the real app.
+- **Next:** Merge `pensive-thompson` into `main` so new sessions start from the real app.
+- **Tools used / where AI helped (and what a human verified):** Git revert, done by AI. A human reviews the PR.
+
 ## 2026-11-25 — 06 Deploy (feedback prompt)
 - **What we did:** Built a one-question prompt on the Result screen, "Did this help you decide where to go?" (Yes / Somewhat / No). It fires the `feedback_result` event and is asked once per entry.
 - **Why:** This answers "did it help them?" in `taste.md` step 7. The answer is one tap, so it fits the happy-path principle.

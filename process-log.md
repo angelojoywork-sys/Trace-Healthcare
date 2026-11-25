@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06 Deploy: `main` is now the live source
+- **What we did:** Found that the live site (https://trace-health-ie.vercel.app/) was built from the unmerged branch `claude/pensive-thompson-djxj50`, not `main`. Reverted the duplicate analytics and feedback code I had added to the old prototype (PR #4), merged the live app into `main` (PR #5), reworded the "no trackers" privacy claims, then set Vercel's Production Branch to `main` and redeployed.
+- **Checked:** The live script changed from `index-BR_MQyX8.js` (old branch) to `index-CMCn05b4.js`. The new build has the reworded privacy text and the PostHog key baked in, so `VITE_POSTHOG_KEY` is set.
+- **Not checked:** That events actually arrive in PostHog (look for `feedback_comment`, `feedback_ease`, `feedback_use` at eu.posthog.com).
+- **What we learned:** (1) Work on an unmerged branch is invisible to a new session, so merge to `main` and log it. (2) Before saying something isn't built, check every branch (`git branch -r`), not just `main`. (3) Privacy claims must match what the code sends. (4) Two Vercel projects deploy this repo; confirm which one owns the domain and delete any duplicate.
+- **Next:** Delete the old branches (`pensive-thompson`, `sharp-edison-1hpxed`, the `compassionate-johnson` ones). Then run the usability tests (step 7) and record date, method and sample size here.
+- **Tools used / where AI helped (and what a human verified):** GitHub, Vercel, PostHog. AI did the git work and checked the live bundle. A human changed the Vercel settings and clicked Redeploy.
+
 ## 2026-11-25 — Privacy wording matches the analytics
 - **What we did:** Reworded the "no trackers" claims in `app/src/screens/Settings.tsx` and `Onboarding.tsx` to say anonymous visits and button taps are counted, never symptoms or notes.
 - **Why:** The app sends behaviour events to PostHog, so "no analytics or trackers" and "nothing is sent to a server" were no longer true. In a health app, a privacy claim has to match what the code does.

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronLeft, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { SeverityField } from "./SquareField";
+import { SeverityBall } from "./SquareField";
 
 type Props = { onBack: () => void; onClose: () => void; onNext: (severity: number) => void };
 
@@ -16,13 +16,13 @@ export function SeverityScreen({ onBack, onClose, onNext }: Props) {
         <Button variant="outline" size="icon" aria-label="Close" className="size-11 rounded-sm" onClick={onClose}><X className="size-5" /></Button>
       </header>
 
-      <h2 className="text-center text-3xl leading-tight font-light">How bad is it<br />right now?</h2>
+      <h2 className="glass px-5 py-4 text-center text-3xl leading-tight font-light">How bad is it<br />right now?</h2>
 
       <div className="relative min-h-0 flex-1">
-        <SeverityField level={v} />
+        <SeverityBall level={v} />
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="glass flex flex-col gap-3 px-5 py-4">
         <p className="text-center font-mono text-5xl leading-none" aria-live="polite" aria-label={`${v} out of 10`}>
           {v}<span className="ml-2 text-xl text-muted-foreground">/ 10</span>
         </p>

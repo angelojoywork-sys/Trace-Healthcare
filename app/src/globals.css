@@ -89,7 +89,7 @@
     --chart-3: #f9a825;
     --chart-4: #e64a19;
     --chart-5: #607d8b;
-    --radius: 0.125rem;               /* 2px, near-square */
+    --radius: 0.875rem;               /* soft corners to sit with the glass panels */
     --sidebar: #eceff1;
     --sidebar-foreground: #263238;
     --sidebar-primary: #263238;
@@ -113,14 +113,21 @@
     }
 }
 @layer components {
-  /* Bracket frame from the design system: side rules with short ticks top and bottom. */
-  .bracket {
-    border-left: 1px solid var(--line);
-    border-right: 1px solid var(--line);
-    background:
-      linear-gradient(var(--line), var(--line)) top left / 12px 1px no-repeat,
-      linear-gradient(var(--line), var(--line)) top right / 12px 1px no-repeat,
-      linear-gradient(var(--line), var(--line)) bottom left / 12px 1px no-repeat,
-      linear-gradient(var(--line), var(--line)) bottom right / 12px 1px no-repeat;
+  /* Frosted "liquid glass" panel: translucent white, blurred backdrop, bright top edge, soft shadow.
+     Use it wherever text sits over the page pattern. */
+  .glass {
+    background: linear-gradient(135deg, rgb(255 255 255 / 0.68), rgb(255 255 255 / 0.38));
+    -webkit-backdrop-filter: blur(18px) saturate(170%);
+    backdrop-filter: blur(18px) saturate(170%);
+    border: 1px solid rgb(255 255 255 / 0.78);
+    border-radius: 1.5rem;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.95), inset 0 -1px 0 rgb(96 125 139 / 0.18), 0 12px 32px -14px rgb(38 50 56 / 0.3);
+  }
+  /* The same look without the blur, for long lists where many blurred layers would slow a phone down. */
+  .glass-lite, .bracket {
+    background: linear-gradient(135deg, rgb(255 255 255 / 0.74), rgb(255 255 255 / 0.5));
+    border: 1px solid rgb(255 255 255 / 0.8);
+    border-radius: 1.25rem;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), 0 8px 20px -14px rgb(38 50 56 / 0.28);
   }
 }

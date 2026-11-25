@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06x Glass panels and a severity ball
+- **What we did:** Added a frosted "liquid glass" look (translucent white, blurred backdrop, bright top edge, soft shadow) wherever text or the body sits over the page pattern: headers, the welcome card, the name and gender card, the body hologram panel, the note panel, the severity heading and slider panel, the floating nav, and search and form fields. List rows use a lighter version without blur so long lists stay smooth on a phone. Corners are softer everywhere (one token). The square-pattern background moves a bit more (about 10 redraws per second, larger drift) but stays faint so it does not compete with text.
+- **Severity:** The square field is now a ball of squares in the middle of the screen. At 1 it is a faint, calm sphere; as the number rises it fills in, the squares flicker faster, the edge turns ragged and a warm tint appears. The number and slider sit in a glass panel below.
+- **Why:** User wanted text to stay readable over the background, a glass feel like the reference, and the severity visual centred.
+- **Verified:** headless screenshots at 2x of welcome, name and gender, hologram, zoom and note, severity 1, 5 and 10, summary; no console errors.
+- **Open:** Real-phone check of blur performance and the ball animation; design system page still shows the old dark theme; photo resizing.
+- **Artifacts saved in:** `app/src/globals.css`, `app/src/trace/SquareField.tsx`, screens under `app/src/trace/`
+
 ## 2026-11-25 — 06w Navigation icons
 - **What we did:** Swapped the three bottom icons for ones that say what each tab does: a house for Summary, a stethoscope for Find GP, a magnifying glass for Browse. Labels stay under each icon in the floating pill.
 - **Why:** User asked whether the icons changed; the earlier heart, map pin and grid did not describe the tabs well.

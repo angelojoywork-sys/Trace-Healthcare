@@ -13,7 +13,7 @@ const TABS: { id: Tab; label: string; Icon: typeof House }[] = [
 export function BottomNav({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
   return (
     <nav aria-label="Main" className="pointer-events-none absolute inset-x-0 bottom-3 z-20 flex justify-center">
-      <div className="pointer-events-auto flex gap-1 rounded-full border border-line bg-background/80 p-1.5 shadow-lg backdrop-blur-xl">
+      <div className="glass pointer-events-auto flex gap-1 rounded-full p-1.5">
         {TABS.map(({ id, label, Icon }) => (
           <button
             key={id}

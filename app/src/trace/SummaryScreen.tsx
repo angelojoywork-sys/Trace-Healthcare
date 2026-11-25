@@ -31,13 +31,13 @@ export function SummaryScreen({ name, entries, saved, onLog, onOpen }: Props) {
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
       <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-5 pt-6 pb-32">
-        <header>
+        <header className="glass px-5 py-4">
           <p className={cap}>{name ? `Hi ${name}` : "Your health log"}</p>
           <h1 className="text-3xl font-light">Summary</h1>
         </header>
 
         {saved && (
-          <p role="status" className="border border-highlight px-4 py-3 font-mono text-xs tracking-widest text-highlight uppercase">
+          <p role="status" className="rounded-2xl border border-highlight bg-white/50 px-4 py-3 font-mono text-xs tracking-widest text-highlight uppercase backdrop-blur-md">
             Log saved
           </p>
         )}

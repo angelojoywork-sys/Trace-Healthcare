@@ -28,7 +28,7 @@ export function WelcomeScreen({ onLog }: { onLog: () => void }) {
         <span className="text-muted-foreground">Ireland</span>
       </header>
 
-      <div className="bracket flex flex-1 flex-col items-center justify-center gap-6 px-6 py-6 text-center">
+      <div className="glass flex flex-1 flex-col items-center justify-center gap-6 px-6 py-6 text-center">
         <div className="grid h-72 w-full max-w-80 place-items-center">
           {gl ? (
             <Suspense fallback={<GlowFallback />}>

@@ -51,7 +51,7 @@ export function NoteSheet({ area, onSubmit, onSkip }: Props) {
     <section
       aria-label="Add a note"
       onClick={(e) => e.stopPropagation()}
-      className="absolute inset-x-3 bottom-3 flex flex-col gap-4 border border-line bg-background/85 p-5 backdrop-blur-md"
+      className="glass absolute inset-x-3 bottom-3 flex flex-col gap-4 p-5"
     >
       <div className="flex gap-8">
         <div><p className={label}>Area</p><p className="text-lg font-light">{area}</p></div>

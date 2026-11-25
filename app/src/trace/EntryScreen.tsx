@@ -64,7 +64,7 @@ export function EntryScreen({ entry, onBack, onShare, onDelete }: Props) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <header className="flex items-center gap-3 border-b border-line px-5 pt-4 pb-3">
+      <header className="glass mx-3 mt-3 flex items-center gap-3 px-4 py-3">
         <Button variant="outline" size="icon" aria-label="Back" className="size-11 rounded-sm" onClick={onBack}><ChevronLeft className="size-5" /></Button>
         <div>
           <h1 className="text-xl leading-tight font-light">{entry.area}</h1>

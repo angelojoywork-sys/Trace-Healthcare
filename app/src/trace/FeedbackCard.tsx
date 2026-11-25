@@ -36,7 +36,7 @@ export function FeedbackCard({ onClose }: Props) {
   };
 
   return (
-    <section aria-label="Quick feedback" className="flex flex-col gap-4 rounded-sm border border-highlight bg-highlight/10 px-5 py-5">
+    <section aria-label="Quick feedback" className="flex flex-col gap-4 rounded-2xl border border-highlight bg-highlight/10 px-5 py-5 backdrop-blur-md">
       <p className="font-mono text-[11px] tracking-widest text-highlight uppercase">Your turn · 2 quick questions</p>
 
       {step === "ease" && <Scale label="How easy was it to log that?" low="Very hard" high="Very easy" onPick={(n) => { track("feedback_ease", { score: n }); setStep("use"); }} />}

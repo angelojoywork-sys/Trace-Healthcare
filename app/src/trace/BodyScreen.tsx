@@ -25,7 +25,7 @@ export function BodyScreen({ view, onViewChange, onDone, onClose }: Props) {
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
-      <header className="flex items-start justify-between gap-3 border-b border-line px-5 pt-4 pb-3">
+      <header className="glass mx-3 mt-3 flex items-start justify-between gap-3 px-4 py-3">
         <div className="flex items-start gap-3">
           {sel ? (
             <Button variant="outline" size="icon" aria-label="Back" className="size-11 rounded-sm" onClick={() => setSel(null)}>
@@ -45,7 +45,7 @@ export function BodyScreen({ view, onViewChange, onDone, onClose }: Props) {
       </header>
 
       {/* While zoomed in, tapping anywhere outside the note panel zooms back out. The short delay stops the tap that zoomed in from also zooming out. */}
-      <div className="relative min-h-0 flex-1" onClick={() => { if (sel && Date.now() - pickedAt.current > 500) setSel(null); }}>
+      <div className="glass relative mx-3 my-3 min-h-0 flex-1 overflow-hidden" onClick={() => { if (sel && Date.now() - pickedAt.current > 500) setSel(null); }}>
         {showList ? (
           <ul className="grid grid-cols-2 gap-3 p-5">
             {AREAS.map((a) => (

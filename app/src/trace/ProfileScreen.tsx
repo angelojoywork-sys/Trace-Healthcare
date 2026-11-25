@@ -21,6 +21,7 @@ export function ProfileScreen({ onDone }: { onDone: (p: Profile) => void }) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-6 px-5 pt-10 pb-5">
+      <div className="glass flex flex-col gap-6 px-5 py-6">
       <h1 className="text-3xl leading-tight font-light">Tell us about you</h1>
 
       <div className="flex flex-col gap-2">
@@ -47,6 +48,8 @@ export function ProfileScreen({ onDone }: { onDone: (p: Profile) => void }) {
             </ToggleGroupItem>
           ))}
         </ToggleGroup>
+      </div>
+
       </div>
 
       <div className="flex-1" />

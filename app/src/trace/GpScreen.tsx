@@ -75,7 +75,7 @@ export function GpScreen() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex flex-col gap-4 px-5 pt-6 pb-3">
+      <div className="glass mx-3 mt-3 flex flex-col gap-4 px-5 py-4">
         <h1 className="text-3xl font-light">Find a GP</h1>
 
         {data === null || data?.sites.length === 0 ? null : (
@@ -89,7 +89,7 @@ export function GpScreen() {
         )}
 
         {data && !here && (
-          <section aria-label="Location" className="flex flex-col gap-3 border border-line p-4">
+          <section aria-label="Location" className="flex flex-col gap-3 rounded-2xl border border-line bg-white/50 p-4">
             <p className={cap}>Nearest first</p>
             {loc === "denied" || perm === "denied" ? (
               <>

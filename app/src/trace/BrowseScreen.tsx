@@ -51,7 +51,7 @@ export function BrowseScreen({ entries, query, onQuery, onOpen }: Props) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex flex-col gap-4 px-5 pt-6 pb-3">
+      <div className="glass mx-3 mt-3 flex flex-col gap-4 px-5 py-4">
         <h1 className="text-3xl font-light">Browse</h1>
         <div className="relative">
           <Search aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />

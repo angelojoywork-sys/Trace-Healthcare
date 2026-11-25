@@ -12,7 +12,14 @@ Live app: https://trace-health-ie.vercel.app/ (builds from `main`)
 2. **Say what you want.** One change at a time, for example "reduce the welcome-screen drop-off".
 3. **Check the process step.** `CLAUDE.md` makes Claude name the current step from `taste.md` (research, synthesis, journey map, flow, sketch, wireframe, hi-fi, deploy, measure) before building anything.
 4. **Review and merge.** Claude works on a branch and opens a PR. You review and merge it. Vercel deploys `main` automatically, so a merge updates the live site.
-5. **Before you finish,** say: "Log it, commit, push and open the PR." Anything not merged is invisible to the next session.
+5. **Before you finish,** run `/wrap-up` (or say "log it"). It writes the log entry, decision records and case-study outline links, then commits on the session branch. Ask for the PR and merge it. Anything not merged is invisible to the next session.
+
+## Where the process is captured
+
+- `process-log.md`: one entry per session, with tags (`[decision]`, `[failure]`, `[learning]`, `[research]`, `[metric]`) and who decided.
+- `decisions/`: one short record per important decision.
+- `case-study/outline.md`: the living case study, with links to the evidence for each section.
+- `project-timeline.md`: the history so far.
 
 ## Rules that came from mistakes
 

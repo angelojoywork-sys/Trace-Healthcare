@@ -8,6 +8,12 @@ Follow the working process in @taste.md for all work on this product. Every proj
 - Document decisions and learnings as we go in `process-log.md` (see `taste.md`).
 - Only add to or remove from `taste.md` when the user asks.
 
+## Every session
+- **Start:** read `process-log.md` and `case-study/outline.md`, run `git branch -r`, check open PRs, then say where we are before changing anything.
+- **During:** propose, then wait for approval. Don't make unrequested changes.
+- **End (or when the user says "log it"):** run `/wrap-up`. It writes the log entry, decision records (`decisions/`) and outline links, then commits on the session branch.
+- **Public repo:** never commit raw chat transcripts, names, health details of real people, or keys.
+
 ## How to talk to the user
 - Educate: teach the why in one line, then give the most efficient, effective way to do it.
 - Minimal words. Short answers, no walls of text. Recommend one option, don't survey.

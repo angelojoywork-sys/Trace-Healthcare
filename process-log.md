@@ -368,9 +368,12 @@ Newest first. One entry per working session.
 - **Tools used / where AI helped (and what a human verified):** Claude drafted the framing; human to verify with real users.
 - **Artifacts saved in:** `research/` (next: interview guide)
 
-## YYYY-MM-DD — <step, e.g. 01 Research>
+## YYYY-MM-DD — <step, e.g. 06 Deploy>
 - **What we did:**
 - **Why:**
-- **What we learned:**
+- **Decisions:** `[decision]` what was decided. **Decided by:** me / AI proposed, I approved / AI. Link: `decisions/NNNN-...md`
+- **What failed:** `[failure]` what did not work, in the user's words if they said it.
+- **What we learned:** `[learning]`
+- **Evidence:** `[research]` / `[metric]` data, quotes, screenshots (path), or "none yet".
 - **Tools used / where AI helped (and what a human verified):**
 - **Artifacts saved in:** `<folder>`

@@ -2,6 +2,13 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 12 Favicon polish: rebuilt the DNA heart cleanly
+- **What we did:** The user circled the top dip of the DNA heart: the two strands collapsed into a lump with a small heart-shaped blob, and strand ends collided. Rebuilt the logo geometry instead of nudging it: a smoothed heart outline (rounded dip and tip), strands that pass over each other exactly at the dip and the tip (a whole number of twists, four), a masked white gap at each crossing so every strand is drawn once, and no leftover seams or flat cut ends. The strands are bolder (about 19 px on a 512 grid). Updated `favicon.ico`, 16, 32, 180, 192, 512 px PNGs and the vector `icon.svg` (60 KB).
+- **What did not work (for the case study):** (1) Thin strands with seven twists chopped into pieces at every crossing. (2) Narrowing the twist only at the corners folded the strands. (3) Beaded "sausage" runs looked broken. (4) Keeping the original build and only changing the twist count still bunched up at the pointed corners. The fix that worked: fewer, bolder twists on a gently rounded heart, with crossings placed at the corners.
+- **Lesson:** Detail has to be designed for the smallest size and for the weakest point of the shape (here, the pointed corners), not tuned afterwards.
+- **Verified:** zoomed 4x on the dip and the tip: clean crossings with an even white gap; checked at 16, 32, 48 and 180 px on light and dark backgrounds.
+- **Artifacts saved in:** `app/public/` icon files and `app/public/icon.svg`
+
 ## 2026-11-25 — 11 Favicon final: the DNA heart on a white tile
 - **What we did:** After about fifteen favicon explorations, the user chose to go back to the polished DNA heart (two strands weaving into a heart, blue at the bottom to orange at the top) with the tile background white and the app's pixel squares kept. Replaced the pale Mist tile colour with white in the vector logo, rendered PNGs (16, 32, 180, 192, 512, plus `favicon.ico`) and added the vector `icon.svg` for modern browsers and the manifest.
 - **Why:** The explorations moved through dotted hearts, network lines, pill rows, bristles, a helix, a person and a T mark. None beat the DNA heart that the user already liked; the user asked to return to it.

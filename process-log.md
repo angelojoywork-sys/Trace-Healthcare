@@ -2,6 +2,16 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06/07 Measure, and capture system (wrap-up)
+- **What we did:** Checked the live site and PostHog, tested the live feedback card, read the earlier "Starting over step by step" transcript, wrote `project-timeline.md`, and built the capture system (`/wrap-up`, tags, `decisions/`, `case-study/outline.md`). Merged the PRs in the order #4, #5, #6, #7, #8.
+- **Decisions:** `[decision]` Privacy copy discloses analytics. **Decided by:** AI proposed, I approved. Link: `decisions/0002-disclose-analytics-in-privacy-copy.md`. `[decision]` Keep raw transcripts out of the public repo. **Decided by:** AI decided; I approved the rule. Link: `decisions/0003-keep-raw-transcripts-out-of-the-public-repo.md`. `[decision]` Capture the process while working. **Decided by:** AI proposed, I approved. Link: `decisions/0004-capture-the-process-while-working.md`.
+- **What failed:** `[failure]` Deleting the old branches from the sandbox was refused (HTTP 403), so the user must delete them on GitHub. `[failure]` Reading the old transcript was slow: each page was 1 to 4 MB, mostly tool output.
+- **What we learned:** `[learning]` The user pushed back on reconstructing history: "no, how can we make this sustainable for the future". `[learning]` The user said of the live branch "but that app is the one i built", so the newer branch is the real app. `[learning]` The feedback card hides for good on a device once answered or dismissed, so feedback given before the PostHog key was set was lost.
+- **Evidence:** `[metric]` PostHog EU, 25 Nov about 19:52 to 20:04 UTC: `app_open` 14 times by 11 people, `welcome_log_symptom` 1 person, `log_saved` 1 person, no `feedback_*` events. Some of the 11 may be previews or bots. `[metric]` The live feedback card, run in a headless browser with PostHog blocked, sent `feedback_ease`, `feedback_use` and `feedback_comment`. `[research]` The user said at 11:04 they had run user interviews, but the log says evidence is n=1 and `research/` has no interview notes. Not checked: whether a real feedback event reaches PostHog.
+- **Tools used / where AI helped (and what a human verified):** PostHog connector, GitHub, Vercel, Playwright. AI read the transcript with two agents and wrote the files. A human approved each PR and changed the Vercel settings and clicked Redeploy.
+- **Artifacts saved in:** `project-timeline.md`, `decisions/`, `case-study/outline.md`, `.claude/skills/wrap-up/`, `new-session-guide.md`
+- **Screenshots:** none taken this session (no UI change apart from wording).
+
 ## 2026-11-25 — 06 Deploy: `main` is now the live source
 - **What we did:** Found that the live site (https://trace-health-ie.vercel.app/) was built from the unmerged branch `claude/pensive-thompson-djxj50`, not `main`. Reverted the duplicate analytics and feedback code I had added to the old prototype (PR #4), merged the live app into `main` (PR #5), reworded the "no trackers" privacy claims, then set Vercel's Production Branch to `main` and redeployed.
 - **Checked:** The live script changed from `index-BR_MQyX8.js` (old branch) to `index-CMCn05b4.js`. The new build has the reworded privacy text and the PostHog key baked in, so `VITE_POSTHOG_KEY` is set.

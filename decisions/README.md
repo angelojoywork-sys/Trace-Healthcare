@@ -10,3 +10,6 @@ One short file per important decision. They show the thinking behind the design,
 | # | Decision | Date | Decided by |
 |---|---|---|---|
 | 0001 | `main` is the single live source | 2026-11-25 | AI proposed, I approved |
+| 0002 | Privacy copy must disclose the analytics | 2026-11-25 | AI proposed, I approved |
+| 0003 | Keep raw chat transcripts out of the public repo | 2026-11-25 | AI decided; I approved the rule |
+| 0004 | Capture the process while working, not afterwards | 2026-11-25 | AI proposed, I approved |

@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06 Deploy (feedback prompt)
+- **What we did:** Built a one-question prompt on the Result screen, "Did this help you decide where to go?" (Yes / Somewhat / No). It fires the `feedback_result` event and is asked once per entry.
+- **Why:** This answers "did it help them?" in `taste.md` step 7. The answer is one tap, so it fits the happy-path principle.
+- **What we learned:** I assumed it already existed. It had only been planned in `taste.md` and the log, so check the code before assuming something was built.
+- **Gap:** No free-text quotes yet (they need a backend or form tool). Qualitative quotes will come from usability tests.
+- **Tools used / where AI helped (and what a human verified):** AI wrote the component. Build and 9 tests pass. A human still needs to check the event arrives in Vercel.
+- **Artifacts saved in:** `app/src/components/Feedback.tsx`
+
 ## 2026-11-25 — 06 Deploy (measurement set up before launch)
 - **What we did:** Added Vercel Web Analytics (`app/src/lib/analytics.ts`). It tracks visitors, `screen_view` (screen path only) and `entry_saved` (kind: episode, visit or check-in).
 - **Why:** Cookieless, no accounts to manage, and the app is already on Vercel. A health app shouldn't send symptoms or other personal data to a third party, so events carry names and screen paths only.

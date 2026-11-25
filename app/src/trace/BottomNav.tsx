@@ -1,12 +1,12 @@
-import { Heart, LayoutGrid, MapPin } from "lucide-react";
+import { House, Search, Stethoscope } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type Tab = "summary" | "gp" | "browse";
 
-const TABS: { id: Tab; label: string; Icon: typeof Heart }[] = [
-  { id: "summary", label: "Summary", Icon: Heart },
-  { id: "gp", label: "Find GP", Icon: MapPin },
-  { id: "browse", label: "Browse", Icon: LayoutGrid },
+const TABS: { id: Tab; label: string; Icon: typeof House }[] = [
+  { id: "summary", label: "Summary", Icon: House },
+  { id: "gp", label: "Find GP", Icon: Stethoscope },
+  { id: "browse", label: "Browse", Icon: Search },
 ];
 
 /** A floating pill that sits over the content, so screens need bottom padding to scroll clear of it. */

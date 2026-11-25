@@ -2,6 +2,12 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06w Navigation icons
+- **What we did:** Swapped the three bottom icons for ones that say what each tab does: a house for Summary, a stethoscope for Find GP, a magnifying glass for Browse. Labels stay under each icon in the floating pill.
+- **Why:** User asked whether the icons changed; the earlier heart, map pin and grid did not describe the tabs well.
+- **Verified:** headless screenshot of each active state at 2x; no console errors.
+- **Artifacts saved in:** `app/src/trace/BottomNav.tsx`
+
 ## 2026-11-25 — 06v Mist theme, square-pattern background, location help
 - **What we did:** Switched the whole app from the dark theme to **Mist** (MUI blueGrey 50 background, blueGrey 900 text, blue 800 accent), chosen by the user from the 10 options. Replaced the animated circles with a quiet dithered grid of small squares as the page background (like the user's reference): densest in the top corner, almost gone by the middle so text stays readable, drifting very slowly (static with reduced motion). The severity screen uses the same square language: a few faint squares at 1, filling in from the right and getting denser up to 10. The hologram body is now blue contour lines on the light background with an orange tap cross (no glow, since glow does not show on light colours); the welcome DNA is blue to orange; the fallback glow shape is blue.
 - **Location:** The app now checks whether location is switched on for the site. If it is off, it shows step-by-step instructions for iPhone (Safari) and Android (Chrome) and a Try again button, and carries on by itself if the person turns it on while the screen is open. Browsers cannot switch location on from inside a web page, so the instructions are the way.

@@ -75,3 +75,20 @@ Hologram body (female, male, neutral) · name and gender onboarding · welcome s
 - Removing the Find GP partial-list notice means the app no longer says its list covers only about a fifth of practices. The tester note still says it.
 - Removing the speech-service line removed the only in-app mention that voice goes to the browser vendor. For a health app, consider restoring it.
 - `research/06` still lists "no trackers" as a principle.
+
+## 10. From the transcript "Starting over step by step" (partial)
+
+Read so far: your own messages from about 15:58 to 18:33 UTC on 25 Nov (45 messages, tool results excluded). The earlier part of that session (from 00:07 UTC) is **not read yet**, so this section covers roughly the last third of the day only. Quotes are short and taken as written.
+
+**What it adds that git and the log did not show:**
+
+- **Approval, not initiative.** At 16:49 you asked "who asked you to add the colors?" and at 16:50 "dont act without my approval", then asked for the added colours to be removed. A rule worth keeping: propose, then wait.
+- **Liquid glass took several tries.** First attempt: "this is not liquid glass effect". You asked for options, liked one you pointed to, then picked "version 6". You also asked twice for a true circle for the severity ball.
+- **Mist theme came from a dislike.** You disliked "that particular animated tiny circles" and asked for a Mist-style background instead.
+- **Location problem.** "The location is not enabled, the user should be able to enable it" led to the location help with instructions.
+- **Reload bug.** "when i reload it doesnt reset to the welcome page" led to the change that every load starts at the welcome screen.
+- **Domain.** The rename to `trace-health` failed. You then chose `trace-health-ie`.
+- **The favicon took the most effort.** From 17:01 to 18:33 you sent about 30 messages, mostly with reference images, ending with "these are all so bad" and a return to the earlier DNA heart. At 18:05 you wrote "why is this all turning out to be so shit", and asked for three free options that "speak our app Trace". The log's lesson matches: agree one direction first, then change one thing at a time.
+- **The link was asked for at least five times** ("give me the latest link", "give me the reset link"). A stable live link in the README now covers this.
+
+**Still to read:** 00:07 to about 15:58 UTC. That part holds the problem framing, wireframes, shadcn set-up, hologram build and the first deploy.

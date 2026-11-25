@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { hasVisit, SEVERITY, type Entry } from "@/lib/entries";
+import { hasVisit, type Entry } from "@/lib/entries";
 import { loadFeedback, saveFeedback } from "@/lib/feedback";
 import { FeedbackCard } from "./FeedbackCard";
 import { isThisMonth, relativeDay, severityTone } from "./dates";
@@ -14,7 +14,7 @@ export function SeverityTag({ value }: { value: number }) {
   return (
     <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-widest uppercase">
       <span aria-hidden="true" className={cn("size-2", tone[severityTone(value)])} />
-      {SEVERITY[value]}
+      {value}/10
     </span>
   );
 }
@@ -30,7 +30,7 @@ export function SummaryScreen({ name, entries, saved, onLog, onOpen }: Props) {
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
-      <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-5 pt-6 pb-24">
+      <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-5 pt-6 pb-32">
         <header>
           <p className={cap}>{name ? `Hi ${name}` : "Your health log"}</p>
           <h1 className="text-3xl font-light">Summary</h1>
@@ -38,7 +38,7 @@ export function SummaryScreen({ name, entries, saved, onLog, onOpen }: Props) {
 
         {saved && (
           <p role="status" className="border border-highlight px-4 py-3 font-mono text-xs tracking-widest text-highlight uppercase">
-            Saved. Noted, take care.
+            Log saved
           </p>
         )}
 
@@ -97,7 +97,7 @@ export function SummaryScreen({ name, entries, saved, onLog, onOpen }: Props) {
           type="button"
           aria-label="Log a symptom"
           onClick={onLog}
-          className="absolute right-5 bottom-4 size-14 rounded-sm bg-highlight text-highlight-foreground hover:bg-highlight/90"
+          className="absolute right-5 bottom-28 size-14 rounded-sm bg-highlight text-highlight-foreground hover:bg-highlight/90"
         >
           <Plus className="size-6" />
         </Button>

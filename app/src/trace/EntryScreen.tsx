@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { track } from "@/lib/analytics";
-import { knownGps, SEVERITY, updateEntry, type Entry } from "@/lib/entries";
+import { knownGps, updateEntry, type Entry } from "@/lib/entries";
 import { addFile, listFiles, removeFile, type FileRec } from "@/lib/files";
 import { cn } from "@/lib/utils";
 import { relativeDay, severityTone } from "./dates";
@@ -70,7 +70,7 @@ export function EntryScreen({ entry, onBack, onShare, onDelete }: Props) {
           <h1 className="text-xl leading-tight font-light">{entry.area}</h1>
           <p className="flex items-center gap-2 font-mono text-[11px] tracking-widest uppercase">
             <span aria-hidden="true" className={cn("size-2", tone[severityTone(entry.severity)])} />
-            {SEVERITY[entry.severity]} <span className="text-muted-foreground">· {relativeDay(entry.createdAt)}</span>
+            {entry.severity}/10 <span className="text-muted-foreground">· {relativeDay(entry.createdAt)}</span>
           </p>
         </div>
         <Button variant="outline" size="icon" aria-label="Share visit" className="ml-auto size-11 rounded-sm" onClick={onShare}><Share2 className="size-5" /></Button>

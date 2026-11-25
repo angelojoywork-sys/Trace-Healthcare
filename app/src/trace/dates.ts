@@ -12,5 +12,5 @@ export const isThisMonth = (iso: string, now = new Date()): boolean => {
   return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
 };
 
-/** Severity 0-1 mild, 2 moderate, 3-4 severe. Used for the colour marker and always paired with the word. */
-export const severityTone = (v: number): "mild" | "moderate" | "severe" => (v <= 1 ? "mild" : v === 2 ? "moderate" : "severe");
+/** Severity 1-3 mild, 4-7 moderate, 8-10 severe. Used for the colour marker and always paired with the word. */
+export const severityTone = (v: number): "mild" | "moderate" | "severe" => (v <= 3 ? "mild" : v <= 7 ? "moderate" : "severe");

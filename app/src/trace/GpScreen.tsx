@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ExternalLink, MapPin, Phone, Search, X } from "lucide-react";
+import { MapPin, Phone, Search, X } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,13 @@ const cap = "font-mono text-[11px] tracking-widest text-muted-foreground upperca
 const PAGE = 20;
 const linkBtn = "h-11 rounded-sm font-mono text-xs tracking-widest uppercase";
 type Here = { lat: number; lon: number };
-type Loc = "idle" | "asking" | "denied" | "unavailable";
+type Loc = "idle" | "asking" | "denied" | "unavailable" | "timeout";
+
+const LOC_MESSAGE: Record<Exclude<Loc, "idle" | "asking">, string> = {
+  denied: "Location is blocked for this site. Allow it in your browser, or on iPhone in Settings, Privacy & Security, Location Services, Safari Websites. You can also search by name or town.",
+  unavailable: "Your phone couldn't work out where you are. Check that Location Services is on and try again, or search by name or town.",
+  timeout: "That took too long. Try again, or search by name or town.",
+};
 
 const telHref = (p: string) => `tel:${p.replace(/[^\d+]/g, "")}`;
 const directionsHref = (g: Gp) => `https://www.google.com/maps/dir/?api=1&destination=${g.lat},${g.lon}`;
@@ -30,9 +36,13 @@ export function GpScreen() {
     if (!("geolocation" in navigator)) { setLoc("unavailable"); return; }
     setLoc("asking");
     track("location_requested");
+    let settled = false;
+    const settle = (next: Loc) => { if (settled) return false; settled = true; window.clearTimeout(timer); setLoc(next); return true; };
+    // Some browsers never answer if the permission prompt is dismissed, so give up after 20 seconds.
+    const timer = window.setTimeout(() => { if (settle("timeout")) track("location_timeout"); }, 20000);
     navigator.geolocation.getCurrentPosition(
-      (p) => { setHere({ lat: p.coords.latitude, lon: p.coords.longitude }); setLoc("idle"); track("location_granted"); },
-      () => { setLoc("denied"); track("location_denied"); },
+      (p) => { if (settle("idle")) { setHere({ lat: p.coords.latitude, lon: p.coords.longitude }); track("location_granted"); } },
+      (err) => { if (settle(err.code === 1 ? "denied" : err.code === 2 ? "unavailable" : "timeout")) track("location_error", { code: err.code }); },
       { enableHighAccuracy: false, timeout: 15000, maximumAge: 300000 },
     );
   };
@@ -50,12 +60,6 @@ export function GpScreen() {
     return () => clearTimeout(t);
   }, [q, rows.length]);
 
-  const hseLink = (
-    <a href="https://www.hse.ie/services/find-a-gp/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 underline underline-offset-4">
-      HSE Find a GP <ExternalLink aria-hidden="true" className="size-3" />
-    </a>
-  );
-
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex flex-col gap-4 px-5 pt-6 pb-3">
@@ -71,32 +75,26 @@ export function GpScreen() {
           </div>
         )}
 
-        {data && !here && loc !== "unavailable" && (
+        {data && !here && (
           <section aria-label="Location" className="flex flex-col gap-3 border border-line p-4">
-            <p className={cap}>Nearest in this list</p>
-            <p>Sort the list by distance from you. Your location stays on this phone and is only used to sort.</p>
+            <p className={cap}>Nearest first</p>
+            <p>Sort the list by distance from you. Your location stays on this phone.</p>
             <Button className="h-12 rounded-sm font-mono tracking-widest uppercase" onClick={locate} disabled={loc === "asking"}>
               <MapPin className="size-4" />{loc === "asking" ? "Finding you" : "Use my location"}
             </Button>
-            {loc === "denied" && <p role="alert" className="text-sm text-muted-foreground">Location is off for this site. You can search by name or town instead, or allow location in your browser settings.</p>}
+            {loc !== "idle" && loc !== "asking" && <p role="alert" className="text-sm text-muted-foreground">{LOC_MESSAGE[loc]}</p>}
           </section>
         )}
-        {data && here && <p className={cap} aria-live="polite">Nearest in this list</p>}
-        {data && (
-          <p className="border-l-2 border-highlight pl-3 text-sm text-muted-foreground">
-            Partial list: {data.sites.length} of about 2,500 GP practices in Ireland. Your nearest GP may be missing, so check {hseLink} too.
-          </p>
-        )}
+        {data && here && <p className={cap} aria-live="polite">Nearest first</p>}
       </div>
 
-      <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-5 pt-2 pb-6">
+      <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-5 pt-2 pb-32">
         {data === undefined && <p className="text-muted-foreground">Loading practices…</p>}
 
         {data === null && (
           <section className="bracket flex flex-col gap-3 px-5 py-6">
-            <h2 className="text-xl font-light">The GP list isn't available yet.</h2>
-            <p className="text-muted-foreground">For now, use the HSE's own search to find a practice near you.</p>
-            <p>{hseLink}</p>
+            <h2 className="text-xl font-light">The GP list isn't available right now.</h2>
+            <p className="text-muted-foreground">Please try again later.</p>
           </section>
         )}
 
@@ -136,9 +134,8 @@ export function GpScreen() {
         )}
 
         {data && (
-          <footer className="flex flex-col gap-2 border-t border-line pt-4 text-xs text-muted-foreground">
-            <p>This list doesn't show whether a practice is taking new patients, or the doctor's gender. Call first, or check {hseLink}.</p>
-            <p>Data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer" className="underline underline-offset-4">OpenStreetMap contributors</a>, {data.generated}. May be out of date.</p>
+          <footer className="pt-2 text-xs text-muted-foreground">
+            <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer" className="underline underline-offset-4">© OpenStreetMap contributors</a>
           </footer>
         )}
       </div>

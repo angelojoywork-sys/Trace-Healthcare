@@ -88,7 +88,7 @@ export function TraceApp() {
           onClose={() => setStep({ name: "home" })}
           onNext={(severity) => {
             const d = step.draft;
-            const entry: Entry = { id: crypto.randomUUID(), area: d.area, note: d.note, severity, createdAt: new Date().toISOString() };
+            const entry: Entry = { id: crypto.randomUUID(), area: d.area, note: d.note, severity, createdAt: new Date().toISOString(), scale: 10 };
             saveEntry(entry);
             setEntries(loadEntries());
             track("severity_set");
@@ -111,18 +111,18 @@ export function TraceApp() {
       })()}
 
       {step.name === "home" && (
-        <>
+        <div className="relative flex min-h-0 flex-1 flex-col">
           {tab === "summary" && <SummaryScreen name={profile?.name ?? ""} entries={entries} saved={saved} onLog={() => startLog("summary")} onOpen={(id) => { setSaved(false); setStep({ name: "entry", id }); }} />}
           {tab === "gp" && <GpScreen />}
           {tab === "browse" && <BrowseScreen entries={entries} query={query} onQuery={setQuery} onOpen={(id) => setStep({ name: "entry", id })} />}
           {undo && (
-            <div role="status" className="flex items-center justify-between gap-3 border-t border-highlight bg-background px-5 py-2">
+            <div role="status" className="absolute inset-x-4 bottom-24 z-30 flex items-center justify-between gap-3 rounded-sm border border-highlight bg-background px-4 py-1 shadow-lg">
               <span className="font-mono text-xs tracking-widest uppercase">Deleted {undo.area}</span>
               <Button variant="ghost" onClick={undoDelete} className="h-11 rounded-sm font-mono text-xs tracking-widest text-highlight uppercase underline underline-offset-4">Undo</Button>
             </div>
           )}
           <BottomNav tab={tab} onTab={(t) => { setSaved(false); setTab(t); track("tab_changed", { tab: t }); }} />
-        </>
+        </div>
       )}
     </div>
   );

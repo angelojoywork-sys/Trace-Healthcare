@@ -17,9 +17,9 @@ const SR = (() => {
 
 const label = "font-mono text-[11px] tracking-widest text-muted-foreground uppercase";
 
-type Props = { area: string; xy?: { x: number; y: number }; onSubmit: (note: string) => void; onSkip: () => void };
+type Props = { area: string; onSubmit: (note: string) => void; onSkip: () => void };
 
-export function NoteSheet({ area, xy, onSubmit, onSkip }: Props) {
+export function NoteSheet({ area, onSubmit, onSkip }: Props) {
   const [note, setNote] = useState("");
   const [listening, setListening] = useState(false);
   const rec = useRef<Rec | null>(null);
@@ -50,14 +50,9 @@ export function NoteSheet({ area, xy, onSubmit, onSkip }: Props) {
   return (
     <section
       aria-label="Add a note"
+      onClick={(e) => e.stopPropagation()}
       className="absolute inset-x-3 bottom-3 flex flex-col gap-4 border border-line bg-background/85 p-5 backdrop-blur-md"
     >
-      {xy && (
-        <p className="font-mono text-xs tracking-wider text-muted-foreground">
-          <span className="mr-1 font-medium text-foreground">X</span>{xy.x}
-          <span className="mr-1 ml-3 font-medium text-foreground">Y</span>{xy.y}
-        </p>
-      )}
       <div className="flex gap-8">
         <div><p className={label}>Area</p><p className="text-lg font-light">{area}</p></div>
         <div><p className={label}>When</p><p className="text-lg font-light">Today, {today}</p></div>
@@ -78,11 +73,10 @@ export function NoteSheet({ area, xy, onSubmit, onSkip }: Props) {
           )}
         </div>
         {listening && <p className="font-mono text-[11px] tracking-widest text-highlight uppercase" aria-live="polite">Listening</p>}
-        {SR && <p className="text-xs text-muted-foreground">Voice is processed by your browser's speech service.</p>}
       </div>
       {note.trim() && (
         <Button size="lg" className="h-12 rounded-sm font-mono tracking-widest uppercase" onClick={() => { rec.current?.stop(); track("note_added", { length: note.trim().length }); onSubmit(note.trim()); }}>
-          Almost there
+          Next
         </Button>
       )}
       <Button variant="ghost" className="font-mono underline underline-offset-4" onClick={() => { rec.current?.stop(); onSkip(); }}>

@@ -25,7 +25,7 @@ export function ProfileScreen({ onDone }: { onDone: (p: Profile) => void }) {
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="name" className={label}>Name</Label>
-        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Aoife" autoComplete="given-name" className="h-12 rounded-sm" />
+        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your name" autoComplete="given-name" className="h-12 rounded-sm" />
       </div>
 
       <div className="flex flex-col gap-2">
@@ -47,7 +47,6 @@ export function ProfileScreen({ onDone }: { onDone: (p: Profile) => void }) {
             </ToggleGroupItem>
           ))}
         </ToggleGroup>
-        <p className="text-xs text-muted-foreground">Sets the body shown when you log. You can change it any time.</p>
       </div>
 
       <div className="flex-1" />

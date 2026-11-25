@@ -1,10 +1,13 @@
-export const SEVERITY = ["Very mild", "Mild", "Moderate", "Severe", "Very severe"] as const;
+/** Severity is a number from 1 (barely there) to 10 (worst). Older logs used a 0-4 scale and are converted when read. */
+const LEGACY_SCALE = [1, 3, 5, 8, 10];
+export const severityWord = (v: number): "mild" | "moderate" | "severe" => (v <= 3 ? "mild" : v <= 7 ? "moderate" : "severe");
 
 export type Entry = {
   id: string;
   area: string;
   note: string;
-  severity: number;
+  severity: number; // 1-10
+  scale?: 10;
   createdAt: string;
   /** Added in Entry detail, after a GP visit. */
   visitDate?: string; // YYYY-MM-DD
@@ -16,7 +19,8 @@ const KEY = "trace.entries";
 
 export function loadEntries(): Entry[] {
   try {
-    return JSON.parse(localStorage.getItem(KEY) ?? "[]") as Entry[];
+    const list = JSON.parse(localStorage.getItem(KEY) ?? "[]") as Entry[];
+    return list.map((e) => (e.scale === 10 ? e : { ...e, severity: LEGACY_SCALE[e.severity] ?? 5, scale: 10 as const }));
   } catch {
     return [];
   }

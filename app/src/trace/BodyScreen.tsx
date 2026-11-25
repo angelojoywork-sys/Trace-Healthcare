@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useRef, useState } from "react";
 import { ChevronLeft, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
@@ -18,7 +18,8 @@ export function BodyScreen({ view, onViewChange, onDone, onClose }: Props) {
   const [sel, setSel] = useState<Sel | null>(null);
   const [picking, setPicking] = useState(false);
 
-  const choose = (s: Sel) => { setSel(s); track("area_selected", { via: s.via }); };
+  const pickedAt = useRef(0);
+  const choose = (s: Sel) => { pickedAt.current = Date.now(); setSel(s); track("area_selected", { via: s.via }); };
   const fail = () => { setGl(false); setList(true); track("webgl_unavailable"); };
   const showList = list || !gl;
 
@@ -43,7 +44,8 @@ export function BodyScreen({ view, onViewChange, onDone, onClose }: Props) {
         <span className="font-mono text-xs tracking-widest text-highlight">{sel ? "02" : "01"} / 03</span>
       </header>
 
-      <div className="relative min-h-0 flex-1">
+      {/* While zoomed in, tapping anywhere outside the note panel zooms back out. The short delay stops the tap that zoomed in from also zooming out. */}
+      <div className="relative min-h-0 flex-1" onClick={() => { if (sel && Date.now() - pickedAt.current > 500) setSel(null); }}>
         {showList ? (
           <ul className="grid grid-cols-2 gap-3 p-5">
             {AREAS.map((a) => (
@@ -67,7 +69,6 @@ export function BodyScreen({ view, onViewChange, onDone, onClose }: Props) {
         {sel && (
           <NoteSheet
             area={sel.area}
-            xy={sel.pick ? { x: sel.pick.x, y: sel.pick.y } : undefined}
             onSubmit={(note) => onDone({ area: sel.area, note, via: sel.via })}
             onSkip={() => onDone({ area: sel.area, note: "", via: sel.via })}
           />

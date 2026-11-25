@@ -36,8 +36,8 @@ export function FeedbackCard({ onClose }: Props) {
   };
 
   return (
-    <section aria-label="Quick feedback" className="bracket flex flex-col gap-4 px-5 py-5">
-      <p className={cap}>Test version · 2 quick questions</p>
+    <section aria-label="Quick feedback" className="flex flex-col gap-4 rounded-sm border border-highlight bg-highlight/10 px-5 py-5">
+      <p className="font-mono text-[11px] tracking-widest text-highlight uppercase">Your turn · 2 quick questions</p>
 
       {step === "ease" && <Scale label="How easy was it to log that?" low="Very hard" high="Very easy" onPick={(n) => { track("feedback_ease", { score: n }); setStep("use"); }} />}
       {step === "use" && <Scale label="Would you use this after a GP visit?" low="Never" high="Definitely" onPick={(n) => { track("feedback_use", { score: n }); setStep("comment"); }} />}
@@ -57,6 +57,8 @@ export function FeedbackCard({ onClose }: Props) {
           <Button variant="ghost" className="self-start font-mono underline underline-offset-4" onClick={onClose}>Close</Button>
         </div>
       )}
+
+      <p className="text-xs text-muted-foreground">Answers are anonymous. They go to the person testing this app and are stored with PostHog on EU servers.</p>
 
       {step !== "thanks" && step !== "comment" && (
         <Button variant="ghost" onClick={dismiss} className="self-start font-mono text-xs underline underline-offset-4">Not now</Button>

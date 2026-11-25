@@ -2,6 +2,23 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06u Feedback round 1: copy, interaction and severity changes; colour options
+- **What we did (from the user's review of the live app):**
+  - Name field says "Enter your name"; removed the "sets the body" helper line.
+  - Tapping outside the note panel while zoomed in zooms back out (the Back button still exists).
+  - Removed the X/Y coordinates and the "voice is processed by your browser's speech service" line; the button after typing now says "Next".
+  - Severity is now a number from 1 to 10 (big number, slider from 1 to 10); older logs on the 0-4 scale convert automatically (1, 3, 5, 8, 10). Browse and the PDF show "6/10".
+  - The letters visual is replaced by a calm field of dots that fills in from the right as severity rises (few faint dots at 1, dense at 10), using the theme accent.
+  - Confirmation copy is now "Log saved".
+  - Feedback card is tinted in the accent colour so it stands out, and says answers are anonymous, go to the person testing the app, and are stored with PostHog on EU servers.
+  - Navigation is a floating pill with icon and label (like the Apple Health reference); screens have bottom padding so content scrolls clear of it.
+  - Find GP: removed the partial-list notice, the HSE link and the new-patient/gender note; kept only the required OpenStreetMap credit. Location now gives specific messages (blocked, unavailable, timed out) and gives up after 20 s instead of hanging.
+- **Decisions to revisit:** (1) Removing the partial-list notice means the app no longer says the list covers only about a fifth of practices; the tester note still does. (2) Removing the speech-service line removes the only in-app mention that voice goes to the browser vendor.
+- **Colour:** produced 10 light MUI-based options with an animated pastel wash (`design/palette-options.html`); waiting on the user's pick before changing the theme.
+- **Verified:** headless run covering every change above (legacy severity 3 shows as 8/10; denied-location message appears; no console errors).
+- **Open:** Why "Use my location" failed for the user (needs what they saw); the theme swap and animated background; photo resizing.
+- **Artifacts saved in:** `app/src/trace/*`, `design/palette-options.html`
+
 ## 2026-11-25 — 06t Fix: visible box around the 3D canvases
 - **What we did:** The welcome DNA and the body hologram canvases had a solid `#212121` background drawn by WebGL, which some screens render a slightly different shade from the page, so a faint box showed. Made both canvases transparent so the page colour shows through. Removed the small bloom from the DNA (it was the only thing that needed the solid background); the body hologram keeps its bloom.
 - **Why:** User spotted a box around the DNA on their device.

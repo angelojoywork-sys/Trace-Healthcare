@@ -1,4 +1,4 @@
-import { SEVERITY, type Entry } from "./entries";
+import type { Entry } from "./entries";
 import type { FileRec } from "./files";
 
 export type PackOptions = { name: string; includeName: boolean; includeNote: boolean; includeSaid: boolean };
@@ -14,7 +14,7 @@ export function summaryLines(e: Entry, o: PackOptions, files: FileRec[]): [strin
   rows.push([e.visitDate ? "Visit date" : "Date logged", visitDay(e)]);
   if (e.gp?.trim()) rows.push(["GP", e.gp.trim()]);
   rows.push(["Symptom area", e.area]);
-  rows.push(["Severity", SEVERITY[e.severity]]);
+  rows.push(["Severity", `${e.severity} out of 10`]);
   if (o.includeNote && e.note.trim()) rows.push(["Symptom note", e.note.trim()]);
   if (o.includeSaid && e.gpSaid?.trim()) rows.push(["What the GP said", e.gpSaid.trim()]);
   if (files.length) rows.push(["Attached", files.map((f) => f.name).join(", ")]);

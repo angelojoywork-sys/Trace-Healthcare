@@ -3,14 +3,14 @@ import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { track } from "@/lib/analytics";
-import { SEVERITY, type Entry } from "@/lib/entries";
+import { severityWord, type Entry } from "@/lib/entries";
 import { fileCounts } from "@/lib/files";
 import { relativeDay } from "./dates";
 import { SeverityTag } from "./SummaryScreen";
 
 const cap = "font-mono text-[11px] tracking-widest text-muted-foreground uppercase";
 
-const haystack = (e: Entry) => [e.area, e.note, e.gp, e.gpSaid, SEVERITY[e.severity]].filter(Boolean).join(" ").toLowerCase();
+const haystack = (e: Entry) => [e.area, e.note, e.gp, e.gpSaid, `${e.severity}/10`, severityWord(e.severity)].filter(Boolean).join(" ").toLowerCase();
 
 export function matches(e: Entry, query: string): boolean {
   const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
@@ -77,7 +77,7 @@ export function BrowseScreen({ entries, query, onQuery, onOpen }: Props) {
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-5 pt-2 pb-6">
+      <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-5 pt-2 pb-32">
         {entries.length === 0 ? (
           <p className="max-w-[32ch] text-muted-foreground">Nothing to browse yet. Log a symptom and it will show up here.</p>
         ) : shown.length === 0 ? (

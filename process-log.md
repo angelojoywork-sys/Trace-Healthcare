@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06r Severity visual: light at mild, builds with severity
+- **What we did:** Reworked the severity letters. Very mild is now light: a few faint, small letters loosely drifting, with no fixed shape. Each step up adds more letters (they fade in one by one), makes them bigger and brighter, moves them faster, scatters them further and warms the colour from teal to orange. Everything eases between levels.
+- **Why:** User feedback: the clean helix at very mild was too rigid and heavy; the intensity should start light and keep increasing.
+- **Decisions:** Kept the letters of the severity word and a faint spiral underneath, but the loose scatter means it reads as a cloud, not a structure. The word label stays under the picture so the picture is never the only signal.
+- **Verified:** headless screenshots at all five levels show a smooth build from near-empty to dense; no console errors.
+- **Open:** Real-phone frame rate; whether the word or a fixed word (TRACE) reads better.
+- **Artifacts saved in:** `app/src/trace/LetterHelix.tsx`
+
 ## 2026-11-25 — 06q DNA on the welcome screen, letter helix on severity
 - **What we did:** Welcome screen: replaced the glow ball with a glossy 3D double helix in the brand colours (teal at the bottom to amber at the top, with rungs), built in code with three.js (no model file), slowly turning; the old glow shape is the fallback while it loads and when 3D is unavailable. Severity screen: replaced the glow shape with a helix made of letters that spell the chosen severity word; as severity rises the letters drift away from the helix, fan out and jitter (very mild is a clean spiral, very severe is scattered and warmer in colour). Plain 2D canvas, no WebGL.
 - **Why:** User references (glossy DNA, lettered helix, numbered helix, stone-and-glow). The letter helix makes the severity slider a felt, visual change instead of a label; the DNA gives the welcome screen an identity.

@@ -1,0 +1,69 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trace promo moodboard</title>
+<style>
+:root{--bg:#eceff1;--ink:#263238;--blue:#1565c0;--dna-blue:#1e88e5;--indigo:#9fa8da;--sq:#c5cae9;--orange:#ffa726;--red:#e64a19}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Geist","Inter",system-ui,sans-serif;padding:32px 16px 48px}
+.mono{font-family:"Geist Mono",ui-monospace,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;font-size:12px}
+.wrap{max-width:1180px;margin:0 auto}
+header{display:flex;justify-content:space-between;margin-bottom:20px}
+h1{font-size:clamp(34px,6vw,64px);font-weight:400;line-height:1.05;margin:8px 0 6px}
+.sub{color:#546e7a;max-width:60ch}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-top:24px}
+.tile{border-radius:20px;overflow:hidden;background:#fff;border:1px solid #d5dde2;position:relative}
+.pad{padding:20px}
+.tile img{display:block;width:100%;height:100%;object-fit:cover}
+.shot{grid-column:span 3;aspect-ratio:390/844;background:#eceff1}
+.label{position:absolute;left:12px;bottom:12px;background:rgba(255,255,255,.85);padding:6px 10px;border-radius:999px;backdrop-filter:blur(6px)}
+.pal{grid-column:span 6;display:grid;grid-template-columns:repeat(6,1fr);min-height:150px}
+.pal div{display:flex;align-items:flex-end;padding:10px;font-size:11px}
+.type{grid-column:span 6}
+.type .big{font-size:56px;line-height:1.05}
+.type .m{font-size:22px;margin-top:10px;color:var(--blue)}
+.motif{grid-column:span 4;min-height:220px}
+.dna{background:linear-gradient(135deg,var(--dna-blue),var(--indigo) 50%,var(--orange));color:#fff;display:flex;align-items:flex-end}
+.sq{background:var(--bg);background-image:radial-gradient(#0000 0,#0000 0);position:relative}
+.sq i{position:absolute;width:12px;height:12px;background:var(--sq)}
+.holo{background:repeating-linear-gradient(0deg,#1a237e 0 2px,#e8eaf6 2px 7px)}
+.glass{grid-column:span 4;min-height:160px;background:linear-gradient(90deg,#90caf9 0,#f4f7fb 6%,#f4f7fb 94%,#ffccbc 100%);display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;font-size:28px}
+.words{grid-column:span 4;background:var(--ink);color:var(--bg)}
+.words b{display:block;font-weight:400;font-size:30px;line-height:1.25}
+.motion{grid-column:span 8}
+.motion ol{padding-left:18px;line-height:1.7}
+.never{grid-column:span 12;background:#fff3e0;border-color:#ffe0b2}
+@media(max-width:800px){.shot{grid-column:span 6}.pal,.type,.motif,.glass,.words,.motion{grid-column:span 12}}
+</style></head><body><div class="wrap">
+<header><span class="mono">Trace · promo video</span><span class="mono">Moodboard v1 · 25 Nov 2026</span></header>
+<h1>Calm, clear, a little luminous.</h1>
+<p class="sub">A health app that feels like a quiet, well-lit room. Light "mist" surfaces, one glowing 3D idea per scene, small squares and mono labels for precision. Built only from what the app already is.</p>
+
+<div class="grid">
+  <div class="tile shot"><img src="img/01-welcome.png" alt="Welcome screen"><span class="label mono">Welcome · DNA</span></div>
+  <div class="tile shot"><img src="img/03-body.png" alt="Body map"><span class="label mono">Tap to log</span></div>
+  <div class="tile shot"><img src="img/04-note.png" alt="Chest note panel"><span class="label mono">Chest · note</span></div>
+  <div class="tile shot" style="display:flex;align-items:center;justify-content:center"><img src="img/icon.png" alt="App icon" style="width:70%;height:auto;border-radius:22%"><span class="label mono">Icon</span></div>
+
+  <div class="tile pal">
+    <div style="background:#eceff1">Mist<br>#eceff1</div>
+    <div style="background:#263238;color:#eceff1">Ink<br>#263238</div>
+    <div style="background:#1565c0;color:#fff">Blue<br>#1565c0</div>
+    <div style="background:#9fa8da">Indigo<br>#9fa8da</div>
+    <div style="background:#ffa726">Orange<br>#ffa726</div>
+    <div style="background:#e64a19;color:#fff">Tap line<br>#e64a19</div>
+  </div>
+  <div class="tile type pad"><div class="mono">Type</div><div class="big">Remember every visit.</div><div class="m mono">Chest · Add a note · 02 / 03</div><p class="sub" style="margin-top:10px">Geist for words, Geist Mono caps for labels and counters.</p></div>
+
+  <div class="tile motif dna pad"><span class="mono">Motif 1 · the DNA<br>blue → indigo → amber, glossy</span></div>
+  <div class="tile motif holo pad"><span class="mono" style="background:#fff;padding:4px 8px;border-radius:8px">Motif 2 · contour hologram</span></div>
+  <div class="tile motif sq pad"><i style="left:10%;top:12%"></i><i style="left:22%;top:12%"></i><i style="left:34%;top:12%"></i><i style="left:16%;top:30%"></i><i style="left:70%;top:10%"></i><i style="left:82%;top:10%"></i><i style="left:76%;top:28%"></i><span class="mono" style="position:absolute;left:20px;bottom:16px">Motif 3 · square dither</span></div>
+
+  <div class="tile glass mono">Motif 4 · glass with a blue left edge and orange right edge</div>
+  <div class="tile words pad"><div class="mono" style="margin-bottom:12px">Feels like</div><b>Quiet.</b><b>Precise.</b><b>Kind.</b><b>Private.</b></div>
+  <div class="tile motion pad"><div class="mono" style="margin-bottom:8px">Motion direction (from the animation rules)</div>
+    <ol><li>Every shot becomes the next: the DNA straightens into the body's contour lines; the orange tap dot becomes the note panel.</li>
+    <li>Keep the key object dead centre. Always a slow drift or push.</li>
+    <li>Fast in, slow out. One continuous curve per move, no zoom-in-then-out.</li>
+    <li>Text: Geist, sentence case, words fade up from blur. Light from one soft source.</li></ol></div>
+
+  <div class="tile never pad"><div class="mono" style="margin-bottom:6px">Keep out</div>No real people's health details on screen. No medical claims or promised outcomes. Say "test version" until it is more than that. Nothing implies the HSE endorses Trace.</div>
+</div></div></body></html>

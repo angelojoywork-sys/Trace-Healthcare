@@ -2,6 +2,15 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06 Hi-fi build: screens 3 to 5 (hologram, note, severity)
+- **What we did:** Built the first real screens in `app/src/trace/`: 3D hologram (three.js, procedural body, rotate, tap-to-zoom, marker), note pop-up (X/Y, area, when, note, voice, "Almost there"), severity screen, and a placeholder "Saved" screen. Entries save to the phone (localStorage). Added `track()` analytics wrapper (PostHog, behaviour only) and `research/test-plan.md`.
+- **Why:** These screens carry the most risk and are the core of the product. Measurement must exist before launch.
+- **Decisions:** Procedural body (no model download) so taps map to named regions and the 3D cannot fail on a missing asset. WebGL check and context-loss fallback switch to List view. Voice uses the browser speech API and is hidden where unsupported. Slider thumb enlarged to meet the 44px rule. Hosting: Vercel (already configured). Supabase deferred until we need sign-in and backup.
+- **Learnings:** The body is a stylised stand-in; a real model is a later swap. Camera aims below the tapped point so the marker stays clear of the note panel.
+- **Open:** Welcome and name/gender screens, Summary, Entry, Browse, Find GP. Real body model. Chunk size warning (3D is lazy-loaded already).
+- **Tools used / where AI helped (and what a human verified):** Claude wrote the code and drove a headless browser through the flow with screenshots; human to test on a real phone.
+- **Artifacts saved in:** `app/src/trace/`, `app/src/lib/`, `research/test-plan.md`
+
 ## 2026-11-25 — 05d Tooling: shadcn + MUI palette
 - **What we did:** Switched the design system to MUI palette values (grey 900/600/500/100, teal A200, green/amber/deep-orange 300). Set up Tailwind v4 + shadcn/ui (Base UI flavour) in `app/` with Trace tokens in `src/globals.css` (dark only, 2px radius, Geist + Geist Mono). Added button, input, textarea, label, toggle-group, slider, drawer, card. Preview at `/?kit`.
 - **Why:** Decide the component foundation before hi-fi so the design and the build share one set of tokens.

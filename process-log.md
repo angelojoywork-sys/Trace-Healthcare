@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 05 Low-fi wireframes (v1)
+- **What we did:** Built 9 low-fi screens (`design/wireframes-lofi.html`): welcome, about you, body log, zoom, how it feels, summary, entry detail, find GP, browse/search.
+- **Why:** Check the flow before hi-fi. MVP goes to testers today.
+- **Decisions:** Country = Ireland. Nav = Summary / Find GP / Browse (from Apple Health). Share lives inside the entry. "How it feels" slider after picking a symptom (Apple Health mood UI). Welcome screen modelled on Ada, with skip. Overview = Summary tab.
+- **References:** Ada (welcome), Apple Health (nav, mood slider), Bearable-style insight cards.
+- **Tools used / where AI helped (and what a human verified):** Claude built wireframes in HTML; human to review flow.
+- **Artifacts saved in:** `design/wireframes-lofi.html`
+
 ## 2026-11-25 — 04 User flow (draft v1)
 - **What we did:** Drafted a 5-screen happy path: sign in, profile, hologram body log, home (Log / Find GP tabs + search), entry detail (date, GP, notes, photo).
 - **Why:** User wants a 1-tap log via a hologram body that zooms to body areas.

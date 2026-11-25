@@ -2,6 +2,13 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — Privacy wording matches the analytics
+- **What we did:** Reworded the "no trackers" claims in `app/src/screens/Settings.tsx` and `Onboarding.tsx` to say anonymous visits and button taps are counted, never symptoms or notes.
+- **Why:** The app sends behaviour events to PostHog, so "no analytics or trackers" and "nothing is sent to a server" were no longer true. In a health app, a privacy claim has to match what the code does.
+- **What we learned:** Those two screens belong to the earlier prototype, reachable only with `?old`. The live app's welcome screen (`app/src/trace/WelcomeScreen.tsx`) already had the accurate disclosure.
+- **Still open:** `research/06-insights-and-requirements.md` still lists "no trackers" as a design principle. Revisit it in the case study.
+- **Tools used / where AI helped (and what a human verified):** AI edited the copy. A human should read it.
+
 ## 2026-11-25 — Reverted the extra analytics and feedback code on main
 - **What we did:** Removed the Vercel Analytics, the "Did this help?" prompt and the reworded onboarding line that PR #3 added to the old prototype on `main`. The README keeps the live URL.
 - **Why:** The live app is built from `claude/pensive-thompson-djxj50`, which already has PostHog analytics and a feedback card. The PR #3 code duplicated it and never reached the live site.

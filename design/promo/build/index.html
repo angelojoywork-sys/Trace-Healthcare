@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Trace promo (20s, 1080x1920)</title>
+<style>
+  @font-face { font-family: Geist; src: url("fonts/geist-latin-wght-normal.woff2"); font-weight: 100 900; }
+  @font-face { font-family: GeistMono; src: url("fonts/geist-mono-latin-wght-normal.woff2"); font-weight: 100 900; }
+  html,body{margin:0;background:#111;height:100%} body{display:flex;align-items:center;justify-content:center}
+  canvas{height:100vh;aspect-ratio:9/16;display:block}
+</style>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/jsm/"}}</script>
+</head><body><canvas id="c"></canvas>
+<script type="module">
+// Trace promo. One page, deterministic: window.renderAt(t) draws frame t on canvas #c.
+// Layers: 2D background and glass UI, a three.js layer (the app's own DNA and body hologram) clipped inside the card,
+// then captions. Every shot grows out of the one before; there are no cross dissolves.
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const W = 1080, H = 1920, END = 20;
+const q = new URLSearchParams(location.search), S = parseFloat(q.get('scale') || '1');
+const cv = document.getElementById('c'); cv.width = W * S; cv.height = H * S;
+const ctx = cv.getContext('2d');
+
+// ---------- every beat time lives here ----------
+const TL = {
+  hook: [0.35, 1.7],                 // caption 1 in, out
+  heroMove: [2.0, 2.6], squash: [2.35, 2.62], grow: [2.55, 3.5],
+  cap2: [3.7, 5.55], cap3: [6.55, 8.7], cap4: [9.35, 11.75], cap5: [12.55, 14.3], cap6: [15.4, 17.05],
+  spinEase: [5.4, 7.0], untilt: [5.7, 7.3], straighten: [5.9, 7.4], rungs: [6.3, 7.7], reveal: [6.6, 8.2], rungFade: [7.3, 7.95],
+  tap: [8.4, 9.3], dolly: [9.0, 11.5], panelIn: [10.1, 10.8], type: [10.9, 11.9],
+  iris: [12.0, 12.95], ballIn: [12.5, 13.2], sev: [13.1, 14.4],
+  toList: [14.5, 15.4], rows: [14.9, 15.7], search: [15.8, 16.5], filter: [16.6, 17.1],
+  toIcon: [17.2, 18.35], icon: [17.9, 18.6], wordmark: [18.4, 18.9], url: [18.7, 19.5], small: [19.2, 19.7],
+};
+
+// ---------- helpers ----------
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v)), lerp = (a, b, k) => a + (b - a) * k, prog = (t, a, b) => clamp((t - a) / (b - a));
+const outCubic = k => 1 - Math.pow(1 - clamp(k), 3), outQuart = k => 1 - Math.pow(1 - clamp(k), 4), outExpo = k => (k = clamp(k)) >= 1 ? 1 : 1 - Math.pow(2, -10 * k);
+const inOutCubic = k => { k = clamp(k); return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }, sine = k => .5 - .5 * Math.cos(Math.PI * clamp(k)), inCubic = k => Math.pow(clamp(k), 3);
+const hash = (a, b = 0, c = 0) => { let h = Math.imul(a | 0, 374761393) ^ Math.imul(b | 0, 668265263) ^ Math.imul(c | 0, 2147483647); h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
+const mixHex = (a, b, k) => { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)), A = p(a), B = p(b); return `rgb(${A.map((v, i) => Math.round(lerp(v, B[i], k))).join(',')})`; };
+// monotone cubic through keys [[t, v], ...]: one continuous curve with no kinks and no overshoot (so a move never reverses)
+function curve(keys) {
+  const n = keys.length, x = keys.map(k => k[0]), y = keys.map(k => k[1]), d = [], m = [];
+  for (let i = 0; i < n - 1; i++) d[i] = (y[i + 1] - y[i]) / (x[i + 1] - x[i]);
+  m[0] = d[0]; m[n - 1] = d[n - 2];
+  for (let i = 1; i < n - 1; i++) m[i] = d[i - 1] * d[i] <= 0 ? 0 : (d[i - 1] + d[i]) / 2;
+  for (let i = 0; i < n - 1; i++) { if (d[i] === 0) { m[i] = m[i + 1] = 0; continue; } const a = m[i] / d[i], b = m[i + 1] / d[i], s = a * a + b * b; if (s > 9) { const tt = 3 / Math.sqrt(s); m[i] = tt * a * d[i]; m[i + 1] = tt * b * d[i]; } }
+  return t => { if (t <= x[0]) return y[0]; if (t >= x[n - 1]) return y[n - 1]; let i = 0; while (t > x[i + 1]) i++; const h = x[i + 1] - x[i], s = (t - x[i]) / h, s2 = s * s, s3 = s2 * s;
+    return (2 * s3 - 3 * s2 + 1) * y[i] + (s3 - 2 * s2 + s) * h * m[i] + (-2 * s3 + 3 * s2) * y[i + 1] + (s3 - s2) * h * m[i + 1]; };
+}
+const INK = '#263238', MIST = '#eceff1', GLASS = '#f4f7fb', BLUE = '#1565c0', INDIGO = '#9fa8da', SQ = '#c5cae9', ORANGE = '#f57c00';
+
+// ---------- layout (logical 1080x1920) ----------
+const CARD = { x: 90, y: 230, w: 900, h: 1300, r: 64 };
+const PANEL_A = { x: 130, y: 1090, w: 820, h: 400, r: 48 };       // the note panel
+const SEARCH = { x: 130, y: 290, w: 820, h: 92, r: 30 };          // the same panel becomes the search bar
+const CAP_Y = 1700;                                              // caption baseline zone, same place every shot
+
+// ---------- text ----------
+function setFont(size, mono, weight = 400, track = -0.03) { ctx.font = `${weight} ${size}px ${mono ? 'GeistMono' : 'Geist'}, system-ui, sans-serif`; ctx.letterSpacing = `${track * size}px`; }
+function withBlur(px, fn) { if (px > .3) ctx.filter = `blur(${px * S}px)`; fn(); ctx.filter = 'none'; }
+// word by word: each word fades up from blurred to sharp with a small rise, and leaves the same way
+function words(lines, cx, cy, size, color, tIn, tOut, t, lh = 1.12, weight = 400) {
+  if (t < tIn || t > tOut + 1.2) return;
+  setFont(size, false, weight); ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; let idx = 0;
+  lines.forEach((line, li) => {
+    const ws = line.split(' '), space = ctx.measureText(' ').width, widths = ws.map(w => ctx.measureText(w).width), total = widths.reduce((a, b) => a + b, 0) + space * (ws.length - 1);
+    let x = cx - total / 2; const y = cy + (li - (lines.length - 1) / 2) * size * lh;
+    ws.forEach((w, i) => {
+      const a = outCubic(prog(t, tIn + idx * .09, tIn + idx * .09 + .6)), b = inCubic(prog(t, tOut + idx * .06, tOut + idx * .06 + .45)), vis = a * (1 - b);
+      if (vis > .003) { ctx.globalAlpha = vis; ctx.fillStyle = color; withBlur((1 - a) * 16 + b * 12, () => ctx.fillText(w, x, y + (1 - a) * 26 - b * 20)); ctx.globalAlpha = 1; }
+      x += widths[i] + space; idx++;
+    });
+  });
+}
+function label(txt, x, y, align, size, color, tIn, tOut, t, track = .14) {   // mono caps label, rolls up in and out
+  if (t < tIn || t > tOut + .5) return; const a = outCubic(prog(t, tIn, tIn + .5)), b = inCubic(prog(t, tOut, tOut + .4));
+  setFont(size, true, 400, track); ctx.textAlign = align; ctx.fillStyle = color; ctx.globalAlpha = a * (1 - b); ctx.fillText(txt, x, y + (1 - a) * 22 - b * 18); ctx.globalAlpha = 1;
+}
+const typed = (txt, p) => txt.slice(0, Math.floor(clamp(p) * (txt.length + .001)));
+
+// ---------- background: the app's quiet square pattern ----------
+function background(t) {
+  ctx.fillStyle = MIST; ctx.fillRect(0, 0, W, H);
+  const cell = 36, cols = Math.ceil(W / cell) + 2, rows = Math.ceil(H / cell) + 1, tick = Math.floor(t * 8), drift = (t * 7) % cell;
+  const wipe = inOutCubic(prog(t, 17.0, 18.4)) * .6;   // quieter around the end card
+  ctx.fillStyle = SQ;
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const fy = r / rows, fx = c / cols, dens = Math.pow(Math.max(0, 1 - fy * 1.15), 2.2) * (.35 + .65 * fx) * .9 * (1 - wipe) + (t < 2.7 ? .035 * (1 - prog(t, 1.9, 2.7)) : 0);
+    const h = hash(c, r, tick >> 2); if (h < dens) { const j = hash(c, r, 99); ctx.globalAlpha = .35 + .5 * hash(c, r, tick); ctx.fillRect(c * cell - drift + 4 + j * 2, r * cell + 4, 18, 18); }
+  }
+  ctx.globalAlpha = 1;
+}
+
+// ---------- glass ----------
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, Math.min(r, w / 2, h / 2)); }
+function glass(x, y, w, h, r, o = {}) {
+  const fill = o.fill || GLASS;
+  ctx.save(); ctx.shadowColor = 'rgba(38,50,56,' + (o.shadow ?? .16) + ')'; ctx.shadowBlur = (o.blur ?? 70) * S; ctx.shadowOffsetY = (o.dy ?? 30) * S; rr(x, y, w, h, r); ctx.fillStyle = fill; ctx.fill(); ctx.restore();
+  if (o.edge === false) return; const ea = o.edgeA ?? 1; if (ea <= 0.01) return; ctx.save(); ctx.globalAlpha = ea; rr(x, y, w, h, r); ctx.clip();
+  let g = ctx.createLinearGradient(x, 0, x + 34, 0); g.addColorStop(0, 'rgba(100,181,246,.55)'); g.addColorStop(1, 'rgba(100,181,246,0)'); ctx.fillStyle = g; ctx.fillRect(x, y, 34, h);
+  g = ctx.createLinearGradient(x + w, 0, x + w - 34, 0); g.addColorStop(0, 'rgba(255,138,101,.5)'); g.addColorStop(1, 'rgba(255,138,101,0)'); ctx.fillStyle = g; ctx.fillRect(x + w - 34, y, 34, h);
+  g = ctx.createLinearGradient(0, y, 0, y + 16); g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = g; ctx.fillRect(x, y, w, 16);
+  ctx.restore(); ctx.save(); ctx.globalAlpha = ea; rr(x + 1, y + 1, w - 2, h - 2, r); ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+}
+
+// ---------- the card: hero square -> welcome card -> body panel -> list -> app icon ----------
+const HERO = { x: 540, y: 1180, s: 28 };
+function cardState(t) {
+  // returns the card rect (or the hero square before it) and whether it is drawn as glass
+  if (t < TL.grow[0]) {
+    const mv = inOutCubic(prog(t, TL.heroMove[0], TL.heroMove[1])), sq = Math.sin(Math.PI * prog(t, TL.squash[0], TL.squash[1]));
+    const x = lerp(HERO.x, 540, mv), y = lerp(HERO.y, 880, mv), s = HERO.s + 4 * mv, sx = s * (1 + .12 * sq), sy = s * (1 - .12 * sq);
+    return { x: x - sx / 2, y: y - sy / 2, w: sx, h: sy, r: 4, kind: 'hero' };
+  }
+  const g = outQuart(prog(t, TL.grow[0], TL.grow[1])), g2 = inOutCubic(prog(t, TL.grow[0], TL.grow[1]));
+  let r = { x: lerp(540 - 14, CARD.x, g), y: lerp(880 - 14, CARD.y, g), w: lerp(28, CARD.w, g), h: lerp(28, CARD.h, g), r: lerp(5, CARD.r, g), kind: g < 1 ? 'grow' : 'card' };
+  const m = inOutCubic(prog(t, TL.toIcon[0], TL.toIcon[1]));
+  if (m > 0) { const tile = { x: 540 - 190, y: 800 - 190, w: 380, h: 380, r: 86 }; r = { x: lerp(r.x, tile.x, m), y: lerp(r.y, tile.y, m), w: lerp(r.w, tile.w, m), h: lerp(r.h, tile.h, m), r: lerp(r.r, tile.r, m), kind: 'tile', m }; }
+  return r;
+}
+
+// ---------- three.js: the app's own DNA and body ----------
+const gl = document.createElement('canvas'); gl.width = W * S; gl.height = H * S;
+const renderer = new THREE.WebGLRenderer({ canvas: gl, alpha: true, antialias: true, premultipliedAlpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1); renderer.setSize(W * S, H * S, false); renderer.setClearColor(0x000000, 0);
+const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(28, W / H, 0.1, 200);
+camera.setViewOffset(W * S, H * S, 0, 80 * S, W * S, H * S);   // card centre sits 80px above frame centre
+{ const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; }
+const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(3, 4, 5); scene.add(key);
+const fill = new THREE.DirectionalLight(0x90caf9, .5); fill.position.set(-4, -2, -3); scene.add(fill);
+
+const HH = 4.2, RAD = .55, TURNS = 2.2, TEAL = new THREE.Color('#1e88e5'), AMBER = new THREE.Color('#ffa726');
+const helixPt = (phase, t) => { const a = phase + t * TURNS * 2 * Math.PI; return new THREE.Vector3(RAD * Math.cos(a), (t - .5) * HH, RAD * Math.sin(a)); };
+class Helix extends THREE.Curve { constructor(p) { super(); this.p = p; } getPoint(t, o = new THREE.Vector3()) { return o.copy(helixPt(this.p, t)); } }
+const dna = new THREE.Group(), tilt = new THREE.Group(); tilt.add(dna); scene.add(tilt);
+const strandMat = new THREE.MeshPhysicalMaterial({ vertexColors: true, metalness: .35, roughness: .22, clearcoat: 1, clearcoatRoughness: .15 });
+const strands = [0, Math.PI].map(ph => {
+  const curve = new Helix(ph), geo = new THREE.TubeGeometry(curve, 260, .085, 16, false), pos = geo.getAttribute('position'), col = new Float32Array(pos.count * 3), c = new THREE.Color();
+  const base = Float32Array.from(pos.array), cen = [], per = 17;
+  for (let i = 0; i <= 260; i++) cen.push(curve.getPointAt(i / 260));
+  for (let v = 0; v < pos.count; v++) { c.copy(TEAL).lerp(AMBER, clamp((pos.getY(v) + HH / 2) / HH)); col.set([c.r, c.g, c.b], v * 3); }
+  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  const mesh = new THREE.Mesh(geo, strandMat); dna.add(mesh); return { geo, base, cen, per };
+});
+const rungData = Array.from({ length: 22 }, (_, k) => { const t = .03 + (k / 21) * .94, a = helixPt(0, t), phi = Math.atan2(a.z, a.x); return { t, y: a.y, phi, col: TEAL.clone().lerp(AMBER, t) }; });
+const rungMeshes = rungData.map(r => { const m = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, 10), new THREE.MeshPhysicalMaterial({ color: r.col, metalness: .3, roughness: .25, clearcoat: 1, clearcoatRoughness: .2, transparent: true })); dna.add(m); return m; });
+
+// body hologram (same shader as the app)
+const VERT = `varying vec3 vW; varying vec3 vN; varying vec3 vV; varying float vHead;
+void main(){ vHead = step(color.r, 0.002); vec4 wp = modelMatrix * vec4(position, 1.0); vW = wp.xyz; vN = normalize(normalMatrix * normal); vec4 mv = viewMatrix * wp; vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }`;
+const FRAG = `uniform float uTime; uniform vec3 uColor; uniform vec3 uTapColor; uniform vec3 uTap; uniform vec3 uTapT; uniform float uTapR; uniform float uReveal; uniform float uFade;
+varying vec3 vW; varying vec3 vN; varying vec3 vV; varying float vHead;
+float contour(float v, float freq, float width){ float x = v * freq; float d = abs(fract(x) - 0.5) * 2.0; float aa = fwidth(x) * 1.2; float line = 1.0 - smoothstep(width - aa, width + aa, d); return line * (1.0 - smoothstep(0.35, 0.9, fwidth(x) * 2.0)); }
+void main(){
+  float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 2.0) * (1.0 - 0.35 * vHead);
+  float lines = contour(vW.y, 58.0, 0.40) * (1.0 - 0.55 * vHead);
+  float sweepY = mod(uTime * 0.7, 5.0) - 2.5; float sweep = exp(-pow((vW.y - sweepY) * 5.0, 2.0));
+  float tap = 0.0;
+  if (uTapR > 0.0) { float dist = distance(vW, uTap); float fall = 1.0 - smoothstep(uTapR * 0.65, uTapR, dist);
+    float ring = 1.0 - smoothstep(0.0, 0.014, abs(vW.y - uTap.y)); float mer = 1.0 - smoothstep(0.0, 0.014, abs(dot(vW - uTap, uTapT)));
+    float halo = (1.0 - smoothstep(0.0, 0.07, abs(vW.y - uTap.y))) * 0.18 + (1.0 - smoothstep(0.0, 0.07, abs(dot(vW - uTap, uTapT)))) * 0.18;
+    tap = (ring + mer + halo) * fall; }
+  vec3 col = mix(uColor, uTapColor, clamp(tap, 0.0, 1.0));
+  float a = clamp(0.07 + f * 0.6 + lines * 0.8 + sweep * 0.25 + tap, 0.0, 1.0);
+  a *= (1.0 - smoothstep(uReveal - 0.3, uReveal, abs(vW.x))) * uFade;
+  gl_FragColor = vec4(col, a); }`;
+const bodyMat = new THREE.ShaderMaterial({ uniforms: { uTime: { value: 0 }, uColor: { value: new THREE.Color('#1565c0') }, uTapColor: { value: new THREE.Color('#f57c00') }, uTap: { value: new THREE.Vector3() }, uTapT: { value: new THREE.Vector3(1, 0, 0) }, uTapR: { value: 0 }, uReveal: { value: 0 }, uFade: { value: 1 } }, vertexShader: VERT, fragmentShader: FRAG, vertexColors: true, transparent: true, depthWrite: false });
+const body = new THREE.Group(); scene.add(body);
+const rings = [[.8, .82, .7], [1.15, 1.16, .3]].map(([a, b, o]) => { const m = new THREE.Mesh(new THREE.RingGeometry(a, b, 96), new THREE.MeshBasicMaterial({ color: '#1565c0', transparent: true, opacity: 0 })); m.rotation.x = -Math.PI / 2; m.position.y = -2.13; body.add(m); m.userData.o = o; return m; });
+let halfW = [], tapPoint = new THREE.Vector3(), tapNormal = new THREE.Vector3(0, 0, 1), chestY = .7;
+async function loadBody() {
+  const gltf = await new GLTFLoader().loadAsync('models/body-female.glb'); let geo;
+  gltf.scene.traverse(o => { if (o.isMesh && !geo) geo = o.geometry; }); geo.computeBoundingBox(); const bb = geo.boundingBox, s = HH / (bb.max.y - bb.min.y);
+  const mesh = new THREE.Mesh(geo, bodyMat); mesh.scale.setScalar(s); mesh.position.set(-(bb.max.x + bb.min.x) / 2 * s, -(bb.max.y + bb.min.y) / 2 * s, -(bb.max.z + bb.min.z) / 2 * s); body.add(mesh); mesh.updateMatrixWorld(true);
+  const p = geo.getAttribute('position'), v = new THREE.Vector3(); halfW = rungData.map(() => .2);
+  for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i).applyMatrix4(mesh.matrixWorld); rungData.forEach((r, k) => { if (Math.abs(v.y - r.y) < .05) halfW[k] = Math.max(halfW[k], Math.abs(v.x)); }); }
+  const rc = new THREE.Raycaster(new THREE.Vector3(0, chestY, 10), new THREE.Vector3(0, 0, -1)); const hit = rc.intersectObject(mesh)[0];
+  if (hit) { tapPoint.copy(hit.point); tapNormal.set(0, 0, 1); } else tapPoint.set(0, chestY, .3);
+  bodyMat.uniforms.uTap.value.copy(tapPoint);
+}
+
+// camera: ONE continuous move. Distance only ever shrinks, azimuth only ever drifts one way and arrives, elevation only rises.
+const camD = curve([[0, 16.5], [3, 16], [5.8, 15.2], [9.0, 13.6], [11.4, 5.4], [14, 5.2], [20, 5.1]]);
+const camAz = curve([[0, -.5], [3, -.45], [9.4, 0], [20, 0]]);
+const camEl = curve([[0, -.12], [3, -.12], [9.4, .02], [20, .02]]);
+const camTy = curve([[0, 0], [8.8, 0], [11.4, 0], [20, 0]]);
+function updateCamera(t) {
+  const ty = 0 + (t > 8.8 ? (tapPoint.y - .5) * inOutCubic(prog(t, 8.8, 11.4)) : 0), D = camD(t), az = camAz(t), el = camEl(t);
+  const tgt = new THREE.Vector3(0, ty, 0); camera.position.set(tgt.x + D * Math.sin(az) * Math.cos(el), tgt.y + D * Math.sin(el), tgt.z + D * Math.cos(az) * Math.cos(el)); camera.lookAt(tgt); camera.updateMatrixWorld(true);
+}
+function updateDna(t) {
+  const spinBase = .971 + .35 * Math.min(t, TL.spinEase[0]);
+  // after spinEase[0] the spin eases to rest facing front (Hermite: start slope .35 rad/s, end slope 0)
+  let rotY = spinBase; { const u = prog(t, ...TL.spinEase), d = TL.spinEase[1] - TL.spinEase[0], p0 = spinBase, p1 = Math.PI, m0 = .35 * d; if (t > TL.spinEase[0]) rotY = (2 * u ** 3 - 3 * u ** 2 + 1) * p0 + (u ** 3 - 2 * u ** 2 + u) * m0 + (-2 * u ** 3 + 3 * u ** 2) * p1; }
+  dna.rotation.y = rotY; tilt.rotation.z = -.62 * (1 - inOutCubic(prog(t, ...TL.untilt))); dna.position.y = Math.sin(t * .8) * .06 * (1 - prog(t, 5.4, 6.4));
+  const k = inOutCubic(prog(t, ...TL.straighten)), thin = lerp(1, .22, k) * (1 - outCubic(prog(t, 7.4, 8.1)));
+  strands.forEach(st => { const pos = st.geo.getAttribute('position'), a = pos.array; for (let i = 0; i <= 260; i++) { const c = st.cen[i]; for (let j = 0; j < st.per; j++) { const v = (i * st.per + j) * 3; a[v] = c.x * (1 - k) + (st.base[v] - c.x) * thin; a[v + 1] = c.y + (st.base[v + 1] - c.y) * thin; a[v + 2] = c.z * (1 - k) + (st.base[v + 2] - c.z) * thin; } } pos.needsUpdate = true; });
+  const k2 = inOutCubic(prog(t, ...TL.rungs)), fade = 1 - outCubic(prog(t, ...TL.rungFade)), blue = new THREE.Color('#1565c0');
+  rungMeshes.forEach((m, i) => {
+    const r = rungData[i], tgtAng = Math.round(r.phi / Math.PI) * Math.PI, ang = lerp(r.phi, tgtAng, k2), half = lerp(RAD, Math.max(.25, halfW[i] || .4), k2);
+    const A = new THREE.Vector3(half * Math.cos(ang), r.y, half * Math.sin(ang)), B = new THREE.Vector3(-half * Math.cos(ang), r.y, -half * Math.sin(ang)), d = B.clone().sub(A);
+    m.position.copy(A).add(B).multiplyScalar(.5); m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.clone().normalize()); const th = lerp(.034, .012, k2) * (fade > .01 ? 1 : 0); m.scale.set(th, d.length(), th);
+    m.material.color.copy(r.col).lerp(blue, k2); m.material.opacity = fade; m.visible = fade > .01;
+  });
+  // body lines take over from the rungs, growing outward from the spine
+  const rv = outCubic(prog(t, ...TL.reveal)) * 2.6; bodyMat.uniforms.uReveal.value = rv; bodyMat.uniforms.uTime.value = t;
+  const ringO = outCubic(prog(t, 7.2, 8.4)); rings.forEach(m => m.material.opacity = m.userData.o * ringO);
+  const tapR = outExpo(prog(t, TL.tap[0], TL.tap[1] + .5)) * 1.9; bodyMat.uniforms.uTapR.value = tapR * (1 - prog(t, 11.9, 12.2));
+}
+// screen position of a world point
+const toScreen = v => { const p = v.clone().project(camera); return [(p.x + 1) / 2 * W, (1 - p.y) / 2 * H]; };
+
+// ---------- 2D UI pieces ----------
+function noteContents(t, alpha) {   // inside the glass panel: area, when, note field
+  const P = PANEL_A; ctx.globalAlpha = alpha;
+  setFont(22, true, 400, .14); ctx.fillStyle = '#546e7a'; ctx.textAlign = 'left'; ctx.fillText('AREA', P.x + 44, P.y + 62); ctx.fillText('WHEN', P.x + 300, P.y + 62);
+  setFont(42, false, 400); ctx.fillStyle = INK; ctx.fillText('Chest', P.x + 44, P.y + 116); ctx.fillText('Today, Wed, 25 Nov', P.x + 300, P.y + 116);
+  setFont(22, true, 400, .14); ctx.fillStyle = '#546e7a'; ctx.fillText('NOTE (OPTIONAL)', P.x + 44, P.y + 178);
+  rr(P.x + 44, P.y + 200, 590, 150, 18); ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.fill(); ctx.strokeStyle = '#78909c'; ctx.lineWidth = 2; ctx.stroke();
+  const txt = typed('Tight, since this morning.', prog(t, ...TL.type)); setFont(38, false, 400, -.02); ctx.fillStyle = INK;
+  if (txt) ctx.fillText(txt, P.x + 70, P.y + 262); else { ctx.fillStyle = '#78909c'; ctx.fillText('What does it feel like?', P.x + 70, P.y + 262); }
+  if (t > TL.type[0] - .3 && t < 12.2 && (Math.floor(t * 2.2) % 2 === 0)) { const w = txt ? ctx.measureText(txt).width : 0; ctx.fillStyle = BLUE; ctx.fillRect(P.x + 72 + w, P.y + 232, 3, 44); }
+  rr(P.x + 664, P.y + 200, 112, 150, 18); ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.fill(); ctx.strokeStyle = '#78909c'; ctx.stroke();
+  const pulse = 1 + .14 * Math.sin(Math.PI * clamp(prog(t, 11.15, 11.6))); ctx.save(); ctx.translate(P.x + 720, P.y + 275); ctx.scale(pulse, pulse); ctx.strokeStyle = INK; ctx.lineWidth = 4; ctx.lineCap = 'round';
+  rr(-11, -30, 22, 40, 11); ctx.stroke(); ctx.beginPath(); ctx.arc(0, -4, 22, 0, Math.PI); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, 18); ctx.lineTo(0, 30); ctx.stroke(); ctx.restore();
+  ctx.globalAlpha = 1;
+}
+function sevContents(t, alpha, L) {   // number, slider, scale
+  const P = PANEL_A, cx = 540; ctx.globalAlpha = alpha;
+  const n = Math.round(L); setFont(120, true, 400, -.04); ctx.fillStyle = INK; ctx.textAlign = 'right'; ctx.save(); ctx.beginPath(); ctx.rect(cx - 220, P.y + 40, 340, 150); ctx.clip();
+  const f = L - Math.floor(L), a = Math.floor(L), off = outCubic(prog(f, .55, 1)) * 130; ctx.fillText(String(a), cx + 20, P.y + 155 - off); ctx.fillText(String(a + 1), cx + 20, P.y + 155 + 130 - off); ctx.restore();
+  setFont(44, true, 400, -.02); ctx.fillStyle = '#546e7a'; ctx.textAlign = 'left'; ctx.fillText('/ 10', cx + 36, P.y + 155);
+  const x0 = P.x + 60, x1 = P.x + P.w - 60, y = P.y + 270, pos = lerp(x0, x1, (L - 1) / 9);
+  rr(x0, y - 6, x1 - x0, 12, 6); ctx.fillStyle = '#cfd8dc'; ctx.fill(); rr(x0, y - 6, pos - x0, 12, 6); ctx.fillStyle = BLUE; ctx.fill();
+  ctx.beginPath(); ctx.arc(pos, y, 25, 0, 7); ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(0,0,0,.25)'; ctx.shadowBlur = 12 * S; ctx.shadowOffsetY = 3 * S; ctx.fill(); ctx.shadowColor = 'transparent'; ctx.lineWidth = 6; ctx.strokeStyle = BLUE; ctx.stroke();
+  setFont(26, true, 400, .14); ctx.fillStyle = '#546e7a'; ctx.textAlign = 'left'; ctx.fillText('1', x0, y + 74); ctx.textAlign = 'right'; ctx.fillText('10', x1, y + 74); ctx.globalAlpha = 1;
+}
+// ball of squares: fills in as severity rises, flickers faster, warms in colour
+const BALL = { x: 540, y: 670, R: 270 }, cells = [];
+for (let gy = -14; gy <= 14; gy++) for (let gx = -14; gx <= 14; gx++) { const x = gx * 20, y = gy * 20, d = Math.hypot(x, y) / BALL.R; if (d < 1.08) cells.push({ gx, gy, x, y, d, id: (gx + 20) * 100 + gy + 20 }); }
+function ballSquares(t, L, appear, out) {   // returns squares [{x,y,s,col,a, id}] in logical coords
+  const warm = clamp((L - 1) / 9), res = [], rate = 2 + L * 1.5, tick = Math.floor(t * rate), fillP = .1 + .85 * clamp((L - 1) / 9);
+  for (const c of cells) {
+    const edge = c.d > .82 ? hash(c.id, tick, 7) * .16 * (L / 10) : 0; if (c.d + edge > 1) continue;
+    const prob = clamp(fillP * (1.25 - .9 * c.d * c.d) + (L > 8 ? .2 : 0)), vis = hash(c.id, tick, 3) < prob; if (!vis) continue;
+    const a = clamp((appear - c.d * .55) / .3) * (1 - out * 0); if (a <= 0) continue; res.push({ x: BALL.x + c.x, y: BALL.y + c.y, s: 16 * (.8 + .2 * a), a: a * (.55 + .4 * (1 - c.d)), col: hash(c.id, 55) < warm * .55 * (1.3 - c.d) ? '#fb8c00' : '#7986cb', id: c.id, d: c.d });
+  } return res;
+}
+const ROWS = [['Headache', 'TODAY · 6/10', 1], ['Sore throat', 'MON 23 NOV · 3/10', 0], ['Headache', '3 NOV · 4/10', 1], ['Knee pain', '28 OCT · 5/10', 0], ['Headache', '14 OCT · 7/10', 1]];
+const RX = 130, RW = 820, RH = 122, RY0 = 470, PITCH = 146;
+function rowY(i, f) { // f = filter progress: matching rows move up, others collapse
+  const match = ROWS[i][2] === 1; const before = RY0 + i * PITCH, mi = ROWS.slice(0, i).filter(r => r[2] === 1).length, after = RY0 - 30 + mi * PITCH;
+  return { y: lerp(before, match ? after : before, f), keep: match ? 1 : 1 - outCubic(f * 1.2), match };
+}
+
+// ---------- frame ----------
+function render(t) {
+  ctx.setTransform(S, 0, 0, S, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none'; background(t);
+  const st = cardState(t), tile = st.kind === 'tile', cardOn = t >= TL.grow[0], m = tile ? st.m : 0;
+
+  // header labels
+  if (t > 3.4 && t < 17.4) {
+    const L = [['TRACE', 3.4, 5.5], ['TAP TO LOG', 6.4, 8.8], ['CHEST · ADD A NOTE', 9.3, 11.8], ['SEVERITY', 12.4, 14.4], ['SUMMARY', 15.2, 16.4], ['BROWSE', 16.55, 17.1]], R = [['IRELAND', 3.4, 5.5], ['01 / 03', 6.4, 8.8], ['02 / 03', 9.3, 11.8], ['03 / 03', 12.4, 14.4]];
+    L.forEach(a => label(a[0], 110, 150, 'left', 30, INK, a[1], a[2], t)); R.forEach(a => label(a[0], 970, 150, 'right', 30, BLUE, a[1], a[2], t));
+  }
+
+  // 1. hook
+  words(['What did the', 'last GP say?'], 540, 860, 96, INK, TL.hook[0], TL.hook[1], t, 1.12);
+
+  // card (or the hero square)
+  if (st.kind === 'hero') { ctx.fillStyle = '#7986cb'; rr(st.x, st.y, st.w, st.h, 4); ctx.fill(); }
+  else {
+    const gm = prog(t, TL.grow[0], TL.grow[0] + .25);   // the square floods to glass as it grows
+    if (st.kind === 'grow') { ctx.save(); ctx.shadowColor = 'rgba(38,50,56,.12)'; ctx.shadowBlur = 40 * S; ctx.shadowOffsetY = 16 * S; rr(st.x, st.y, st.w, st.h, st.r); ctx.fillStyle = mixHex('#7986cb', GLASS, outCubic(prog(t, TL.grow[0] + .05, TL.grow[0] + .55))); ctx.fill(); ctx.restore(); if (gm >= 1 && st.w > 600) glass(st.x, st.y, st.w, st.h, st.r, { shadow: .0, blur: 0, dy: 0 }); }
+    else glass(st.x, st.y, st.w, st.h, st.r, tile ? { fill: mixHex(GLASS, '#ffffff', st.m), edgeA: 1 - clamp(st.m * 2.2), shadow: .16 + .02 * st.m, blur: 70 - 20 * st.m, dy: 30 - 8 * st.m } : {});
+    // contents, clipped to the card; scaled with it while it shrinks into the icon tile
+    ctx.save(); rr(st.x, st.y, st.w, st.h, st.r); ctx.clip();
+    if (tile) { const s = st.w / CARD.w, cy = st.y + st.h / 2; ctx.translate(540, cy); ctx.scale(s, s); ctx.translate(-540, -(CARD.y + CARD.h / 2)); }
+    const contentA = tile ? 1 - prog(t, 17.2, 17.75) : 1;
+    ctx.globalAlpha = contentA;
+
+    // three.js layer (DNA -> body), clipped by the card
+    const irisR = sine(prog(t, ...TL.iris)) * 1150;
+    if (t >= 3.3 && t < 12.95) {
+      updateCamera(t); updateDna(t); body.visible = t > 6.2 && halfW.length > 0; dna.visible = t < 8.3; tilt.visible = t < 8.3; strandMat.opacity = 1;
+      renderer.render(scene, camera); { const fa = outCubic(prog(t, 3.25, 3.95)), sc = lerp(.86, 1, fa), cx = 540, cy = 880; ctx.save(); ctx.globalAlpha = contentA * fa; ctx.translate(cx, cy); ctx.scale(sc, sc); ctx.translate(-cx, -cy); ctx.drawImage(gl, 0, 0, W, H); ctx.restore(); }
+    }
+    // tap dot + ripples (screen space, so they stay crisp)
+    if (t > TL.tap[0] && t < 12.95) {
+      const [dx, dy] = toScreen(tapPoint), a = outCubic(prog(t, TL.tap[0], TL.tap[0] + .4)), pulse = 1 + .1 * Math.sin(t * 6);
+      for (let i = 0; i < 2; i++) { const p = prog(t, TL.tap[0] + .1 + i * .28, TL.tap[0] + 1.1 + i * .28); if (p > 0 && p < 1) { ctx.beginPath(); ctx.arc(dx, dy, 14 + outCubic(p) * 90, 0, 7); ctx.strokeStyle = `rgba(245,124,0,${.55 * (1 - p)})`; ctx.lineWidth = 4; ctx.stroke(); } }
+      const sc = (1 + .35 * (1 - a)) * a; ctx.beginPath(); ctx.arc(dx, dy, 14 * sc * pulse, 0, 7); ctx.fillStyle = '#f57c00'; ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = '#fff'; ctx.stroke();
+      if (t > TL.iris[0]) { ctx.save(); ctx.beginPath(); ctx.arc(dx, dy, irisR, 0, 7); ctx.fillStyle = GLASS; ctx.fill(); ctx.restore(); const rp = prog(t, ...TL.iris); if (rp < 1) { ctx.beginPath(); ctx.arc(dx, dy, irisR, 0, 7); ctx.strokeStyle = `rgba(245,124,0,${.7 * (1 - rp)})`; ctx.lineWidth = 5; ctx.stroke(); } }
+    }
+    const iris = prog(t, ...TL.iris), irisC = (() => { updateCamera(11.5); return toScreen(tapPoint); })();
+
+    // the glass panel: note (shot 4) -> severity (shot 5) -> search bar (shot 6)
+    const toL = inOutCubic(prog(t, ...TL.toList)), panelUp = outCubic(prog(t, ...TL.panelIn));
+    if (t > TL.panelIn[0] && t < TL.toIcon[1]) {
+      const P = { x: lerp(PANEL_A.x, SEARCH.x, toL), y: lerp(PANEL_A.y + (1 - panelUp) * 520, SEARCH.y, toL), w: lerp(PANEL_A.w, SEARCH.w, toL), h: lerp(PANEL_A.h, SEARCH.h, toL), r: lerp(PANEL_A.r, SEARCH.r, toL) };
+      glass(P.x, P.y, P.w, P.h, P.r, { shadow: .1, blur: 40, dy: 14 });
+      const swap = prog(t, 12.45, 13.15);   // contents roll from note to severity while the iris passes
+      if (t < 13.1) { ctx.save(); ctx.translate(0, -swap * 40); noteContents(t, (1 - clamp(swap * 2.6)) * (1 - toL) * clamp(panelUp * 2)); ctx.restore(); }
+      if (t >= 12.8 && t < 15.0) { ctx.save(); ctx.translate(0, (1 - outCubic(clamp(swap * 2 - .9))) * 40); sevContents(t, outCubic(clamp(swap * 2 - .9)) * (1 - clamp(prog(t, 14.55, 14.95))), lerp(1, 6, sine(prog(t, ...TL.sev)))); ctx.restore(); }
+      if (t > TL.toList[0]) { // search bar contents
+        const a = prog(t, 14.9, 15.5); ctx.globalAlpha = a; ctx.beginPath(); ctx.arc(P.x + 48, P.y + 46, 14, 0, 7); ctx.lineWidth = 4; ctx.strokeStyle = '#78909c'; ctx.stroke(); ctx.beginPath(); ctx.moveTo(P.x + 58, P.y + 56); ctx.lineTo(P.x + 70, P.y + 68); ctx.stroke();
+        const s = typed('headache', prog(t, ...TL.search)); setFont(38, false, 400, -.02); ctx.textAlign = 'left'; ctx.fillStyle = s ? INK : '#78909c'; ctx.fillText(s || 'Search', P.x + 90, P.y + 58);
+        if (t < 17.1 && Math.floor(t * 2.2) % 2 === 0 && t > 15.6) { const w = s ? ctx.measureText(s).width : 0; ctx.fillStyle = BLUE; ctx.fillRect(P.x + 92 + w, P.y + 30, 3, 42); } ctx.globalAlpha = contentA;
+      }
+    }
+
+    // severity ball (born from the iris), then its squares become the list's row markers
+    if (t > TL.ballIn[0] && t < 15.9) {
+      const L = lerp(1, 6, sine(prog(t, ...TL.sev))), appear = prog(t, ...TL.ballIn), sq = ballSquares(t, L, appear * 1.5, 0), tl = prog(t, ...TL.toList);
+      // marker targets: the 5 rows (first square per row bucket flies there; the rest fall and shrink)
+      const targets = ROWS.map((r, i) => [RX + 40, RY0 + i * PITCH + RH / 2]), chosen = new Map();
+      sq.forEach(q => { const b = Math.floor(q.d * 5) % 5; if (!chosen.has(b) && q.a > .4) chosen.set(b, q.id); });
+      const ids = [...chosen.values()];
+      sq.forEach(q => {
+        const ri = ids.indexOf(q.id); let x = q.x, y = q.y, s = q.s, a = q.a;
+        if (tl > 0) { const e = inOutCubic(clamp(tl * 1.25 - hash(q.id, 1) * .25)); if (ri >= 0) { x = lerp(x, targets[ri][0], e); y = lerp(y, targets[ri][1], e); s = lerp(s, 14, e); a = lerp(a, 1, e); } else { y += e * (260 + hash(q.id, 2) * 280); s *= 1 - e; a *= 1 - e; } }
+        if (a > .01 && s > .5) { ctx.globalAlpha = a * contentA; ctx.fillStyle = ri >= 0 && tl > .5 ? mixHex('#9fa8da', BLUE, clamp((tl - .5) * 2)) : q.col; ctx.fillRect(x - s / 2, y - s / 2, s, s); }
+      });
+      ctx.globalAlpha = contentA;
+    }
+
+    // list rows
+    if (t > TL.rows[0] && t < 17.9) {
+      const f = inOutCubic(prog(t, ...TL.filter));
+      ROWS.forEach((r, i) => {
+        const a = outCubic(prog(t, TL.rows[0] + i * .09, TL.rows[0] + i * .09 + .55)), { y, keep, match } = rowY(i, f), al = a * keep; if (al < .01) return;
+        const sc = lerp(.96, 1, a), cy = y + RH / 2 + (1 - a) * 40; ctx.save(); ctx.translate(540, cy); ctx.scale(1, sc * (match ? 1 : keep)); ctx.translate(-540, -cy); ctx.globalAlpha = al * contentA;
+        glass(RX, y + (1 - a) * 40, RW, RH, 28, { shadow: .08, blur: 28, dy: 10 });
+        const my = y + (1 - a) * 40 + RH / 2; ctx.fillStyle = BLUE; ctx.fillRect(RX + 34, my - 7, 14, 14);
+        setFont(40, false, 400, -.02); ctx.fillStyle = INK; ctx.textAlign = 'left'; ctx.fillText(r[0], RX + 76, my - 4); setFont(21, true, 400, .12); ctx.fillStyle = '#546e7a'; ctx.fillText(r[1], RX + 76, my + 34); ctx.restore();
+      });
+      const ra = outCubic(prog(t, 16.55, 17.05)) * (1 - prog(t, 17.2, 17.5)); if (ra > .01) { setFont(22, true, 400, .14); ctx.fillStyle = BLUE; ctx.globalAlpha = ra * contentA; ctx.textAlign = 'left'; ctx.fillText('3 TIMES · FIRST LOGGED 14 OCT', RX + 8, RY0 - 62); ctx.globalAlpha = contentA; }
+      // markers collapse to one square as the card shrinks
+      if (t > TL.toIcon[0] - .1) { const e = inOutCubic(prog(t, 17.1, 17.8)); ctx.globalAlpha = (1 - e * .3) * contentA; ctx.fillStyle = BLUE; ROWS.forEach((r, i) => { const { y, keep, match } = rowY(i, 1); if (!match) return; const x = lerp(RX + 41, 540, e), yy = lerp(y + RH / 2, CARD.y + CARD.h / 2, e); ctx.fillRect(x - 7, yy - 7, 14, 14); }); }
+    }
+    ctx.restore(); ctx.globalAlpha = 1;
+
+    // icon appears on the white tile
+    if (tile && t > TL.icon[0]) {
+      const a = outCubic(prog(t, ...TL.icon)); ctx.save(); rr(st.x, st.y, st.w, st.h, st.r); ctx.clip(); ctx.globalAlpha = a; const sc = lerp(.8, 1, a), cx = st.x + st.w / 2, cy = st.y + st.h / 2;
+      withBlur((1 - a) * 18, () => ctx.drawImage(ICON, cx - st.w * sc / 2, cy - st.h * sc / 2, st.w * sc, st.h * sc)); ctx.restore(); ctx.globalAlpha = 1;
+    }
+  }
+
+  // captions: same place every shot, one at a time
+  words(['Remember every visit.'], 540, CAP_Y, 76, INK, TL.cap2[0], TL.cap2[1], t);
+  words(['Tap where it is.'], 540, CAP_Y, 76, INK, TL.cap3[0], TL.cap3[1], t);
+  words(['Say it or type it.'], 540, CAP_Y, 76, INK, TL.cap4[0], TL.cap4[1], t);
+  words(['How bad, 1 to 10.'], 540, CAP_Y, 76, INK, TL.cap5[0], TL.cap5[1], t);
+  words(["Next time, it's all there."], 540, CAP_Y, 76, INK, TL.cap6[0], TL.cap6[1], t);
+
+  // end card
+  if (t > TL.wordmark[0]) {
+    const a = outCubic(prog(t, ...TL.wordmark)); setFont(30, true, 500, .34); ctx.textAlign = 'center'; ctx.fillStyle = INK; ctx.globalAlpha = a; withBlur((1 - a) * 10, () => ctx.fillText('TRACE', 540 + 5, 1090 + (1 - a) * 18)); ctx.globalAlpha = 1;
+    const ua = outCubic(prog(t, TL.url[0], TL.url[0] + .4)); if (ua > .01) {
+      ctx.globalAlpha = ua; glass(150, 1230, 780, 112, 56, { shadow: .12, blur: 36, dy: 12 });
+      const u = typed('trace-health-ie.vercel.app', prog(t, TL.url[0] + .2, TL.url[1])); setFont(42, false, 400, -.02); ctx.textAlign = 'left'; ctx.fillStyle = INK; ctx.fillText(u, 150 + 52, 1230 + 70);
+      const w = ctx.measureText(u).width; if (Math.floor(t * 2.2) % 2 === 0 || t < TL.url[1]) { ctx.fillStyle = BLUE; ctx.fillRect(150 + 54 + w, 1230 + 34, 3, 46); } ctx.globalAlpha = 1;
+    }
+    const sa = outCubic(prog(t, ...TL.small)); setFont(21, true, 400, .16); ctx.textAlign = 'center'; ctx.fillStyle = '#607d8b'; ctx.globalAlpha = sa; withBlur((1 - sa) * 8, () => ctx.fillText('TEST VERSION · IRELAND · STAYS ON YOUR PHONE', 540, 1730)); ctx.globalAlpha = 1;
+  }
+}
+
+const ICON = new Image();
+const iconReady = new Promise(r => { ICON.onload = r; ICON.onerror = r; ICON.src = 'icon.svg'; });
+window.TOTAL = END;
+window.renderAt = t => { render(t); };
+window.ready = Promise.all([document.fonts.load('400 40px Geist'), document.fonts.load('400 40px GeistMono'), document.fonts.load('500 40px GeistMono'), iconReady, loadBody()]).then(() => {
+  if (q.has('t')) render(parseFloat(q.get('t'))); else (function tick(n) { render((n / 1000) % END); requestAnimationFrame(tick); })(0); return true; });
+</script></body></html>

@@ -2,6 +2,15 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06b Hologram v2: real body model + hologram shader
+- **What we did:** Replaced the stacked shapes with a real human body mesh (Anny, Apache-2.0, built on MakeHuman CC0 assets) converted to GLB by `tools/make_body_glb.py` (13k verts, 535 KB, per-vertex body-region tags). New hologram shader: ~200 fine contour lines, glowing rim, slow scan sweep, bloom, and glowing lines that wrap the surface around a tap (from the rock reference). Camera zooms out further and aims below the tap so it clears the note panel.
+- **Why:** User: stacked shapes are not professional; wants the look of the two-body hologram reference at the same detail.
+- **Decisions:** Procedural shapes dropped. Attribution in `app/public/models/ATTRIBUTION.md`. Eyes and tongue removed from the mesh (they read as noise). Body regions come from the skinning weights, so taps map to real anatomy (head, neck, chest, abdomen, hip, arm, forearm, hand, leg, foot, with left/right and front/back).
+- **Learnings:** The only body in the `anny-js` package is one baked neutral, young-looking body (gender 0.5, age 0.3). Adult female, male and neutral need the Anny generator (PyPI `anny`, needs PyTorch). The permission check blocked running that package in a scratch environment, so it waits on the user. Fine lines only read on high-density screens (checked at 2x); at 1x they fade on purpose to avoid shimmer.
+- **Open:** Adult female/male/neutral bodies; face/mouth interior still looks odd on the neutral body; test on a real phone for frame rate.
+- **Tools used / where AI helped (and what a human verified):** Claude found the model via web search, wrote the converter and shader, and checked with headless-browser screenshots; human to judge the look and test on device.
+- **Artifacts saved in:** `tools/make_body_glb.py`, `app/public/models/`, `app/src/trace/HologramCanvas.tsx`
+
 ## 2026-11-25 — 06 Hi-fi build: screens 3 to 5 (hologram, note, severity)
 - **What we did:** Built the first real screens in `app/src/trace/`: 3D hologram (three.js, procedural body, rotate, tap-to-zoom, marker), note pop-up (X/Y, area, when, note, voice, "Almost there"), severity screen, and a placeholder "Saved" screen. Entries save to the phone (localStorage). Added `track()` analytics wrapper (PostHog, behaviour only) and `research/test-plan.md`.
 - **Why:** These screens carry the most risk and are the core of the product. Measurement must exist before launch.

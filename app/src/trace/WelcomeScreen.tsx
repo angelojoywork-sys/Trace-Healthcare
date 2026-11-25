@@ -12,8 +12,8 @@ function GlowFallback() {
       className="size-28 animate-pulse motion-reduce:animate-none"
       style={{
         borderRadius: "44% 56% 52% 48% / 48% 44% 56% 52%",
-        background: "radial-gradient(circle at 40% 35%, #2b5f5a, #12302e 70%)",
-        boxShadow: "0 0 48px rgba(100,255,218,0.45)",
+        background: "radial-gradient(circle at 40% 35%, #90caf9, #1565c0 80%)",
+        boxShadow: "0 0 40px rgba(21,101,192,0.3)",
       }}
     />
   );

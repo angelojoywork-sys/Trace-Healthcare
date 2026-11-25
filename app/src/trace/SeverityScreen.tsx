@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronLeft, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { DotField } from "./DotField";
+import { SeverityField } from "./SquareField";
 
 type Props = { onBack: () => void; onClose: () => void; onNext: (severity: number) => void };
 
@@ -19,7 +19,7 @@ export function SeverityScreen({ onBack, onClose, onNext }: Props) {
       <h2 className="text-center text-3xl leading-tight font-light">How bad is it<br />right now?</h2>
 
       <div className="relative min-h-0 flex-1">
-        <DotField level={v} />
+        <SeverityField level={v} />
       </div>
 
       <div className="flex flex-col gap-3">

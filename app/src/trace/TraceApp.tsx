@@ -14,6 +14,7 @@ import { SharePack } from "./SharePack";
 import { SeverityScreen } from "./SeverityScreen";
 import { GpScreen } from "./GpScreen";
 import { SummaryScreen } from "./SummaryScreen";
+import { PixelBackground } from "./SquareField";
 import { WelcomeScreen } from "./WelcomeScreen";
 
 type Draft = { area: string; note: string; via: "3d" | "list" };
@@ -59,7 +60,8 @@ export function TraceApp() {
   };
 
   return (
-    <div className="mx-auto flex h-dvh max-w-md flex-col bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-foreground">
+    <div className="relative isolate mx-auto flex h-dvh max-w-md flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-foreground">
+      <PixelBackground />
       {step.name === "welcome" && <WelcomeScreen onLog={() => { track("welcome_log_symptom"); setStep({ name: "profile" }); }} />}
 
       {step.name === "profile" && (

@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06v Mist theme, square-pattern background, location help
+- **What we did:** Switched the whole app from the dark theme to **Mist** (MUI blueGrey 50 background, blueGrey 900 text, blue 800 accent), chosen by the user from the 10 options. Replaced the animated circles with a quiet dithered grid of small squares as the page background (like the user's reference): densest in the top corner, almost gone by the middle so text stays readable, drifting very slowly (static with reduced motion). The severity screen uses the same square language: a few faint squares at 1, filling in from the right and getting denser up to 10. The hologram body is now blue contour lines on the light background with an orange tap cross (no glow, since glow does not show on light colours); the welcome DNA is blue to orange; the fallback glow shape is blue.
+- **Location:** The app now checks whether location is switched on for the site. If it is off, it shows step-by-step instructions for iPhone (Safari) and Android (Chrome) and a Try again button, and carries on by itself if the person turns it on while the screen is open. Browsers cannot switch location on from inside a web page, so the instructions are the way.
+- **Why:** User did not like the animated circles, wanted a calmer lighter look, and wanted people to be able to enable location.
+- **Verified:** headless screenshots at 2x of welcome, hologram, zoom and note, severity 1, 5 and 10, summary and Find GP in the denied state; no console errors.
+- **Open:** `design/design-system.html` still shows the old dark theme and needs updating; the animated colour wash from the palette page was replaced by the square pattern (no colour animation); photo resizing; what the user saw when location failed.
+- **Artifacts saved in:** `app/src/globals.css`, `app/src/trace/SquareField.tsx`, `HologramCanvas.tsx`, `GpScreen.tsx`
+
 ## 2026-11-25 — 06u Feedback round 1: copy, interaction and severity changes; colour options
 - **What we did (from the user's review of the live app):**
   - Name field says "Enter your name"; removed the "sets the body" helper line.

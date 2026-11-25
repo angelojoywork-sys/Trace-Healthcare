@@ -1,7 +1,6 @@
 import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState, type ElementRef } from "react";
 import { Canvas, useFrame, type ThreeEvent } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
-import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as THREE from "three";
 import type { Pick3D } from "./areas";
 
@@ -41,7 +40,7 @@ void main(){
 
 // Hologram look: fine contour lines, glowing rim, slow scan sweep, and glowing lines that wrap the surface around a tap.
 const FRAG = /* glsl */ `
-uniform float uTime; uniform vec3 uColor;
+uniform float uTime; uniform vec3 uColor; uniform vec3 uTapColor;
 uniform vec3 uTap; uniform vec3 uTapT; uniform float uTapR;
 varying vec3 vW; varying vec3 vN; varying vec3 vV; varying float vHead;
 
@@ -70,8 +69,8 @@ void main(){
     tap = (ring + mer + halo) * fall * pulse;
   }
 
-  vec3 col = uColor * (0.04 + lines * (0.5 + 1.1 * f) + f * 0.55 + sweep * (0.25 + lines * 0.6) + tap * 2.4);
-  float a = clamp(0.10 + f * 0.8 + lines * 0.5 + sweep * 0.3 + tap, 0.0, 1.0);
+  vec3 col = mix(uColor, uTapColor, clamp(tap, 0.0, 1.0));
+  float a = clamp(0.07 + f * 0.6 + lines * 0.8 + sweep * 0.25 + tap, 0.0, 1.0);
   gl_FragColor = vec4(col, a);
 }`;
 
@@ -107,7 +106,8 @@ function Body({ view, focus, onPick }: { view: BodyView; focus: Focus | null; on
     () => new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
-        uColor: { value: new THREE.Color("#64ffda") },
+        uColor: { value: new THREE.Color("#1565c0") },
+        uTapColor: { value: new THREE.Color("#f57c00") },
         uTap: { value: new THREE.Vector3() },
         uTapT: { value: new THREE.Vector3(1, 0, 0) },
         uTapR: { value: 0 },
@@ -117,7 +117,6 @@ function Body({ view, focus, onPick }: { view: BodyView; focus: Focus | null; on
       vertexColors: true,
       transparent: true,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
     }),
     [],
   );
@@ -168,8 +167,8 @@ function Body({ view, focus, onPick }: { view: BodyView; focus: Focus | null; on
 function Base() {
   return (
     <group position={[0, -1.85, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-      <mesh><ringGeometry args={[0.8, 0.82, 96]} /><meshBasicMaterial color="#64ffda" transparent opacity={0.8} /></mesh>
-      <mesh><ringGeometry args={[1.15, 1.16, 96]} /><meshBasicMaterial color="#64ffda" transparent opacity={0.35} /></mesh>
+      <mesh><ringGeometry args={[0.8, 0.82, 96]} /><meshBasicMaterial color="#1565c0" transparent opacity={0.7} /></mesh>
+      <mesh><ringGeometry args={[1.15, 1.16, 96]} /><meshBasicMaterial color="#1565c0" transparent opacity={0.3} /></mesh>
     </group>
   );
 }
@@ -197,7 +196,7 @@ export default function HologramCanvas({ view = "neutral", focus, onPick, onFail
       </Suspense>
       <Base />
       {focus && (
-        <mesh position={focus.point}><sphereGeometry args={[0.018, 12, 12]} /><meshBasicMaterial color="#64ffda" /></mesh>
+        <mesh position={focus.point}><sphereGeometry args={[0.018, 12, 12]} /><meshBasicMaterial color="#f57c00" /></mesh>
       )}
       <OrbitControls
         ref={controls}
@@ -213,9 +212,6 @@ export default function HologramCanvas({ view = "neutral", focus, onPick, onFail
         onStart={() => setAuto(false)}
       />
       <Rig focus={focus} controls={controls} />
-      <EffectComposer multisampling={0}>
-        <Bloom mipmapBlur intensity={1.4} luminanceThreshold={0.12} luminanceSmoothing={0.2} radius={0.7} />
-      </EffectComposer>
     </Canvas>
   );
 }

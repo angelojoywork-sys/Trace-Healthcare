@@ -4,8 +4,8 @@ import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
 const H = 4.2, RAD = 0.55, TURNS = 2.2;
-const TEAL = new THREE.Color("#64ffda");
-const AMBER = new THREE.Color("#ffb74d"); // MUI orange 300
+const TEAL = new THREE.Color("#1e88e5"); // MUI blue 600
+const AMBER = new THREE.Color("#ffa726"); // MUI orange 400
 
 class Helix extends THREE.Curve<THREE.Vector3> {
   constructor(private phase: number) { super(); }
@@ -82,7 +82,7 @@ function Env() {
   return null;
 }
 
-/** A glossy double helix in the brand colours: teal at the bottom fading to amber at the top. */
+/** A glossy double helix in the brand colours: blue at the bottom fading to orange at the top. */
 export default function DnaMark({ onFail }: { onFail: () => void }) {
   const alive = useRef(true);
   useLayoutEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
@@ -97,7 +97,7 @@ export default function DnaMark({ onFail }: { onFail: () => void }) {
     >
       <Env />
       <directionalLight position={[3, 4, 5]} intensity={1.4} />
-      <directionalLight position={[-4, -2, -3]} intensity={0.5} color="#64ffda" />
+      <directionalLight position={[-4, -2, -3]} intensity={0.5} color="#90caf9" />
       <Strands still={still} />
     </Canvas>
   );

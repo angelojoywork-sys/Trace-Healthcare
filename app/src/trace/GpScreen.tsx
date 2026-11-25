@@ -11,12 +11,12 @@ const PAGE = 20;
 const linkBtn = "h-11 rounded-sm font-mono text-xs tracking-widest uppercase";
 type Here = { lat: number; lon: number };
 type Loc = "idle" | "asking" | "denied" | "unavailable" | "timeout";
+type Perm = PermissionState | "unknown";
 
-const LOC_MESSAGE: Record<Exclude<Loc, "idle" | "asking">, string> = {
-  denied: "Location is blocked for this site. Allow it in your browser, or on iPhone in Settings, Privacy & Security, Location Services, Safari Websites. You can also search by name or town.",
-  unavailable: "Your phone couldn't work out where you are. Check that Location Services is on and try again, or search by name or town.",
+const LOC_MESSAGE = {
+  unavailable: "Your phone couldn't work out where you are. Check that Location Services is on, then try again. You can also search by name or town.",
   timeout: "That took too long. Try again, or search by name or town.",
-};
+} as const;
 
 const telHref = (p: string) => `tel:${p.replace(/[^\d+]/g, "")}`;
 const directionsHref = (g: Gp) => `https://www.google.com/maps/dir/?api=1&destination=${g.lat},${g.lon}`;
@@ -26,13 +26,26 @@ export function GpScreen() {
   const [data, setData] = useState<GpData | null | undefined>(undefined);
   const [here, setHere] = useState<Here | null>(null);
   const [loc, setLoc] = useState<Loc>("idle");
+  const [perm, setPerm] = useState<Perm>("unknown");
   const [query, setQuery] = useState("");
   const [limit, setLimit] = useState(PAGE);
 
   useEffect(() => { loadGps().then(setData); }, []);
   useEffect(() => setLimit(PAGE), [query, here]);
 
-  const locate = () => {
+  // Find out whether location is switched on for this site, and carry on by itself if the person turns it on while this screen is open.
+  useEffect(() => {
+    let status: PermissionStatus | undefined;
+    navigator.permissions?.query({ name: "geolocation" as PermissionName }).then((st) => {
+      status = st;
+      setPerm(st.state);
+      st.onchange = () => { setPerm(st.state); if (st.state === "granted") locate(); };
+    }).catch(() => { /* not supported: we find out when they tap */ });
+    return () => { if (status) status.onchange = null; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function locate() {
     if (!("geolocation" in navigator)) { setLoc("unavailable"); return; }
     setLoc("asking");
     track("location_requested");
@@ -45,7 +58,7 @@ export function GpScreen() {
       (err) => { if (settle(err.code === 1 ? "denied" : err.code === 2 ? "unavailable" : "timeout")) track("location_error", { code: err.code }); },
       { enableHighAccuracy: false, timeout: 15000, maximumAge: 300000 },
     );
-  };
+  }
 
   const q = query.trim();
   const rows = useMemo(() => {
@@ -78,11 +91,41 @@ export function GpScreen() {
         {data && !here && (
           <section aria-label="Location" className="flex flex-col gap-3 border border-line p-4">
             <p className={cap}>Nearest first</p>
-            <p>Sort the list by distance from you. Your location stays on this phone.</p>
-            <Button className="h-12 rounded-sm font-mono tracking-widest uppercase" onClick={locate} disabled={loc === "asking"}>
-              <MapPin className="size-4" />{loc === "asking" ? "Finding you" : "Use my location"}
-            </Button>
-            {loc !== "idle" && loc !== "asking" && <p role="alert" className="text-sm text-muted-foreground">{LOC_MESSAGE[loc]}</p>}
+            {loc === "denied" || perm === "denied" ? (
+              <>
+                <p className="font-medium">Location is switched off for Trace.</p>
+                <p className="text-sm text-muted-foreground">Turn it on and the list will sort itself, or tap Try again.</p>
+                <details open className="text-sm">
+                  <summary className="min-h-11 cursor-pointer py-2 font-mono text-xs tracking-widest uppercase">iPhone (Safari)</summary>
+                  <ol className="ml-5 list-decimal space-y-1 pb-2 text-muted-foreground">
+                    <li>Open the Settings app.</li>
+                    <li>Go to Privacy &amp; Security, then Location Services. Make sure it is on.</li>
+                    <li>Scroll to Safari Websites and choose While Using the App.</li>
+                    <li>Come back here.</li>
+                  </ol>
+                </details>
+                <details className="text-sm">
+                  <summary className="min-h-11 cursor-pointer py-2 font-mono text-xs tracking-widest uppercase">Android (Chrome)</summary>
+                  <ol className="ml-5 list-decimal space-y-1 pb-2 text-muted-foreground">
+                    <li>Tap the icon at the left of the address bar.</li>
+                    <li>Tap Permissions, then Location, then Allow.</li>
+                    <li>If it is still off, turn on Location in your phone's Settings.</li>
+                    <li>Come back here.</li>
+                  </ol>
+                </details>
+                <Button className="h-12 rounded-sm font-mono tracking-widest uppercase" onClick={locate} disabled={loc === "asking"}>
+                  <MapPin className="size-4" />{loc === "asking" ? "Finding you" : "Try again"}
+                </Button>
+              </>
+            ) : (
+              <>
+                <p>Sort the list by distance from you. Your location stays on this phone.</p>
+                <Button className="h-12 rounded-sm font-mono tracking-widest uppercase" onClick={locate} disabled={loc === "asking"}>
+                  <MapPin className="size-4" />{loc === "asking" ? "Finding you" : "Use my location"}
+                </Button>
+                {(loc === "unavailable" || loc === "timeout") && <p role="alert" className="text-sm text-muted-foreground">{LOC_MESSAGE[loc]}</p>}
+              </>
+            )}
           </section>
         )}
         {data && here && <p className={cap} aria-live="polite">Nearest first</p>}

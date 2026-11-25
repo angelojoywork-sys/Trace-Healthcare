@@ -4,11 +4,11 @@
 <style>
 /* Direction: dark graphite, bracket frames, mono caps labels, one teal glow. Single committed look, built from the Matteron and Archetype references. */
 :root{
-  --bg:#262626; --panel:#303030; --ink:#ECECEC; --mute:#9B9B9B;
-  --line:#4A4A4A; --border:#8A8A8A;
-  --accent:#3FE0D0; --on-accent:#0B1B1A; --accent-soft:rgba(63,224,208,.10);
-  --on-ink:#1A1A1A;
-  --sev-mild:#6FBF8E; --sev-mod:#E5B94A; --sev-high:#EE8260; --danger:#EE8260;
+  --bg:#212121; --panel:#2C2C2C; --ink:#F5F5F5; --mute:#9E9E9E;
+  --line:#424242; --border:#757575;
+  --accent:#64FFDA; --on-accent:#0B1B1A; --accent-soft:rgba(100,255,218,.10);
+  --on-ink:#212121;
+  --sev-mild:#81C784; --sev-mod:#FFD54F; --sev-high:#FF8A65; --danger:#FF8A65;
   --font-sans:'Geist',system-ui,sans-serif; --font-mono:'Geist Mono',ui-monospace,monospace;
   --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;
   --r:2px; --ease:cubic-bezier(.2,.8,.2,1);
@@ -64,7 +64,7 @@ textarea.input{min-height:84px;resize:vertical}
 .row{display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center}
 .demo{display:flex;flex-direction:column;gap:var(--s4);min-width:0}
 /* HUD panel: the note pop-up (Archetype reference) */
-.hud{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid #3d3d3d;padding:var(--s5);display:flex;flex-direction:column;gap:var(--s4);backdrop-filter:blur(8px)}
+.hud{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid #424242;padding:var(--s5);display:flex;flex-direction:column;gap:var(--s4);backdrop-filter:blur(8px)}
 .hud .xy{font:400 .8rem var(--font-mono);letter-spacing:.06em;color:var(--mute)}
 .hud .xy b{color:var(--ink);font-weight:500;margin-right:4px}
 .hud .xy span{margin-right:var(--s3)}
@@ -83,7 +83,7 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stro
 .sev{display:flex;flex-direction:column;align-items:center;gap:var(--s4);text-align:center}
 .sev h4{font:300 1.6rem/1.2 var(--font-sans);margin:0}
 .glow{width:120px;height:120px;border-radius:44% 56% 52% 48%/48% 44% 56% 52%;background:radial-gradient(circle at 40% 35%,#2b5f5a,#12302e 70%);
-  box-shadow:0 0 var(--g,40px) var(--ga,rgba(63,224,208,.45));transition:transform 250ms var(--ease),box-shadow 250ms var(--ease)}
+  box-shadow:0 0 var(--g,40px) var(--ga,rgba(100,255,218,.45));transition:transform 250ms var(--ease),box-shadow 250ms var(--ease)}
 .sev .lbl{font:400 1rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase}
 .range{width:100%;height:44px;background:none;accent-color:var(--accent)}
 .ends{display:flex;justify-content:space-between;width:100%;font:400 .68rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
@@ -98,8 +98,8 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stro
 .entry b{font-weight:400;font-size:1.1rem}
 .meta{font:400 .72rem var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
 .holo{position:relative;aspect-ratio:4/3;display:grid;place-items:center;cursor:crosshair;overflow:hidden;
-  background:radial-gradient(55% 55% at 50% 52%,rgba(63,224,208,.20),transparent 70%)}
-.holo svg{height:92%;filter:drop-shadow(0 0 8px rgba(63,224,208,.6))}
+  background:radial-gradient(55% 55% at 50% 52%,rgba(100,255,218,.20),transparent 70%)}
+.holo svg{height:92%;filter:drop-shadow(0 0 8px rgba(100,255,218,.6))}
 .holo .tick{position:absolute;width:18px;height:18px;border:1px solid var(--accent);transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 0 14px var(--accent)}
 .rule{display:grid;grid-template-columns:auto 1fr;gap:var(--s2) var(--s5);font-size:.9rem}
 .rule dt{font:400 .75rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase}.rule dd{margin:0;color:var(--mute)}
@@ -119,7 +119,7 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stro
 
   <header>
     <h1>Trace design system</h1>
-    <p class="lead">Modern and futuristic, but quiet. Graphite surfaces, bracket frames, small mono labels and a single teal glow that marks whatever you can act on. Version 2.</p>
+    <p class="lead">Modern and futuristic, but quiet. Graphite surfaces, bracket frames, small mono labels and a single teal glow that marks whatever you can act on. Version 3. Colors come from the MUI palette.</p>
   </header>
 
   <section>
@@ -136,28 +136,28 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stro
   <section>
     <h2>Color</h2>
     <div class="sw-grid">
-      <div class="sw"><i style="background:var(--bg)"></i><div><b>bg</b><span>#262626</span></div></div>
-      <div class="sw"><i style="background:var(--panel)"></i><div><b>panel</b><span>#303030</span></div></div>
-      <div class="sw"><i style="background:var(--ink)"></i><div><b>ink</b><span>#ECECEC</span></div></div>
-      <div class="sw"><i style="background:var(--mute)"></i><div><b>mute</b><span>#9B9B9B</span></div></div>
-      <div class="sw"><i style="background:var(--border)"></i><div><b>border</b><span>#8A8A8A</span></div></div>
-      <div class="sw"><i style="background:var(--line)"></i><div><b>line</b><span>#4A4A4A</span></div></div>
-      <div class="sw"><i style="background:var(--accent)"></i><div><b>accent</b><span>#3FE0D0</span></div></div>
-      <div class="sw"><i style="background:var(--sev-mild)"></i><div><b>severity mild</b><span>#6FBF8E</span></div></div>
-      <div class="sw"><i style="background:var(--sev-mod)"></i><div><b>severity moderate</b><span>#E5B94A</span></div></div>
-      <div class="sw"><i style="background:var(--sev-high)"></i><div><b>severity severe</b><span>#EE8260</span></div></div>
+      <div class="sw"><i style="background:var(--bg)"></i><div><b>bg</b><span>grey 900 · #212121</span></div></div>
+      <div class="sw"><i style="background:var(--panel)"></i><div><b>panel</b><span>bg + 5% white · #2C2C2C</span></div></div>
+      <div class="sw"><i style="background:var(--ink)"></i><div><b>ink</b><span>grey 100 · #F5F5F5</span></div></div>
+      <div class="sw"><i style="background:var(--mute)"></i><div><b>mute</b><span>grey 500 · #9E9E9E</span></div></div>
+      <div class="sw"><i style="background:var(--border)"></i><div><b>border</b><span>grey 600 · #757575</span></div></div>
+      <div class="sw"><i style="background:var(--line)"></i><div><b>line</b><span>grey 800 · #424242</span></div></div>
+      <div class="sw"><i style="background:var(--accent)"></i><div><b>accent</b><span>teal A200 · #64FFDA</span></div></div>
+      <div class="sw"><i style="background:var(--sev-mild)"></i><div><b>severity mild</b><span>green 300 · #81C784</span></div></div>
+      <div class="sw"><i style="background:var(--sev-mod)"></i><div><b>severity moderate</b><span>amber 300 · #FFD54F</span></div></div>
+      <div class="sw"><i style="background:var(--sev-high)"></i><div><b>severity severe</b><span>deep orange 300 · #FF8A65</span></div></div>
     </div>
     <h3 style="margin-top:var(--s5)">Contrast (WCAG 2.2 AA)</h3>
     <div class="tw"><table>
       <tr><th>Pair</th><th>Ratio</th><th>Needs</th><th>Use</th></tr>
-      <tr><td>ink on bg</td><td class="num">12.8</td><td class="num">4.5</td><td>Body text</td></tr>
-      <tr><td>mute on bg</td><td class="num">5.4</td><td class="num">4.5</td><td>Labels, secondary text</td></tr>
-      <tr><td>mute on panel</td><td class="num">4.8</td><td class="num">4.5</td><td>Labels inside the note pop-up</td></tr>
-      <tr><td>accent on bg</td><td class="num">9.2</td><td class="num">3.0</td><td>Counters, selected, focus</td></tr>
-      <tr><td>on-ink on ink</td><td class="num">14.7</td><td class="num">4.5</td><td>Primary button</td></tr>
-      <tr><td>border on bg</td><td class="num">4.4</td><td class="num">3.0</td><td>Field and chip outlines</td></tr>
+      <tr><td>ink on bg</td><td class="num">14.8</td><td class="num">4.5</td><td>Body text</td></tr>
+      <tr><td>mute on bg</td><td class="num">6.0</td><td class="num">4.5</td><td>Labels, secondary text</td></tr>
+      <tr><td>mute on panel</td><td class="num">5.21</td><td class="num">4.5</td><td>Labels inside the note pop-up</td></tr>
+      <tr><td>accent on bg</td><td class="num">12.9</td><td class="num">3.0</td><td>Counters, selected, focus</td></tr>
+      <tr><td>on-ink on ink</td><td class="num">14.8</td><td class="num">4.5</td><td>Primary button</td></tr>
+      <tr><td>border on bg</td><td class="num">3.5</td><td class="num">3.0</td><td>Field and chip outlines</td></tr>
     </table></div>
-    <p class="lead" style="margin-top:var(--s3)">Teal is for attention only, never for body text. Severity always carries a word and a marker, never color alone. The 4A4A4A line is decoration, not a control edge.</p>
+    <p class="lead" style="margin-top:var(--s3)">Teal is for attention only, never for body text. Severity always carries a word and a marker, never color alone. The grey 800 line is decoration, not a control edge.</p>
   </section>
 
   <section>
@@ -227,7 +227,7 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stro
           <div class="frame" style="padding:var(--s4)">
             <div class="frame-head"><span>Hologram<span class="sub">Tap where it hurts</span></span><span class="count">01 / 03</span></div>
             <div class="holo" id="holo" role="img" aria-label="Body hologram demo. Click to place a point.">
-              <svg viewBox="0 0 120 250" fill="none" stroke="#3FE0D0" stroke-width="1.2" aria-hidden="true">
+              <svg viewBox="0 0 120 250" fill="none" stroke="#64FFDA" stroke-width="1.2" aria-hidden="true">
                 <circle cx="60" cy="22" r="16"/><rect x="38" y="42" width="44" height="82" rx="14"/>
                 <rect x="14" y="46" width="18" height="78" rx="9"/><rect x="88" y="46" width="18" height="78" rx="9"/>
                 <rect x="40" y="128" width="18" height="108" rx="9"/><rect x="62" y="128" width="18" height="108" rx="9"/>
@@ -321,7 +321,7 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stro
     tick.style.left=x+'px';tick.style.top=y+'px';px.textContent=Math.round(x);py.textContent=Math.round(y)});
   var names=['Very mild','Mild','Moderate','Severe','Very severe'],r=document.getElementById('sevrange'),l=document.getElementById('sevlbl'),b=document.getElementById('glow');
   function upd(){var v=+r.value;l.textContent=names[v];b.style.transform='scale('+(0.8+v*0.1)+')';
-    b.style.setProperty('--g',(20+v*14)+'px');b.style.setProperty('--ga','rgba(63,224,208,'+(0.25+v*0.12)+')')}
+    b.style.setProperty('--g',(20+v*14)+'px');b.style.setProperty('--ga','rgba(100,255,218,'+(0.25+v*0.12)+')')}
   r.addEventListener('input',upd);upd();
 })();
 </script>

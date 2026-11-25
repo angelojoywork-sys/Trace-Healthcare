@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
@@ -92,18 +91,14 @@ export default function DnaMark({ onFail }: { onFail: () => void }) {
     <Canvas
       dpr={[1, 2]}
       camera={{ position: [0, 0, 7.0], fov: 34 }}
-      gl={{ antialias: false, powerPreference: "default" }}
+      gl={{ antialias: true, alpha: true, powerPreference: "default" }}
       onCreated={({ gl }) => { gl.domElement.addEventListener("webglcontextlost", (e) => { e.preventDefault(); if (alive.current) onFail(); }); }}
       aria-hidden="true"
     >
-      <color attach="background" args={["#212121"]} />
       <Env />
       <directionalLight position={[3, 4, 5]} intensity={1.4} />
       <directionalLight position={[-4, -2, -3]} intensity={0.5} color="#64ffda" />
       <Strands still={still} />
-      <EffectComposer multisampling={0}>
-        <Bloom mipmapBlur intensity={0.5} luminanceThreshold={0.7} luminanceSmoothing={0.2} radius={0.6} />
-      </EffectComposer>
     </Canvas>
   );
 }

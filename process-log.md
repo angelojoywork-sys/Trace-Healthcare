@@ -2,6 +2,13 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06t Fix: visible box around the 3D canvases
+- **What we did:** The welcome DNA and the body hologram canvases had a solid `#212121` background drawn by WebGL, which some screens render a slightly different shade from the page, so a faint box showed. Made both canvases transparent so the page colour shows through. Removed the small bloom from the DNA (it was the only thing that needed the solid background); the body hologram keeps its bloom.
+- **Why:** User spotted a box around the DNA on their device.
+- **Verified:** headless pixel check: canvas corner and page background are the same colour; screenshots of the welcome screen and the hologram look right.
+- **Learning:** Solid WebGL backgrounds can mismatch CSS colours on colour-managed displays; transparent canvases avoid it.
+- **Artifacts saved in:** `app/src/trace/DnaMark.tsx`, `app/src/trace/HologramCanvas.tsx`
+
 ## 2026-11-25 — 06s Reset link
 - **What we did:** Opening the app with `?reset` (for example `/?reset`) now wipes everything it saved on the phone (profile, logs, feedback state, attached photos) and starts at the welcome screen. The `?reset` part is removed from the address afterwards. The anonymous analytics id is kept so a reset does not look like a new person in the numbers.
 - **Why:** The welcome screen only shows to people with no saved profile, so the person building the app (and testers who want to start over) could not see it again without digging in browser settings.

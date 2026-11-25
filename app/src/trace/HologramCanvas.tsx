@@ -186,13 +186,12 @@ export default function HologramCanvas({ view = "neutral", focus, onPick, onFail
     <Canvas
       dpr={[1, 2]}
       camera={{ position: HOME_POS.toArray(), fov: 38 }}
-      gl={{ antialias: false, powerPreference: "high-performance" }}
+      gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
       onCreated={({ gl }) => {
         gl.domElement.addEventListener("webglcontextlost", (ev) => { ev.preventDefault(); if (alive.current) onFail(); });
       }}
       aria-label="3D body. Drag to turn, tap a spot to log a symptom."
     >
-      <color attach="background" args={["#212121"]} />
       <Suspense fallback={null}>
         <Body view={view} focus={focus} onPick={onPick} />
       </Suspense>

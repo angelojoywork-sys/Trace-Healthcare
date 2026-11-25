@@ -4,15 +4,15 @@
 <style>
 /* Layout: a wrapping grid of grey phone frames, one per screen, each with a handwritten note beneath. */
 :root{
-  --bg:#f3f4f5; --paper:#ffffff; --line:#c9cdd1; --ink:#2b2f33; --mute:#7b838a;
+  --bg:#f3f4f5; --paper:#ffffff; --line:#c9cdd1; --ink:#2b2f33; --mute:#6b737a;
   --fill:#e4e7ea; --mark:#1f6f6b; --mark-soft:#d6ecea;
   --ui:'Inter',system-ui,sans-serif; --hand:'Caveat','Segoe Print',cursive;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#17191b; --paper:#202326; --line:#3d4247; --ink:#e6e8ea; --mute:#8d959c;
+  --bg:#17191b; --paper:#202326; --line:#3d4247; --ink:#e6e8ea; --mute:#9aa2a9;
   --fill:#2c3034; --mark:#58c2bb; --mark-soft:#1d3a38; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#17191b; --paper:#202326; --line:#3d4247; --ink:#e6e8ea; --mute:#8d959c;
+  --bg:#17191b; --paper:#202326; --line:#3d4247; --ink:#e6e8ea; --mute:#9aa2a9;
   --fill:#2c3034; --mark:#58c2bb; --mark-soft:#1d3a38; color-scheme:dark}
 body{background:var(--bg);color:var(--ink);font-family:var(--ui);margin:0;
   padding-block:28px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -25,12 +25,13 @@ h1{font-size:1.6rem;margin:0 0 4px;font-weight:600;text-wrap:balance}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:36px 24px}
 .item{min-width:0;display:flex;flex-direction:column;align-items:center;gap:10px}
 .tag{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);align-self:flex-start}
-.phone{width:240px;height:470px;background:var(--paper);border:2px solid var(--ink);border-radius:30px;padding:14px 14px 12px;
+.phone{width:240px;height:480px;background:var(--paper);border:2px solid var(--ink);border-radius:30px;padding:14px 14px 12px;
   display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
 .phone::before{content:"";width:70px;height:6px;border-radius:3px;background:var(--line);align-self:center;flex:none}
 .note{font-family:var(--hand);font-size:1.2rem;line-height:1.15;color:var(--mark);text-align:left;align-self:flex-start;max-width:240px;text-wrap:balance}
 .t{font-weight:600;font-size:.95rem;line-height:1.25}
 .s{font-size:.72rem;color:var(--mute);line-height:1.35}
+.cap{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
 .c{text-align:center}
 .bar{height:8px;border-radius:4px;background:var(--fill)}
 .bar.w60{width:60%}.bar.w40{width:40%}.bar.w80{width:80%}
@@ -38,6 +39,7 @@ h1{font-size:1.6rem;margin:0 0 4px;font-weight:600;text-wrap:balance}
 .btn.ghost{background:none;color:var(--ink);border:1.5px solid var(--ink)}
 .btn.link{background:none;color:var(--mute);text-decoration:underline;padding:6px}
 .field{border:1.5px solid var(--line);border-radius:10px;padding:9px 10px;font-size:.74rem;color:var(--mute)}
+.field.typed{color:var(--ink)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{border:1.5px solid var(--line);border-radius:999px;padding:5px 10px;font-size:.72rem}
 .chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
@@ -49,29 +51,51 @@ h1{font-size:1.6rem;margin:0 0 4px;font-weight:600;text-wrap:balance}
 .row.between{justify-content:space-between}
 .card{border:1.5px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}
 .dot{width:10px;height:10px;border-radius:50%;background:var(--mark);flex:none}
-.nav{display:flex;justify-content:space-around;border-top:1.5px solid var(--line);padding-top:8px;font-size:.68rem;color:var(--mute);margin-top:auto}
-.nav b{color:var(--ink);font-weight:600}
-.fab{position:absolute;right:16px;bottom:56px;width:42px;height:42px;border-radius:50%;background:var(--mark);color:var(--paper);
+svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+/* icon buttons: 44pt target scaled to this 240px mock (~0.62) = 28px */
+.cb{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;background:var(--paper);color:var(--ink);padding:0}
+.top{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
+.top .t{font-size:.8rem}
+.nav{display:flex;justify-content:space-around;border-top:1.5px solid var(--line);padding-top:8px;margin-top:auto}
+.ni{width:44px;height:30px;border-radius:15px;display:grid;place-items:center;color:var(--mute);background:none;border:0;padding:0}
+.ni.on{background:var(--fill);color:var(--ink)}
+.ni svg{width:18px;height:18px}
+.fab{position:absolute;right:16px;bottom:60px;width:40px;height:40px;border-radius:50%;background:var(--mark);color:var(--paper);
   display:grid;place-items:center;font-size:1.4rem;line-height:1}
 .holo{display:grid;place-items:center;position:relative}
 .holo svg{width:100%;height:100%}
-.pt{position:absolute;display:flex;align-items:center;gap:4px;font-size:.66rem}
-.pt::before{content:"";width:10px;height:10px;border-radius:50%;border:2px solid var(--mark);background:var(--mark-soft)}
 .slider{height:10px;border-radius:5px;background:var(--fill);position:relative}
 .slider::after{content:"";position:absolute;left:58%;top:-5px;width:20px;height:20px;border-radius:50%;background:var(--paper);border:2px solid var(--ink)}
-.blob{width:96px;height:96px;border-radius:44% 56% 52% 48%/48% 44% 56% 52%;border:2px solid var(--mark);background:var(--mark-soft);margin:0 auto;
+.blob{width:104px;height:104px;border-radius:44% 56% 52% 48%/48% 44% 56% 52%;border:2px solid var(--mark);background:var(--mark-soft);margin:0 auto;
   box-shadow:0 0 0 10px color-mix(in srgb,var(--mark) 10%,transparent),0 0 0 22px color-mix(in srgb,var(--mark) 5%,transparent)}
-.legend{margin-top:36px;border-top:1px solid var(--line);padding-top:20px;max-width:70ch;line-height:1.55;font-size:.9rem}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper);border-top:2px solid var(--ink);border-radius:20px 20px 0 0;
+  padding:10px 14px 14px;display:flex;flex-direction:column;gap:8px}
+.sheet::before{content:"";width:36px;height:4px;border-radius:2px;background:var(--line);align-self:center}
+.mic{width:34px;height:34px;border-radius:50%;background:var(--mark-soft);border:2px solid var(--mark);color:var(--mark);display:grid;place-items:center;flex:none}
+.pin{position:absolute;width:16px;height:16px;border-radius:50%;border:2px solid var(--mark);background:var(--mark-soft);
+  box-shadow:0 0 0 8px color-mix(in srgb,var(--mark) 15%,transparent)}
+.legend{margin-top:40px;border-top:1px solid var(--line);padding-top:20px;max-width:72ch;line-height:1.55;font-size:.9rem}
 .legend h2{font-size:1rem;margin:0 0 6px}
-.legend ul{margin:0;padding-left:1.1rem}
+.legend ul{margin:0 0 18px;padding-left:1.1rem}
 </style>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-sum" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol>
+  <symbol id="i-gp" viewBox="0 0 24 24"><path d="M12 21s-6-5.5-6-10a6 6 0 0 1 12 0c0 4.5-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></symbol>
+  <symbol id="i-browse" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M5 13v6h14v-6"/></symbol>
+</svg>
+
 <div class="wrap">
-  <h1>Trace: low-fidelity wireframes</h1>
-  <p class="sub">Happy path for the MVP, 9 screens. Grey boxes are placeholders, teal handwriting is the reasoning. Nothing here is final styling.</p>
+  <h1>Trace: low-fidelity wireframes (v2)</h1>
+  <p class="sub">Happy path for the MVP, 9 screens. Grey boxes are placeholders, teal handwriting is the reasoning. Layout, hierarchy, tap targets and accessibility follow the new principles in taste.md. Colours and type come next, in the design system.</p>
 
   <div class="flow" aria-label="Flow overview">
-    <span>Welcome</span><i>→</i><span>About you</span><i>→</i><span>Body</span><i>→</i><span>Zoom</span><i>→</i><span>Feeling</span><i>→</i><span>Summary</span><i>→</i><span>Entry</span>
+    <span>Welcome</span><i>→</i><span>Body view</span><i>→</i><span>Hologram</span><i>→</i><span>Zoom + note</span><i>→</i><span>Severity</span><i>→</i><span>Summary</span><i>→</i><span>Entry</span>
     <i>·</i><span>Find GP</span><span>Browse</span>
   </div>
 
@@ -87,88 +111,101 @@ h1{font-size:1.6rem;margin:0 0 4px;font-weight:600;text-wrap:balance}
         <div class="grow"></div>
         <div class="btn">Continue with Google</div>
         <div class="btn ghost">Continue with email</div>
+        <div class="s c">Email: we send a sign-in link. No password.</div>
         <div class="btn link">Skip for now</div>
+        <div class="s c">🔒 Private by default. Stored encrypted.</div>
       </div>
-      <div class="note">Skip means log first, sign in later. Fewer drop-offs on screen 1.</div>
+      <div class="note">Google and email are different sign-ins. Skip = log first, sign in later.</div>
     </div>
 
-    <!-- 2 About you -->
+    <!-- 2 Body view -->
     <div class="item">
-      <div class="tag">2 · About you</div>
+      <div class="tag">2 · Body view</div>
       <div class="phone">
-        <div class="t" style="margin-top:6px">A little about you</div>
-        <div class="s">Used to set up the body view. Stays on your account.</div>
+        <div class="t" style="margin-top:6px">What should we call you?</div>
         <div class="field">First name</div>
-        <div class="s" style="margin-top:4px">Gender</div>
-        <div class="chips"><span class="chip on">Female</span><span class="chip">Male</span><span class="chip">Other</span></div>
+        <div class="t" style="margin-top:6px">Choose a body view</div>
+        <div class="s">This only changes the illustration. You can change it any time.</div>
+        <div class="chips"><span class="chip on">Female</span><span class="chip">Male</span><span class="chip">Neutral</span></div>
         <div class="grow"></div>
         <div class="btn">Continue</div>
+        <div class="btn link">Skip</div>
       </div>
-      <div class="note">Name + gender only. Location waits until Find GP.</div>
+      <div class="note">Not "gender". It is optional and explains why we ask.</div>
     </div>
 
-    <!-- 3 Body -->
+    <!-- 3 Hologram -->
     <div class="item">
-      <div class="tag">3 · Body (log)</div>
+      <div class="tag">3 · 3D hologram</div>
       <div class="phone">
         <div class="t" style="margin-top:6px">Where does it hurt?</div>
-        <div class="s">Tap an area. Drag to turn.</div>
+        <div class="s">Drag to turn. Tap where it hurts.</div>
         <div class="holo grow">
-          <svg viewBox="0 0 120 250" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="4 3" aria-label="Body outline placeholder">
+          <svg viewBox="0 0 120 250" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="4 3" aria-label="3D body hologram placeholder">
             <circle cx="60" cy="22" r="16"/><rect x="38" y="42" width="44" height="82" rx="14"/>
             <rect x="14" y="46" width="18" height="78" rx="9"/><rect x="88" y="46" width="18" height="78" rx="9"/>
             <rect x="40" y="128" width="18" height="108" rx="9"/><rect x="62" y="128" width="18" height="108" rx="9"/>
-            <ellipse cx="60" cy="242" rx="40" ry="5" stroke="var(--mark)" stroke-dasharray="none"/>
+            <ellipse cx="60" cy="240" rx="46" ry="7" stroke="var(--mark)" stroke-dasharray="none"/>
+            <ellipse cx="60" cy="240" rx="30" ry="4" stroke="var(--mark)" stroke-dasharray="none" opacity=".5"/>
           </svg>
+          <div class="pin" style="top:30%;left:60%"></div>
         </div>
-        <div class="s c">↻ floating, slowly rotating</div>
-        <div class="nav"><b>Summary</b><span>Find GP</span><span>Browse</span></div>
+        <div class="s c">↻ slowly rotating</div>
+        <div class="btn link">Or choose from a list</div>
       </div>
-      <div class="note">The hero screen. 2D front/back first, 3D later if testers want it.</div>
+      <div class="note">Full focus, no tab bar. List option for anyone who can't use the 3D view.</div>
     </div>
 
-    <!-- 4 Zoom -->
+    <!-- 4 Zoom + note -->
     <div class="item">
-      <div class="tag">4 · Zoomed area</div>
+      <div class="tag">4 · Zoom + note</div>
       <div class="phone">
-        <div class="row between" style="margin-top:6px"><div class="chip">← Back</div><div class="chip">Reset</div></div>
-        <div class="t">Head</div>
-        <div class="holo grow">
-          <svg viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="4 3"><ellipse cx="60" cy="72" rx="44" ry="58"/></svg>
-          <div class="pt" style="top:30%;left:12%">Ear</div>
-          <div class="pt" style="top:30%;right:10%">Eyes</div>
-          <div class="pt" style="top:50%;left:38%">Nose</div>
-          <div class="pt" style="top:68%;left:36%">Mouth</div>
-          <div class="pt" style="top:88%;left:36%">Throat</div>
-          <div class="pt" style="top:6%;left:34%">Head</div>
+        <div class="top">
+          <button class="cb" aria-label="Back, zoom out"><svg class="i"><use href="#i-back"/></svg></button>
+          <button class="cb" aria-label="Reset"><svg class="i"><use href="#i-reset"/></svg></button>
         </div>
-        <div class="s c">Tap a point. It highlights.</div>
+        <div class="img" style="height:130px;position:relative"><div class="pin" style="top:46%;left:44%"></div></div>
+        <div class="s c">Zoomed to your tap</div>
+        <div class="sheet">
+          <div class="t">Tell us more</div>
+          <div class="s">Optional. Type or speak.</div>
+          <div class="row" style="align-items:flex-start">
+            <div class="field typed" style="flex:1;height:46px">Sharp pain when I swallow</div>
+            <button class="mic" aria-label="Speak your note"><svg class="i"><use href="#i-mic"/></svg></button>
+          </div>
+          <div class="btn">Noted. Take care.</div>
+          <div class="btn link" style="padding:2px">Not now</div>
+        </div>
       </div>
-      <div class="note">Back zooms out. Reset clears a wrong tap.</div>
+      <div class="note">The comforting button appears once something is typed or spoken.</div>
     </div>
 
-    <!-- 5 Feeling -->
+    <!-- 5 Severity -->
     <div class="item">
-      <div class="tag">5 · How it feels</div>
+      <div class="tag">5 · Severity</div>
       <div class="phone">
-        <div class="row between" style="margin-top:6px"><div class="chip">←</div><div class="chip">✕</div></div>
-        <div class="c"><div class="t">How bad is it right now?</div><div class="s">Throat</div></div>
+        <div class="top">
+          <button class="cb" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button>
+          <div class="t">Severity</div>
+          <button class="cb" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button>
+        </div>
+        <div class="c t" style="font-size:1.05rem;margin-top:10px">How bad is it<br>right now?</div>
+        <div class="grow"></div>
         <div class="blob"></div>
+        <div class="grow"></div>
         <div class="c t">Moderate</div>
         <div class="slider"></div>
-        <div class="row between s"><span>Mild</span><span>Severe</span></div>
-        <div class="field">Add a note (optional)</div>
-        <div class="grow"></div>
-        <div class="btn">Save</div>
+        <div class="row between"><span class="cap">Very mild</span><span class="cap">Very severe</span></div>
+        <div class="btn">Next</div>
       </div>
-      <div class="note">Borrowed from the Apple Health mood screen. Slider = one tap-ish.</div>
+      <div class="note">Same placements as the Apple mood screen: bar, question, shape, label, slider, Next.</div>
     </div>
 
     <!-- 6 Summary -->
     <div class="item">
       <div class="tag">6 · Summary (home)</div>
       <div class="phone">
-        <div class="t" style="margin-top:6px">Summary</div>
+        <div class="t" style="margin-top:6px;font-size:1.05rem">Summary</div>
         <div class="card"><div class="s">Last logged</div><div class="t">Sore throat · Moderate</div><div class="s">Today · no visit yet</div></div>
         <div class="row" style="gap:8px">
           <div class="card" style="flex:1"><div class="s">This month</div><div class="t">4 logs</div></div>
@@ -177,23 +214,30 @@ h1{font-size:1.6rem;margin:0 0 4px;font-weight:600;text-wrap:balance}
         <div class="s" style="margin-top:2px">Recent</div>
         <div class="card"><div class="row"><span class="dot"></span><div class="bar w60"></div></div><div class="bar w40"></div></div>
         <div class="card"><div class="row"><span class="dot"></span><div class="bar w80"></div></div><div class="bar w40"></div></div>
-        <div class="fab">+</div>
-        <div class="nav"><b>Summary</b><span>Find GP</span><span>Browse</span></div>
+        <div class="fab" aria-label="Log a symptom">+</div>
+        <nav class="nav" aria-label="Main">
+          <button class="ni on" aria-label="Summary"><svg class="i"><use href="#i-sum"/></svg></button>
+          <button class="ni" aria-label="Find GP"><svg class="i"><use href="#i-gp"/></svg></button>
+          <button class="ni" aria-label="Browse"><svg class="i"><use href="#i-browse"/></svg></button>
+        </nav>
       </div>
-      <div class="note">Overview first. "+" opens the body log from anywhere.</div>
+      <div class="note">Overview first. "+" opens the hologram. Nav is icons only, with names for screen readers.</div>
     </div>
 
     <!-- 7 Entry -->
     <div class="item">
       <div class="tag">7 · Entry detail</div>
       <div class="phone">
-        <div class="row between" style="margin-top:6px"><div class="chip">←</div><div class="chip">Share</div></div>
+        <div class="top">
+          <button class="cb" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button>
+          <button class="cb" aria-label="Share"><svg class="i"><use href="#i-share"/></svg></button>
+        </div>
         <div class="t">Sore throat · Moderate</div>
         <div class="field">Date · 24 Nov 2026</div>
         <div class="field">GP · Dr. ______ ▾</div>
         <div class="field" style="height:54px">What the GP said</div>
-        <div class="s">Prescription / receipt</div>
-        <div class="row"><div class="img" style="width:64px;height:64px"></div><div class="chip">📷 Take photo</div></div>
+        <div class="s">Prescription or receipt</div>
+        <div class="row"><div class="img" style="width:64px;height:64px"></div><div class="chip">Take photo</div></div>
         <div class="chip" style="align-self:flex-start">Upload file</div>
         <div class="grow"></div>
         <div class="btn">Save</div>
@@ -205,30 +249,38 @@ h1{font-size:1.6rem;margin:0 0 4px;font-weight:600;text-wrap:balance}
     <div class="item">
       <div class="tag">8 · Find GP</div>
       <div class="phone">
-        <div class="t" style="margin-top:6px">Find a GP</div>
-        <div class="field">📍 Near you, Dublin</div>
-        <div class="chips"><span class="chip on">All</span><span class="chip">Open now</span><span class="chip">★ My GPs</span></div>
+        <div class="t" style="margin-top:6px;font-size:1.05rem">Find a GP</div>
+        <div class="field">Near you, Dublin</div>
+        <div class="chips"><span class="chip on">All</span><span class="chip">Open now</span><span class="chip">My GPs</span></div>
         <div class="card"><div class="t">Practice name</div><div class="s">0.8 km · Open until 6pm</div><div class="row"><div class="chip">Call</div><div class="chip">Directions</div></div></div>
         <div class="card"><div class="t">Practice name</div><div class="s">1.4 km · Closed</div><div class="row"><div class="chip">Call</div><div class="chip">Directions</div></div></div>
         <div class="grow"></div>
-        <div class="nav"><span>Summary</span><b>Find GP</b><span>Browse</span></div>
+        <nav class="nav" aria-label="Main">
+          <button class="ni" aria-label="Summary"><svg class="i"><use href="#i-sum"/></svg></button>
+          <button class="ni on" aria-label="Find GP"><svg class="i"><use href="#i-gp"/></svg></button>
+          <button class="ni" aria-label="Browse"><svg class="i"><use href="#i-browse"/></svg></button>
+        </nav>
       </div>
-      <div class="note">v1 = nearby clinics. Location is asked here, not at signup.</div>
+      <div class="note">v1 = nearby clinics. Location is asked here, with a reason.</div>
     </div>
 
     <!-- 9 Browse -->
     <div class="item">
       <div class="tag">9 · Browse + search</div>
       <div class="phone">
-        <div class="t" style="margin-top:6px">Browse</div>
-        <div class="field">🔍 Search symptoms, GPs, dates</div>
+        <div class="t" style="margin-top:6px;font-size:1.05rem">Browse</div>
+        <div class="field">Search symptoms, GPs, dates</div>
         <div class="s" style="margin-top:2px">November 2026</div>
-        <div class="card"><div class="row between"><div class="t">Sore throat</div><div class="s">24 Nov</div></div><div class="s">Dr. ______ · 📎 1</div></div>
+        <div class="card"><div class="row between"><div class="t">Sore throat</div><div class="s">24 Nov</div></div><div class="s">Dr. ______ · 1 file</div></div>
         <div class="card"><div class="row between"><div class="t">Headache</div><div class="s">9 Nov</div></div><div class="s">No visit</div></div>
         <div class="s">September 2026</div>
-        <div class="card"><div class="row between"><div class="t">Headache</div><div class="s">12 Sep</div></div><div class="s">Dr. ______ · 📎 2</div></div>
+        <div class="card"><div class="row between"><div class="t">Headache</div><div class="s">12 Sep</div></div><div class="s">Dr. ______ · 2 files</div></div>
         <div class="grow"></div>
-        <div class="nav"><span>Summary</span><span>Find GP</span><b>Browse</b></div>
+        <nav class="nav" aria-label="Main">
+          <button class="ni" aria-label="Summary"><svg class="i"><use href="#i-sum"/></svg></button>
+          <button class="ni" aria-label="Find GP"><svg class="i"><use href="#i-gp"/></svg></button>
+          <button class="ni on" aria-label="Browse"><svg class="i"><use href="#i-browse"/></svg></button>
+        </nav>
       </div>
       <div class="note">The payoff: search "headache" and see every time it happened.</div>
     </div>
@@ -236,9 +288,18 @@ h1{font-size:1.6rem;margin:0 0 4px;font-weight:600;text-wrap:balance}
   </div>
 
   <div class="legend">
+    <h2>Principles applied</h2>
+    <ul>
+      <li>One primary action per screen (the filled button).</li>
+      <li>Every step can be undone: Back zooms out, Reset clears a tap, Skip is always offered.</li>
+      <li>The 3D view has a list alternative. Voice is an addition to typing, never the only way.</li>
+      <li>Icon-only nav has names for screen readers. Tap targets are 44pt; at this mock's scale that is 28px.</li>
+      <li>Optional fields say they are optional and why we ask.</li>
+      <li>Calm, plain wording. No medical advice.</li>
+    </ul>
     <h2>What to check when testers use it</h2>
     <ul>
-      <li>Can they log a symptom from the body screen without help?</li>
+      <li>Can they log a symptom from the hologram without help?</li>
       <li>Do they find the "+" and the Browse search on their own?</li>
       <li>Do they attach a photo to a visit?</li>
     </ul>

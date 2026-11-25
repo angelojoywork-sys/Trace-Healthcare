@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 05b Wireframes v2 + design system v1
+- **What we did:** Updated wireframes (v2) and created the design system (`design/design-system.html`). Added "Design & UI principles" to `taste.md` (user request).
+- **Why:** Feedback on v1: gender question needs care, nav doesn't belong on the hologram screen, hologram must be 3D (rotate + tap-to-zoom + note), comforting confirm button, severity screen should copy the Apple mood layout, nav should be icons.
+- **Decisions:** "Gender" became an optional "body view" (Female / Male / Neutral) with a reason and Skip. Google and email are different sign-ins (email = magic link). Hologram screen has no tab bar and offers a list alternative for accessibility. Voice is added to the note sheet, never the only input. Button copy: "Noted. Take care." Teal palette, Fraunces + Inter, IBM Plex Mono for the hologram only. Contrast checked (WCAG AA).
+- **Open:** 3D body model source and voice-to-text approach (see chat).
+- **Tools used / where AI helped (and what a human verified):** Claude wrote wireframes and tokens; contrast ratios computed with a script. Human to review taste and wording.
+- **Artifacts saved in:** `design/wireframes-lofi.html`, `design/design-system.html`
+
 ## 2026-11-25 — 05 Low-fi wireframes (v1)
 - **What we did:** Built 9 low-fi screens (`design/wireframes-lofi.html`): welcome, about you, body log, zoom, how it feels, summary, entry detail, find GP, browse/search.
 - **Why:** Check the flow before hi-fi. MVP goes to testers today.

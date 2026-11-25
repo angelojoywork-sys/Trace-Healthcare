@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 05c Wireframes v3 (flows) + design system v2
+- **What we did:** Polished wireframes into 5 user flows (A first log, B guest quick log, C after the GP visit, D it happened again, E find a GP) built from 14 screens. Restyled the design system to a dark "HUD" direction from two references (Matteron: bracket frames, counters, mono labels, teal glow; Archetype: info panel with X/Y and label/value rows). Archived v1/v2 wireframes and v1 design system in `design/archive/`.
+- **Why:** User feedback: simplify copy, adopt the modern futuristic look, use the Archetype panel for the note pop-up, and test how the flow works across several paths.
+- **Decisions:** "Log symptom" replaces email sign-in (guest mode, data on device until backed up with Google). Name + gender only, no explanation text. Hologram heading "Tap to log". Note button reads "Almost there". Note pop-up = X/Y, Area, When, Note + mic. Single dark theme, near-square corners, mono caps labels, teal for attention only. Contrast re-checked (WCAG AA).
+- **Open:** Is guest-only (no email sign-in) right? Add "Other" to gender? Keep or drop "List view" on the hologram screen?
+- **Tools used / where AI helped (and what a human verified):** Claude built wireframes and tokens; contrast computed with a script. Human to review style and flows.
+- **Artifacts saved in:** `design/wireframes-lofi.html`, `design/design-system.html`, `design/archive/`
+
 ## 2026-11-25 — 05b Wireframes v2 + design system v1
 - **What we did:** Updated wireframes (v2) and created the design system (`design/design-system.html`). Added "Design & UI principles" to `taste.md` (user request).
 - **Why:** Feedback on v1: gender question needs care, nav doesn't belong on the hologram screen, hologram must be 3D (rotate + tap-to-zoom + note), comforting confirm button, severity screen should copy the Apple mood layout, nav should be icons.

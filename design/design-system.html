@@ -1,105 +1,115 @@
 <title>Trace Design System</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: one calm column of token tables and live components. Teal on cool mint-white, a soft serif for warmth, mono only for the hologram. */
+/* Direction: dark graphite, bracket frames, mono caps labels, one teal glow. Single committed look, built from the Matteron and Archetype references. */
 :root{
-  --bg:#F2F8F7; --surface:#FFFFFF; --ink:#0F2A2B; --mute:#53696B;
-  --line:#D3E2E1; --border:#6F8B8A;
-  --primary:#0E7C77; --on-primary:#FFFFFF; --primary-soft:#D8F0EE;
-  --sev-mild:#6FBF8E; --sev-mod:#E5B94A; --sev-high:#E0704E; --danger:#B3372B;
-  --holo-bg:#0A1416; --holo:#3FE0D0; --holo-ink:#CFEFEC;
-  --font-display:'Fraunces',Georgia,serif; --font-body:'Inter',system-ui,sans-serif; --font-mono:'IBM Plex Mono',ui-monospace,monospace;
+  --bg:#262626; --panel:#303030; --ink:#ECECEC; --mute:#9B9B9B;
+  --line:#4A4A4A; --border:#8A8A8A;
+  --accent:#3FE0D0; --on-accent:#0B1B1A; --accent-soft:rgba(63,224,208,.10);
+  --on-ink:#1A1A1A;
+  --sev-mild:#6FBF8E; --sev-mod:#E5B94A; --sev-high:#EE8260; --danger:#EE8260;
+  --font-sans:'Geist',system-ui,sans-serif; --font-mono:'Geist Mono',ui-monospace,monospace;
   --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;
-  --r-field:10px;--r-card:16px;--r-sheet:24px;--r-pill:999px;
-  --shadow-card:0 1px 2px rgba(15,42,43,.06),0 4px 14px rgba(15,42,43,.05);
-  --ease:cubic-bezier(.2,.8,.2,1);
+  --r:2px; --ease:cubic-bezier(.2,.8,.2,1);
+  color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0A1416; --surface:#11262A; --ink:#E7F3F2; --mute:#9DB5B6; --line:#223D40; --border:#7FA0A0;
-  --primary:#4FD1C5; --on-primary:#06201F; --primary-soft:#153634; --shadow-card:none; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0A1416; --surface:#11262A; --ink:#E7F3F2; --mute:#9DB5B6; --line:#223D40; --border:#7FA0A0;
-  --primary:#4FD1C5; --on-primary:#06201F; --primary-soft:#153634; --shadow-card:none; color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--font-body);margin:0;
-  padding-block:var(--s6) var(--s7);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:var(--s7)}
-h1{font:600 2.25rem/1.1 var(--font-display);margin:0;text-wrap:balance}
-h2{font:600 1.5rem/1.2 var(--font-display);margin:0 0 var(--s3)}
-h3{font:600 .8rem/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 var(--s2)}
+body{background:var(--bg);color:var(--ink);font:300 16px/1.5 var(--font-sans);margin:0;
+  padding-block:var(--s6) var(--s7);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .05 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+.wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:var(--s7)}
+h1{font:300 clamp(2rem,6vw,3rem)/1.1 var(--font-sans);margin:0;text-wrap:balance;letter-spacing:-.01em}
+h2{font:300 1.75rem/1.2 var(--font-sans);margin:0 0 var(--s3)}
+.cap,h3{font:400 .75rem/1.3 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin:0 0 var(--s2)}
 p{margin:0;max-width:64ch}
-.lead{color:var(--mute);margin-top:var(--s2)}
-.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--s5)}
+.lead{color:var(--mute);margin-top:var(--s3)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--s5)}
 .cols>*{min-width:0}
-.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--s3)}
-.sw{border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;background:var(--surface);font-size:.8rem}
-.sw i{display:block;height:56px}
+.sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--s3)}
+.sw{border:1px solid var(--line);font-size:.8rem}
+.sw i{display:block;height:48px}
 .sw div{padding:var(--s2) var(--s3);line-height:1.35}
-.sw b{display:block;font-weight:600}.sw span{color:var(--mute);font-family:var(--font-mono);font-size:.72rem}
+.sw b{display:block;font-weight:400}.sw span{color:var(--mute);font:400 .72rem var(--font-mono)}
 .tw{overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:.85rem;min-width:420px}
+table{border-collapse:collapse;width:100%;font-size:.85rem;min-width:440px}
 th,td{text-align:left;padding:var(--s2) var(--s3);border-bottom:1px solid var(--line);vertical-align:top}
-th{font-weight:600;color:var(--mute)}
-.num{font-variant-numeric:tabular-nums}
-.demo{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:var(--s5);display:flex;flex-direction:column;gap:var(--s4)}
-.row{display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center}
-/* components */
-.btn{min-height:44px;padding:0 var(--s5);border-radius:var(--r-pill);border:0;font:500 1rem var(--font-body);cursor:pointer;
-  background:var(--primary);color:var(--on-primary);transition:transform 150ms var(--ease),opacity 150ms}
+th{font:400 .72rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.num{font-variant-numeric:tabular-nums;font-family:var(--font-mono)}
+/* bracket frame: side rules with short ticks top and bottom */
+.frame{position:relative;border-left:1px solid var(--line);border-right:1px solid var(--line);padding:var(--s5);
+  background:
+   linear-gradient(var(--line),var(--line)) top left/12px 1px no-repeat,
+   linear-gradient(var(--line),var(--line)) top right/12px 1px no-repeat,
+   linear-gradient(var(--line),var(--line)) bottom left/12px 1px no-repeat,
+   linear-gradient(var(--line),var(--line)) bottom right/12px 1px no-repeat;
+  display:flex;flex-direction:column;gap:var(--s4)}
+.frame-head{display:flex;justify-content:space-between;gap:var(--s3);font:400 .8rem var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
+.frame-head .count{color:var(--accent)}
+.frame-head .sub{display:block;color:var(--mute)}
+.btn{min-height:48px;padding:0 var(--s5);border-radius:var(--r);border:0;font:500 .8rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  background:var(--ink);color:var(--on-ink);transition:transform 150ms var(--ease),opacity 150ms}
 .btn:active{transform:scale(.98)}
-.btn.secondary{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--border)}
-.btn.text{background:none;color:var(--mute);text-decoration:underline;padding:0 var(--s3)}
+.btn.secondary{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--border)}
+.btn.text{background:none;color:var(--mute);text-decoration:underline;text-underline-offset:4px;padding:0 var(--s3)}
 .btn.block{width:100%}
-:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
-.chip{min-height:44px;padding:0 var(--s4);border-radius:var(--r-pill);border:0;background:transparent;color:var(--ink);font:500 .9rem var(--font-body);box-shadow:inset 0 0 0 1.5px var(--border);cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--primary);color:var(--on-primary);box-shadow:none}
-.field{display:flex;flex-direction:column;gap:var(--s1)}
-.field label{font-weight:500;font-size:.9rem}
-.field .hint{font-size:.8rem;color:var(--mute)}
-.input{min-height:44px;width:100%;padding:var(--s3);border-radius:var(--r-field);border:1.5px solid var(--border);background:var(--surface);color:var(--ink);font:400 1rem var(--font-body)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.chip{min-height:44px;padding:0 var(--s4);border-radius:var(--r);border:0;background:transparent;color:var(--ink);font:400 .8rem var(--font-mono);letter-spacing:.08em;text-transform:uppercase;box-shadow:inset 0 0 0 1px var(--border);cursor:pointer}
+.chip[aria-pressed="true"]{color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+.chip[aria-pressed="true"]::before{content:"■ ";font-size:.7em;vertical-align:.1em}
+.field{display:flex;flex-direction:column;gap:var(--s2)}
+.field label{font:400 .72rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.input{min-height:48px;width:100%;padding:var(--s3);border-radius:var(--r);border:1px solid var(--border);background:transparent;color:var(--ink);font:300 1rem var(--font-sans)}
 textarea.input{min-height:84px;resize:vertical}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:var(--s4);box-shadow:var(--shadow-card);display:flex;flex-direction:column;gap:var(--s1)}
-.entry{display:flex;justify-content:space-between;gap:var(--s3);align-items:flex-start}
-.entry b{font-weight:600}.entry small{color:var(--mute);font-size:.8rem}
-.sevtag{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:500}
-.sevtag::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c)}
-.phone{width:min(100%,340px);margin:0 auto;border:1px solid var(--line);border-radius:28px;background:var(--bg);padding:var(--s4);display:flex;flex-direction:column;gap:var(--s4)}
-.top{display:grid;grid-template-columns:44px 1fr 44px;align-items:center}
-.top .ttl{text-align:center;font-weight:600;font-size:.95rem}
-.ib{width:44px;height:44px;border-radius:50%;border:0;background:var(--primary-soft);color:var(--ink);display:grid;place-items:center;cursor:pointer}
-svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.nav{display:flex;justify-content:space-around;background:var(--surface);border-radius:var(--r-pill);padding:var(--s2);box-shadow:var(--shadow-card);border:1px solid var(--line)}
-.ni{width:64px;height:44px;border-radius:var(--r-pill);border:0;background:none;color:var(--mute);display:grid;place-items:center;cursor:pointer}
-.ni[aria-current="page"]{background:var(--primary-soft);color:var(--ink)}
-.sheet{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sheet);padding:var(--s4);display:flex;flex-direction:column;gap:var(--s3)}
-.mic{width:44px;height:44px;border-radius:50%;border:2px solid var(--primary);background:var(--primary-soft);color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:none}
-.mic[aria-pressed="true"]{background:var(--primary);color:var(--on-primary)}
-.comfort{transition:opacity 250ms var(--ease),transform 250ms var(--ease)}
+.row{display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center}
+.demo{display:flex;flex-direction:column;gap:var(--s4);min-width:0}
+/* HUD panel: the note pop-up (Archetype reference) */
+.hud{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid #3d3d3d;padding:var(--s5);display:flex;flex-direction:column;gap:var(--s4);backdrop-filter:blur(8px)}
+.hud .xy{font:400 .8rem var(--font-mono);letter-spacing:.06em;color:var(--mute)}
+.hud .xy b{color:var(--ink);font-weight:500;margin-right:4px}
+.hud .xy span{margin-right:var(--s3)}
+.kv{display:flex;flex-direction:column;gap:2px}
+.kv .k{font:400 .72rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.kv .v{font:300 1.05rem/1.4 var(--font-sans);color:var(--ink)}
+.mic{width:48px;height:48px;border-radius:var(--r);border:1px solid var(--border);background:transparent;color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:none}
+.mic[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .comfort[hidden]{display:none}
+/* severity */
+.phone{width:min(100%,340px);margin:0 auto;border:1px solid var(--line);padding:var(--s4);display:flex;flex-direction:column;gap:var(--s4)}
+.top{display:grid;grid-template-columns:44px 1fr 44px;align-items:center}
+.top .ttl{text-align:center;font:400 .8rem var(--font-mono);letter-spacing:.12em;text-transform:uppercase}
+.ib{width:44px;height:44px;border:1px solid var(--line);border-radius:var(--r);background:none;color:var(--ink);display:grid;place-items:center;cursor:pointer}
 .sev{display:flex;flex-direction:column;align-items:center;gap:var(--s4);text-align:center}
-.sev h4{font:600 1.5rem/1.2 var(--font-display);margin:0}
-.blob{width:132px;height:132px;border-radius:44% 56% 52% 48%/48% 44% 56% 52%;background:var(--primary-soft);border:2px solid var(--primary);
-  box-shadow:0 0 0 12px color-mix(in srgb,var(--primary) 12%,transparent),0 0 0 26px color-mix(in srgb,var(--primary) 6%,transparent);transition:transform 250ms var(--ease)}
-.sev .lbl{font:600 1.25rem var(--font-body)}
-.range{width:100%;height:44px;background:none;accent-color:var(--primary)}
-.ends{display:flex;justify-content:space-between;width:100%;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
-.holo{background:var(--holo-bg);color:var(--holo-ink);border-radius:var(--r-card);padding:var(--s5);display:flex;flex-direction:column;gap:var(--s3);font-family:var(--font-mono);
-  background-image:radial-gradient(60% 50% at 50% 55%,rgba(63,224,208,.18),transparent 70%)}
-.holo .k{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--holo)}
-.holo .v{font-size:1.1rem}
-.holo .pt{display:inline-flex;align-items:center;gap:8px;font-size:.8rem}
-.holo .pt::before{content:"";width:14px;height:14px;border-radius:50%;border:2px solid var(--holo);box-shadow:0 0 12px var(--holo)}
-.type-d{font:600 2.25rem/1.1 var(--font-display)}.type-t{font:600 1.5rem/1.2 var(--font-display)}
-.rule{display:grid;grid-template-columns:auto 1fr;gap:var(--s2) var(--s4);font-size:.9rem}
-.rule dt{font-weight:600}.rule dd{margin:0;color:var(--mute)}
+.sev h4{font:300 1.6rem/1.2 var(--font-sans);margin:0}
+.glow{width:120px;height:120px;border-radius:44% 56% 52% 48%/48% 44% 56% 52%;background:radial-gradient(circle at 40% 35%,#2b5f5a,#12302e 70%);
+  box-shadow:0 0 var(--g,40px) var(--ga,rgba(63,224,208,.45));transition:transform 250ms var(--ease),box-shadow 250ms var(--ease)}
+.sev .lbl{font:400 1rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase}
+.range{width:100%;height:44px;background:none;accent-color:var(--accent)}
+.ends{display:flex;justify-content:space-between;width:100%;font:400 .68rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+/* nav */
+.nav{display:flex;justify-content:space-around;border:1px solid var(--line);padding:var(--s2);background:var(--panel)}
+.ni{width:72px;height:44px;border:0;border-radius:var(--r);background:none;color:var(--mute);display:grid;place-items:center;cursor:pointer;position:relative}
+.ni[aria-current="page"]{color:var(--accent)}
+.ni[aria-current="page"]::after{content:"";position:absolute;bottom:2px;left:50%;width:16px;height:2px;margin-left:-8px;background:var(--accent)}
+.sevtag{display:inline-flex;align-items:center;gap:8px;font:400 .72rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase}
+.sevtag::before{content:"";width:8px;height:8px;background:var(--c)}
+.entry{display:flex;justify-content:space-between;gap:var(--s3);align-items:baseline}
+.entry b{font-weight:400;font-size:1.1rem}
+.meta{font:400 .72rem var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.holo{position:relative;aspect-ratio:4/3;display:grid;place-items:center;cursor:crosshair;overflow:hidden;
+  background:radial-gradient(55% 55% at 50% 52%,rgba(63,224,208,.20),transparent 70%)}
+.holo svg{height:92%;filter:drop-shadow(0 0 8px rgba(63,224,208,.6))}
+.holo .tick{position:absolute;width:18px;height:18px;border:1px solid var(--accent);transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 0 14px var(--accent)}
+.rule{display:grid;grid-template-columns:auto 1fr;gap:var(--s2) var(--s5);font-size:.9rem}
+.rule dt{font:400 .75rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase}.rule dd{margin:0;color:var(--mute)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-sum" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol>
   <symbol id="i-gp" viewBox="0 0 24 24"><path d="M12 21s-6-5.5-6-10a6 6 0 0 1 12 0c0 4.5-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></symbol>
-  <symbol id="i-browse" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></symbol>
+  <symbol id="i-browse" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5"/><rect x="13.5" y="4" width="6.5" height="6.5"/><rect x="4" y="13.5" width="6.5" height="6.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5"/></symbol>
   <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
   <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
@@ -109,54 +119,72 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 
   <header>
     <h1>Trace design system</h1>
-    <p class="lead">Calm, kind, and clear. Teal on cool white for everyday screens, a dark glowing panel only for the hologram. Every value below is a token, so the app and the case study use the same source.</p>
+    <p class="lead">Modern and futuristic, but quiet. Graphite surfaces, bracket frames, small mono labels and a single teal glow that marks whatever you can act on. Version 2.</p>
   </header>
 
   <section>
+    <h2>Direction</h2>
+    <div class="tw"><table>
+      <tr><th>From the reference</th><th>Becomes in Trace</th></tr>
+      <tr><td>Bracket frame, "01 / 04" counter</td><td>Frame around the hologram and entry cards. Counter shows progress through a log.</td></tr>
+      <tr><td>Mono caps labels</td><td>All labels, buttons, chips and nav captions.</td></tr>
+      <tr><td>Teal glow on a dark object</td><td>The hologram body, the selected point, the severity shape.</td></tr>
+      <tr><td>Archetype info panel (X / Y, label and value rows)</td><td>The note pop-up: tap coordinates, area, date, note.</td></tr>
+    </table></div>
+  </section>
+
+  <section>
     <h2>Color</h2>
-    <div class="swatches">
-      <div class="sw"><i style="background:var(--bg)"></i><div><b>bg</b><span>#F2F8F7</span></div></div>
-      <div class="sw"><i style="background:var(--surface)"></i><div><b>surface</b><span>#FFFFFF</span></div></div>
-      <div class="sw"><i style="background:var(--ink)"></i><div><b>ink</b><span>#0F2A2B</span></div></div>
-      <div class="sw"><i style="background:var(--mute)"></i><div><b>mute</b><span>#53696B</span></div></div>
-      <div class="sw"><i style="background:var(--primary)"></i><div><b>primary</b><span>#0E7C77</span></div></div>
-      <div class="sw"><i style="background:var(--primary-soft)"></i><div><b>primary-soft</b><span>#D8F0EE</span></div></div>
-      <div class="sw"><i style="background:var(--border)"></i><div><b>border</b><span>#6F8B8A</span></div></div>
-      <div class="sw"><i style="background:var(--line)"></i><div><b>line</b><span>#D3E2E1</span></div></div>
+    <div class="sw-grid">
+      <div class="sw"><i style="background:var(--bg)"></i><div><b>bg</b><span>#262626</span></div></div>
+      <div class="sw"><i style="background:var(--panel)"></i><div><b>panel</b><span>#303030</span></div></div>
+      <div class="sw"><i style="background:var(--ink)"></i><div><b>ink</b><span>#ECECEC</span></div></div>
+      <div class="sw"><i style="background:var(--mute)"></i><div><b>mute</b><span>#9B9B9B</span></div></div>
+      <div class="sw"><i style="background:var(--border)"></i><div><b>border</b><span>#8A8A8A</span></div></div>
+      <div class="sw"><i style="background:var(--line)"></i><div><b>line</b><span>#4A4A4A</span></div></div>
+      <div class="sw"><i style="background:var(--accent)"></i><div><b>accent</b><span>#3FE0D0</span></div></div>
       <div class="sw"><i style="background:var(--sev-mild)"></i><div><b>severity mild</b><span>#6FBF8E</span></div></div>
       <div class="sw"><i style="background:var(--sev-mod)"></i><div><b>severity moderate</b><span>#E5B94A</span></div></div>
-      <div class="sw"><i style="background:var(--sev-high)"></i><div><b>severity severe</b><span>#E0704E</span></div></div>
-      <div class="sw"><i style="background:var(--holo-bg)"></i><div><b>holo-bg</b><span>#0A1416</span></div></div>
-      <div class="sw"><i style="background:var(--holo)"></i><div><b>holo glow</b><span>#3FE0D0</span></div></div>
+      <div class="sw"><i style="background:var(--sev-high)"></i><div><b>severity severe</b><span>#EE8260</span></div></div>
     </div>
-    <h3 style="margin-top:var(--s5)">Contrast checks (light theme, WCAG 2.2 AA)</h3>
+    <h3 style="margin-top:var(--s5)">Contrast (WCAG 2.2 AA)</h3>
     <div class="tw"><table>
       <tr><th>Pair</th><th>Ratio</th><th>Needs</th><th>Use</th></tr>
-      <tr><td>ink on bg</td><td class="num">14.1</td><td class="num">4.5</td><td>Body text</td></tr>
-      <tr><td>mute on surface</td><td class="num">5.8</td><td class="num">4.5</td><td>Secondary text</td></tr>
-      <tr><td>on-primary on primary</td><td class="num">5.0</td><td class="num">4.5</td><td>Buttons</td></tr>
-      <tr><td>border on surface</td><td class="num">3.7</td><td class="num">3.0</td><td>Field and chip outlines</td></tr>
-      <tr><td>ink on primary-soft</td><td class="num">12.7</td><td class="num">4.5</td><td>Selected nav icon</td></tr>
-      <tr><td>holo on holo-bg</td><td class="num">11.4</td><td class="num">3.0</td><td>Hologram labels</td></tr>
+      <tr><td>ink on bg</td><td class="num">12.8</td><td class="num">4.5</td><td>Body text</td></tr>
+      <tr><td>mute on bg</td><td class="num">5.4</td><td class="num">4.5</td><td>Labels, secondary text</td></tr>
+      <tr><td>mute on panel</td><td class="num">4.8</td><td class="num">4.5</td><td>Labels inside the note pop-up</td></tr>
+      <tr><td>accent on bg</td><td class="num">9.2</td><td class="num">3.0</td><td>Counters, selected, focus</td></tr>
+      <tr><td>on-ink on ink</td><td class="num">14.7</td><td class="num">4.5</td><td>Primary button</td></tr>
+      <tr><td>border on bg</td><td class="num">4.4</td><td class="num">3.0</td><td>Field and chip outlines</td></tr>
     </table></div>
-    <p class="lead" style="margin-top:var(--s3)">Primary teal is never used for small text on primary-soft (4.2). Severity never relies on color: it always carries a word.</p>
+    <p class="lead" style="margin-top:var(--s3)">Teal is for attention only, never for body text. Severity always carries a word and a marker, never color alone. The 4A4A4A line is decoration, not a control edge.</p>
   </section>
 
   <section>
     <h2>Type</h2>
     <div class="cols">
-      <div class="demo"><h3>Display · Fraunces 600</h3><div class="type-d">Noted. Take care.</div><div class="type-t">How bad is it right now?</div></div>
-      <div class="demo"><h3>Body · Inter</h3><p>Sharp pain when I swallow, started yesterday evening. Dr. Byrne said to rest and gave me a prescription.</p><h3 style="margin-top:var(--s2)">Hologram · IBM Plex Mono</h3><p style="font-family:var(--font-mono);font-size:.85rem">THROAT · TAP TO LOG</p></div>
+      <div class="demo">
+        <h3>Display · Geist 300</h3>
+        <div style="font:300 2.25rem/1.1 var(--font-sans);letter-spacing:-.01em">Almost there.</div>
+        <h3>Body · Geist 300</h3>
+        <p>Sharp pain when I swallow, started yesterday evening. Dr. Byrne said to rest and gave me a prescription.</p>
+      </div>
+      <div class="demo">
+        <h3>Label · Geist Mono 400, caps, +10%</h3>
+        <div class="kv"><span class="k">Client</span><span class="v">Dr. Byrne, Dublin 4</span></div>
+        <div class="num" style="font-size:2.5rem;line-height:1">04 / 12</div>
+        <p style="color:var(--mute)">Mono carries labels, counters and buttons. Sans carries everything a person reads.</p>
+      </div>
     </div>
     <div class="tw" style="margin-top:var(--s4)"><table>
-      <tr><th>Role</th><th>Size / line</th><th>Weight</th></tr>
-      <tr><td>Display</td><td class="num">36 / 40</td><td>Fraunces 600</td></tr>
-      <tr><td>Title</td><td class="num">24 / 29</td><td>Fraunces 600</td></tr>
-      <tr><td>Body</td><td class="num">16 / 24</td><td>Inter 400</td></tr>
-      <tr><td>Label</td><td class="num">14 / 20</td><td>Inter 500</td></tr>
-      <tr><td>Caption</td><td class="num">12 / 16</td><td>Inter 400, uppercase +8% tracking</td></tr>
+      <tr><th>Role</th><th>Size / line</th><th>Font</th></tr>
+      <tr><td>Display</td><td class="num">36 / 40</td><td>Geist 300</td></tr>
+      <tr><td>Title</td><td class="num">24 / 29</td><td>Geist 300</td></tr>
+      <tr><td>Body</td><td class="num">16 / 24</td><td>Geist 300</td></tr>
+      <tr><td>Label</td><td class="num">12 / 16, caps</td><td>Geist Mono 400</td></tr>
+      <tr><td>Button</td><td class="num">13 / 16, caps</td><td>Geist Mono 500</td></tr>
     </table></div>
-    <p class="lead" style="margin-top:var(--s3)">All sizes scale with the user's text setting. Body never goes below 16.</p>
+    <p class="lead" style="margin-top:var(--s3)">Body never goes below 16 and scales with the user's text setting. Labels may be 12 because they are never the only way to understand a screen.</p>
   </section>
 
   <section>
@@ -164,9 +192,9 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stro
     <div class="tw"><table>
       <tr><th>Token</th><th>Value</th><th>Used for</th></tr>
       <tr><td>space 1–7</td><td class="num">4 · 8 · 12 · 16 · 24 · 32 · 48</td><td>All padding and gaps</td></tr>
-      <tr><td>radius field / card / sheet / pill</td><td class="num">10 · 16 · 24 · full</td><td>Inputs / cards / note sheet / buttons and chips</td></tr>
-      <tr><td>tap target</td><td class="num">44 × 44 minimum</td><td>Every interactive control</td></tr>
-      <tr><td>motion fast / base / zoom</td><td class="num">150 · 250 · 450 ms</td><td>Press / reveal / hologram zoom. Reduced-motion removes all.</td></tr>
+      <tr><td>radius</td><td class="num">2</td><td>Everything. Near-square is part of the look.</td></tr>
+      <tr><td>tap target</td><td class="num">44 × 44 min</td><td>Every control. Primary buttons 48.</td></tr>
+      <tr><td>motion fast / base / zoom</td><td class="num">150 · 250 · 450 ms</td><td>Press / reveal / hologram zoom. Reduced motion removes all.</td></tr>
     </table></div>
   </section>
 
@@ -177,44 +205,57 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stro
       <div class="demo">
         <h3>Buttons</h3>
         <button class="btn block" id="b-primary">Continue with Google</button>
-        <button class="btn secondary block" id="b-secondary">Continue with email</button>
-        <div class="row"><button class="btn text" id="b-text">Skip for now</button></div>
-        <p class="s" style="font-size:.8rem;color:var(--mute)">One filled button per screen.</p>
+        <button class="btn secondary block" id="b-secondary">Log symptom</button>
+        <div class="row"><button class="btn text" id="b-text">Skip</button></div>
       </div>
 
       <div class="demo">
-        <h3>Chips (body view)</h3>
-        <div class="row" role="group" aria-label="Body view" id="bodyview">
-          <button class="chip" aria-pressed="true">Female</button>
-          <button class="chip" aria-pressed="false">Male</button>
-          <button class="chip" aria-pressed="false">Neutral</button>
-        </div>
-        <div class="field">
-          <label for="f-name">First name</label>
-          <input class="input" id="f-name" placeholder="Aoife" autocomplete="given-name">
-          <span class="hint">Only used to greet you.</span>
-        </div>
-      </div>
-
-      <div class="demo">
-        <h3>Note sheet (zoom + note)</h3>
-        <div class="sheet">
-          <div style="font:600 1.25rem var(--font-display)">Tell us more</div>
-          <div class="field">
-            <label for="f-note" class="hint">Optional. Type or speak.</label>
-            <div class="row" style="flex-wrap:nowrap;align-items:flex-start">
-              <textarea class="input" id="f-note" placeholder="What does it feel like?"></textarea>
-              <button class="mic" id="mic" aria-pressed="false" aria-label="Speak your note"><svg class="i"><use href="#i-mic"/></svg></button>
-            </div>
-            <span class="hint" id="mic-state" aria-live="polite"></span>
+        <h3>Chips and fields</h3>
+        <div class="field"><label for="f-name">Name</label><input class="input" id="f-name" placeholder="Aoife" autocomplete="given-name"></div>
+        <div class="field"><span class="cap" id="g-l" style="margin:0">Gender</span>
+          <div class="row" role="group" aria-labelledby="g-l" id="gender">
+            <button class="chip" aria-pressed="true">Female</button>
+            <button class="chip" aria-pressed="false">Male</button>
+            <button class="chip" aria-pressed="false">Prefer not to say</button>
           </div>
-          <button class="btn block comfort" id="comfort" hidden>Noted. Take care.</button>
-          <button class="btn text" id="notnow">Not now</button>
+        </div>
+      </div>
+
+      <div class="demo" style="grid-column:1/-1">
+        <h3>Note pop-up (tap the body to move the coordinates)</h3>
+        <div class="cols" style="align-items:start">
+          <div class="frame" style="padding:var(--s4)">
+            <div class="frame-head"><span>Hologram<span class="sub">Tap where it hurts</span></span><span class="count">01 / 03</span></div>
+            <div class="holo" id="holo" role="img" aria-label="Body hologram demo. Click to place a point.">
+              <svg viewBox="0 0 120 250" fill="none" stroke="#3FE0D0" stroke-width="1.2" aria-hidden="true">
+                <circle cx="60" cy="22" r="16"/><rect x="38" y="42" width="44" height="82" rx="14"/>
+                <rect x="14" y="46" width="18" height="78" rx="9"/><rect x="88" y="46" width="18" height="78" rx="9"/>
+                <rect x="40" y="128" width="18" height="108" rx="9"/><rect x="62" y="128" width="18" height="108" rx="9"/>
+                <ellipse cx="60" cy="242" rx="46" ry="6" opacity=".7"/>
+              </svg>
+              <div class="tick" id="tick" style="left:50%;top:14%"></div>
+            </div>
+          </div>
+          <div class="hud">
+            <div class="xy"><span><b>X</b><i id="px" style="font-style:normal">212</i></span><span><b>Y</b><i id="py" style="font-style:normal">121</i></span></div>
+            <div class="kv"><span class="k">Area</span><span class="v">Throat</span></div>
+            <div class="kv"><span class="k">When</span><span class="v">Today, 25 Nov</span></div>
+            <div class="field">
+              <label for="f-note">Note (optional)</label>
+              <div class="row" style="flex-wrap:nowrap;align-items:flex-start">
+                <textarea class="input" id="f-note" placeholder="What does it feel like?"></textarea>
+                <button class="mic" id="mic" aria-pressed="false" aria-label="Speak your note"><svg class="i"><use href="#i-mic"/></svg></button>
+              </div>
+              <span class="meta" id="mic-state" aria-live="polite"></span>
+            </div>
+            <button class="btn block comfort" id="comfort" hidden>Almost there</button>
+            <button class="btn text" id="notnow">Not now</button>
+          </div>
         </div>
       </div>
 
       <div class="demo">
-        <h3>Severity (mood-screen layout)</h3>
+        <h3>Severity</h3>
         <div class="phone">
           <div class="top">
             <button class="ib" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button>
@@ -223,7 +264,7 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stro
           </div>
           <div class="sev">
             <h4>How bad is it<br>right now?</h4>
-            <div class="blob" id="blob"></div>
+            <div class="glow" id="glow"></div>
             <div class="lbl" id="sevlbl" aria-live="polite">Moderate</div>
             <input class="range" id="sevrange" type="range" min="0" max="4" step="1" value="2" aria-label="Severity">
             <div class="ends"><span>Very mild</span><span>Very severe</span></div>
@@ -233,49 +274,32 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stro
       </div>
 
       <div class="demo">
-        <h3>Navigation (icons)</h3>
+        <h3>Navigation</h3>
         <nav class="nav" aria-label="Main">
           <button class="ni" aria-current="page" aria-label="Summary"><svg class="i"><use href="#i-sum"/></svg></button>
           <button class="ni" aria-label="Find GP"><svg class="i"><use href="#i-gp"/></svg></button>
           <button class="ni" aria-label="Browse"><svg class="i"><use href="#i-browse"/></svg></button>
         </nav>
-        <p style="font-size:.8rem;color:var(--mute)">Icon-only. Each has an accessible name. Not shown on the hologram, note or severity screens.</p>
-      </div>
-
-      <div class="demo">
-        <h3>Entry card</h3>
-        <div class="card">
-          <div class="entry"><b>Sore throat</b><small>24 Nov</small></div>
+        <p class="meta" style="max-width:none">Icons only, each with a name for screen readers. Hidden on the hologram, note and severity screens.</p>
+        <h3 style="margin-top:var(--s3)">Entry card</h3>
+        <div class="frame" style="padding:var(--s4);gap:var(--s2)">
+          <div class="entry"><b>Sore throat</b><span class="meta">24 Nov</span></div>
           <span class="sevtag" style="--c:var(--sev-mod)">Moderate</span>
-          <small style="color:var(--mute)">Dr. Byrne · 1 file attached</small>
+          <span class="meta">Dr. Byrne · 1 file</span>
         </div>
-        <div class="card">
-          <div class="entry"><b>Headache</b><small>9 Nov</small></div>
-          <span class="sevtag" style="--c:var(--sev-mild)">Mild</span>
-          <small style="color:var(--mute)">No visit</small>
-        </div>
-      </div>
-
-      <div class="demo" style="grid-column:1/-1">
-        <h3>Hologram panel (always dark)</h3>
-        <div class="holo">
-          <div class="k">Throat</div>
-          <div class="v">Tap to log</div>
-          <div class="pt">Selected point</div>
-        </div>
-        <p style="font-size:.8rem;color:var(--mute)">The 3D body renders on this surface: a translucent teal shell with a Fresnel edge glow, a base ring, and a slow idle rotation. Drag to turn, tap to select.</p>
       </div>
 
     </div>
   </section>
 
   <section>
-    <h2>Rules that keep it consistent</h2>
+    <h2>Rules</h2>
     <dl class="rule">
-      <dt>One action</dt><dd>One filled button per screen. Everything else is outlined or text.</dd>
+      <dt>One action</dt><dd>One filled button per screen. The rest are outlined or text.</dd>
+      <dt>Teal means act</dt><dd>Accent marks what is selected, active or tappable on the hologram. Nothing else.</dd>
       <dt>Undo</dt><dd>Back, Reset and Skip are always reachable.</dd>
       <dt>Alternatives</dt><dd>3D has a list. Voice has typing. Color has words.</dd>
-      <dt>Tone</dt><dd>Short, warm, plain. Never diagnose.</dd>
+      <dt>Tone</dt><dd>Short, plain, kind. Never diagnose.</dd>
       <dt>Tokens only</dt><dd>No one-off colors, sizes or radii in the app.</dd>
     </dl>
   </section>
@@ -284,19 +308,20 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 
 <script>
 (function(){
-  // chips
-  var grp=document.getElementById('bodyview');
-  grp.addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;
-    grp.querySelectorAll('.chip').forEach(function(c){c.setAttribute('aria-pressed',c===b?'true':'false')})});
-  // note sheet: comforting button appears once there is text or a voice note
+  var g=document.getElementById('gender');
+  g.addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;
+    g.querySelectorAll('.chip').forEach(function(c){c.setAttribute('aria-pressed',c===b?'true':'false')})});
   var note=document.getElementById('f-note'),comfort=document.getElementById('comfort'),mic=document.getElementById('mic'),ms=document.getElementById('mic-state');
   function sync(){comfort.hidden=!(note.value.trim().length||mic.getAttribute('aria-pressed')==='true')}
   note.addEventListener('input',sync);
   mic.addEventListener('click',function(){var on=mic.getAttribute('aria-pressed')!=='true';
-    mic.setAttribute('aria-pressed',on?'true':'false');ms.textContent=on?'Listening (demo only, no audio is recorded)':'';sync()});
-  // severity
-  var names=['Very mild','Mild','Moderate','Severe','Very severe'],r=document.getElementById('sevrange'),l=document.getElementById('sevlbl'),b=document.getElementById('blob');
-  function upd(){var v=+r.value;l.textContent=names[v];b.style.transform='scale('+(0.8+v*0.1)+')'}
+    mic.setAttribute('aria-pressed',on?'true':'false');ms.textContent=on?'Listening (demo, nothing is recorded)':'';sync()});
+  var holo=document.getElementById('holo'),tick=document.getElementById('tick'),px=document.getElementById('px'),py=document.getElementById('py');
+  holo.addEventListener('click',function(e){var r=holo.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+    tick.style.left=x+'px';tick.style.top=y+'px';px.textContent=Math.round(x);py.textContent=Math.round(y)});
+  var names=['Very mild','Mild','Moderate','Severe','Very severe'],r=document.getElementById('sevrange'),l=document.getElementById('sevlbl'),b=document.getElementById('glow');
+  function upd(){var v=+r.value;l.textContent=names[v];b.style.transform='scale('+(0.8+v*0.1)+')';
+    b.style.setProperty('--g',(20+v*14)+'px');b.style.setProperty('--ga','rgba(63,224,208,'+(0.25+v*0.12)+')')}
   r.addEventListener('input',upd);upd();
 })();
 </script>

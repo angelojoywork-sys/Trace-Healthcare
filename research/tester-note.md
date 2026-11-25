@@ -24,7 +24,7 @@ Thank you! [your name]
 - This is a test version. I count how the app is used: which screens you open, how long things take, whether a step worked.
 - I do **not** see your symptoms, notes, GP names, photos or search words. Those stay on your phone.
 - The only thing I read in your own words is the optional comment at the end. Please don't put health details or names in it.
-- To remove everything the app saved: in your browser settings, clear the site data for this page.
+- To remove everything the app saved and start over: open https://trace-healthcare-vvkf.vercel.app/?reset (or clear the site data for this page in your browser settings).
 
 ## Good to know
 

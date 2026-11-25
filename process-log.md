@@ -2,6 +2,12 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06s Reset link
+- **What we did:** Opening the app with `?reset` (for example `/?reset`) now wipes everything it saved on the phone (profile, logs, feedback state, attached photos) and starts at the welcome screen. The `?reset` part is removed from the address afterwards. The anonymous analytics id is kept so a reset does not look like a new person in the numbers.
+- **Why:** The welcome screen only shows to people with no saved profile, so the person building the app (and testers who want to start over) could not see it again without digging in browser settings.
+- **Verified:** headless run: saved data present, `/?reset` shows the welcome screen, saved keys and photo database cleared, unrelated keys and the analytics id kept, other URL parameters kept; no console errors.
+- **Artifacts saved in:** `app/src/main.tsx`, `research/tester-note.md`
+
 ## 2026-11-25 — 06r Severity visual: light at mild, builds with severity
 - **What we did:** Reworked the severity letters. Very mild is now light: a few faint, small letters loosely drifting, with no fixed shape. Each step up adds more letters (they fade in one by one), makes them bigger and brighter, moves them faster, scatters them further and warms the colour from teal to orange. Everything eases between levels.
 - **Why:** User feedback: the clean helix at very mild was too rigid and heavy; the intensity should start light and keep increasing.

@@ -2,6 +2,15 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06k Find GP (screen built, data pending)
+- **What we did:** Built the Find GP tab: "Use my location" (sorts nearest first, location never leaves the phone), search by practice name or town, Call / Directions / Website links, "Show more", a footer saying what the list cannot tell you (new-patient availability, doctor gender) with a link to HSE Find a GP, and OpenStreetMap attribution. Added `tools/make_gp_data.py` to turn a raw OpenStreetMap export into `app/public/data/gp-sites.json`. Allowed geolocation in `vercel.json` (it was blocked).
+- **Why:** The last tab; helps people find a practice, and shows honestly what public data can and cannot do.
+- **Research update:** The HSE "Family Practice (GP) Sites" dataset is no longer in the data.gov.ie catalogue (checked live: dataset page 404, searches empty). OpenStreetMap is the free fallback. This environment's connection to the Overpass server is reset, so the user exports the data from overpass-turbo.eu and uploads it to the repo.
+- **Decisions:** No fake data in the app: until the real file exists the tab shows an honest "not available yet" state with the HSE link. The data ships as a static file so nothing about the user is sent anywhere to load it. No Eircode search (needs a paid geocoder); name or town search instead.
+- **Verified:** headless run with a synthetic fixture kept only in scratch (never committed): converter drops dentists, specialists and nameless entries; sorting by distance; search; tel link; geolocation; no-data state; no console errors.
+- **Open:** Real data file; check its completeness against HSE's ~2,500 practices; share pack for claims; photo resizing; delete entry.
+- **Artifacts saved in:** `app/src/trace/GpScreen.tsx`, `app/src/lib/gps.ts`, `tools/make_gp_data.py`
+
 ## 2026-11-25 — 06j Browse and search
 - **What we did:** Built Browse: a month-grouped timeline of every log, a search bar (symptom, area, GP name, notes, what the GP said, severity words), result count with "first logged" date when something recurs, file counts per entry, and tap-through to Entry detail. Search text survives going to an entry and back.
 - **Why:** This is the "it happened again" payoff from the flows: search "headache" and see every time, who treated it and what worked.

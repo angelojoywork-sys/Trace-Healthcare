@@ -95,12 +95,3 @@ export function SummaryScreen({ name, entries, saved, onLog, onOpen }: Props) {
     </div>
   );
 }
-
-export function ComingNext({ title, line }: { title: string; line: string }) {
-  return (
-    <div className="flex flex-1 flex-col gap-3 px-5 pt-6">
-      <h1 className="text-3xl font-light">{title}</h1>
-      <p className="max-w-[32ch] text-muted-foreground">{line}</p>
-    </div>
-  );
-}

@@ -9,7 +9,8 @@ import type { BodyView } from "./HologramCanvas";
 import { EntryScreen } from "./EntryScreen";
 import { ProfileScreen } from "./ProfileScreen";
 import { SeverityScreen } from "./SeverityScreen";
-import { ComingNext, SummaryScreen } from "./SummaryScreen";
+import { GpScreen } from "./GpScreen";
+import { SummaryScreen } from "./SummaryScreen";
 import { WelcomeScreen } from "./WelcomeScreen";
 
 type Draft = { area: string; note: string; via: "3d" | "list" };
@@ -82,7 +83,7 @@ export function TraceApp() {
       {step.name === "home" && (
         <>
           {tab === "summary" && <SummaryScreen name={profile?.name ?? ""} entries={entries} saved={saved} onLog={() => startLog("summary")} onOpen={(id) => { setSaved(false); setStep({ name: "entry", id }); }} />}
-          {tab === "gp" && <ComingNext title="Find a GP" line="Nearby clinics are coming next." />}
+          {tab === "gp" && <GpScreen />}
           {tab === "browse" && <BrowseScreen entries={entries} query={query} onQuery={setQuery} onOpen={(id) => setStep({ name: "entry", id })} />}
           <BottomNav tab={tab} onTab={(t) => { setSaved(false); setTab(t); track("tab_changed", { tab: t }); }} />
         </>

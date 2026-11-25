@@ -1,0 +1,47 @@
+"""Turn a raw OpenStreetMap Overpass JSON export (Irish doctors) into app/public/data/gp-sites.json.
+
+Run:  python3 -I tools/make_gp_data.py <overpass.json> app/public/data/gp-sites.json [YYYY-MM-DD]
+Data: (c) OpenStreetMap contributors, ODbL. Keep the attribution in the app.
+Keeps named GP-style practices only; drops dentists and specialists.
+"""
+import json, sys, datetime
+
+src, out = sys.argv[1], sys.argv[2]
+stamp = sys.argv[3] if len(sys.argv) > 3 else datetime.date.today().isoformat()
+raw = json.load(open(src))
+
+def first(t, *keys):
+    for k in keys:
+        v = (t.get(k) or "").strip()
+        if v: return v
+    return ""
+
+def is_gp(t):
+    if t.get("amenity") == "dentist" or t.get("healthcare") == "dentist": return False
+    spec = (t.get("healthcare:speciality") or "").lower()
+    if spec and not any(w in spec for w in ("general", "family", "gp")): return False
+    return True
+
+seen, sites = set(), []
+for el in raw.get("elements", []):
+    t = el.get("tags") or {}
+    name = first(t, "name")
+    lat = el.get("lat", (el.get("center") or {}).get("lat"))
+    lon = el.get("lon", (el.get("center") or {}).get("lon"))
+    if not name or lat is None or lon is None or not is_gp(t): continue
+    key = (name.lower(), round(lat, 4), round(lon, 4))
+    if key in seen: continue
+    seen.add(key)
+    street = " ".join(x for x in (first(t, "addr:housenumber"), first(t, "addr:street")) if x)
+    parts = [p for p in (street, first(t, "addr:suburb"), first(t, "addr:city", "addr:town", "addr:village"), first(t, "addr:county"), first(t, "addr:postcode")) if p]
+    site = {"id": f"{el.get('type','n')[0]}{el['id']}", "name": name, "lat": round(lat, 5), "lon": round(lon, 5)}
+    if parts: site["address"] = ", ".join(parts)
+    phone = first(t, "phone", "contact:phone")
+    if phone: site["phone"] = phone
+    web = first(t, "website", "contact:website")
+    if web: site["website"] = web
+    sites.append(site)
+
+sites.sort(key=lambda s: s["name"].lower())
+json.dump({"source": "OpenStreetMap", "generated": stamp, "sites": sites}, open(out, "w"), separators=(",", ":"), ensure_ascii=False)
+print("kept", len(sites), "of", len(raw.get("elements", [])), "elements ->", out)

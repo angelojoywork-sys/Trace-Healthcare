@@ -39,3 +39,18 @@ export async function listFiles(entryId: string): Promise<FileRec[]> {
 }
 
 export const removeFile = (id: string): Promise<undefined> => run("readwrite", (s) => s.delete(id));
+
+/** How many files each entry has, without loading the photos themselves. */
+export function fileCounts(): Promise<Record<string, number>> {
+  return open().then((db) => new Promise<Record<string, number>>((resolve) => {
+    const counts: Record<string, number> = {};
+    const req = db.transaction(STORE, "readonly").objectStore(STORE).index("entryId").openKeyCursor();
+    req.onsuccess = () => {
+      const c = req.result;
+      if (!c) return resolve(counts);
+      counts[c.key as string] = (counts[c.key as string] ?? 0) + 1;
+      c.continue();
+    };
+    req.onerror = () => resolve(counts);
+  })).catch(() => ({}));
+}

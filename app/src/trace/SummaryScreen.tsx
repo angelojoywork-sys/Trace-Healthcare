@@ -7,7 +7,7 @@ import { isThisMonth, relativeDay, severityTone } from "./dates";
 const cap = "font-mono text-[11px] tracking-widest text-muted-foreground uppercase";
 const tone = { mild: "bg-severity-mild", moderate: "bg-severity-moderate", severe: "bg-severity-severe" } as const;
 
-function SeverityTag({ value }: { value: number }) {
+export function SeverityTag({ value }: { value: number }) {
   return (
     <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-widest uppercase">
       <span aria-hidden="true" className={cn("size-2", tone[severityTone(value)])} />

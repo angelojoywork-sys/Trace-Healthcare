@@ -4,6 +4,7 @@ import { loadEntries, saveEntry, type Entry } from "@/lib/entries";
 import { loadProfile, saveProfile, type Profile } from "@/lib/profile";
 import { BodyScreen } from "./BodyScreen";
 import { BottomNav, type Tab } from "./BottomNav";
+import { BrowseScreen } from "./BrowseScreen";
 import type { BodyView } from "./HologramCanvas";
 import { EntryScreen } from "./EntryScreen";
 import { ProfileScreen } from "./ProfileScreen";
@@ -20,6 +21,7 @@ export function TraceApp() {
   const [step, setStep] = useState<Step>(() => (loadProfile() ? { name: "home" } : { name: "welcome" }));
   const [tab, setTab] = useState<Tab>("summary");
   const [saved, setSaved] = useState(false);
+  const [query, setQuery] = useState("");
   useEffect(() => { track("app_open"); }, []);
 
   const startLog = (from: string) => { setSaved(false); track("log_started", { from }); setStep({ name: "body" }); };
@@ -81,7 +83,7 @@ export function TraceApp() {
         <>
           {tab === "summary" && <SummaryScreen name={profile?.name ?? ""} entries={entries} saved={saved} onLog={() => startLog("summary")} onOpen={(id) => { setSaved(false); setStep({ name: "entry", id }); }} />}
           {tab === "gp" && <ComingNext title="Find a GP" line="Nearby clinics are coming next." />}
-          {tab === "browse" && <ComingNext title="Browse" line="Search every log and visit. Coming next." />}
+          {tab === "browse" && <BrowseScreen entries={entries} query={query} onQuery={setQuery} onOpen={(id) => setStep({ name: "entry", id })} />}
           <BottomNav tab={tab} onTab={(t) => { setSaved(false); setTab(t); track("tab_changed", { tab: t }); }} />
         </>
       )}

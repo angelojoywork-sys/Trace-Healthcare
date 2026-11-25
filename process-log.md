@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06j Browse and search
+- **What we did:** Built Browse: a month-grouped timeline of every log, a search bar (symptom, area, GP name, notes, what the GP said, severity words), result count with "first logged" date when something recurs, file counts per entry, and tap-through to Entry detail. Search text survives going to an entry and back.
+- **Why:** This is the "it happened again" payoff from the flows: search "headache" and see every time, who treated it and what worked.
+- **Decisions:** Search runs on the phone. Analytics records only the length of a search and the number of results, never the words. Matching is all-words, case-insensitive substring.
+- **Verified:** headless run with four seeded entries across three months: grouping, "headache" gives 3 results with first date, GP name and severity searches work, no-match message, clear button, back from an entry keeps the query; no console errors.
+- **Open:** Find GP (HSE data), share pack for claims, photo resizing, delete entry, filters (with visit, with files).
+- **Artifacts saved in:** `app/src/trace/BrowseScreen.tsx`
+
 ## 2026-11-25 — 06i Entry detail + GP data research
 - **What we did:** Built Entry detail: visit date, GP (free text with last-used suggestions), what the GP said, and prescription or receipt photos or files. Everything saves as you type (no Save button). Photos are stored in the phone's IndexedDB, never uploaded. Summary rows and the Last logged card now open it; the Visits count is live; a prompt "Add GP visit details" shows until a visit is recorded. Researched GP location data for Find GP.
 - **Why:** This is the part that solves the original problem (remembering what each GP said and keeping prescriptions for claims).

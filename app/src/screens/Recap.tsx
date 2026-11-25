@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TopBar, VoiceText } from "../components/ui";
+import { Feedback, TopBar, VoiceText } from "../components/ui";
 import { downloadIcs, FEELINGS, fmtDate } from "../lib/format";
 import { parseRecap } from "../lib/recap";
 import { regionById } from "../lib/regions";
@@ -54,7 +54,6 @@ export function Recap({ episodeId }: { episodeId?: string }) {
           autoFocus
           placeholder="e.g. Dentist said possible abscess. Amoxicillin 500 three times a day for 7 days. X-ray next week, come back in 2 weeks if not settled."
         />
-        <p className="tiny muted">🔒 Voice is turned into text by your browser. Trace never uploads audio. Record only yourself, not the clinician, unless they agree.</p>
         <button
           className="btn primary block"
           disabled={text.trim().length < 5}
@@ -73,10 +72,10 @@ export function Recap({ episodeId }: { episodeId?: string }) {
   if (stage === "done" && saved)
     return (
       <div className="stack-lg">
-        <TopBar title="Saved" />
+        <TopBar title="Visit logged" />
         <div className="card accent">
-          <h2>✓ Your visit is saved</h2>
-          <p>You don't need to remember it all now. It's in your timeline and on the Show my doctor screen.</p>
+          <h2>✓ Visit added to your timeline</h2>
+          <p>You can find it on your timeline and the Show my doctor screen.</p>
         </div>
         {saved.followUpDate && (
           <div className="card">
@@ -87,6 +86,7 @@ export function Recap({ episodeId }: { episodeId?: string }) {
             </button>
           </div>
         )}
+        <Feedback />
         <button className="btn block" onClick={() => go("/")}>Back to home</button>
       </div>
     );

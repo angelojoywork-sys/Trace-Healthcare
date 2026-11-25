@@ -56,9 +56,11 @@ export function ShowDoctor() {
         <p>Pain now: <strong>{current.answers.severity}/10</strong> · {current.answers.onset}</p>
         {sameArea.length > 1 && (
           <div>
-            <div className="sev-bars" aria-label={`Pain scores over time: ${sameArea.map((e) => e.answers.severity).join(", ")}`}>
+            <div className="sev-dots" aria-label={`Pain scores over time: ${sameArea.map((e) => e.answers.severity).join(", ")}`}>
               {sameArea.map((e) => (
-                <i key={e.id} style={{ height: `${Math.max(8, e.answers.severity * 10)}%` }} title={`${fmtDate(e.createdAt)}: ${e.answers.severity}/10`} />
+                <span key={e.id} title={`${fmtDate(e.createdAt)}: ${e.answers.severity}/10`} style={{ ["--s" as string]: e.answers.severity }}>
+                  {e.answers.severity}
+                </span>
               ))}
             </div>
             <p className="tiny muted">Pain score each time it was logged</p>

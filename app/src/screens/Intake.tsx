@@ -87,7 +87,7 @@ export function Intake() {
     where: "Where is it? Tap the spot.",
     words: `Tell me about your ${region?.label.toLowerCase() ?? "symptom"} in your own words. What does it feel like?`,
     onset: "When did it start?",
-    severity: "How bad is it right now, from 0 to 10?",
+    severity: "How bad is it right now, from 1 to 10?",
     associated: "Do you have any of these?",
     modifiers: "Does anything make it better or worse?",
     anatomy: "One quick question about your body, so I can point you to the right place.",
@@ -131,17 +131,12 @@ export function Intake() {
 
       {step === "severity" && (
         <div className="stack">
-          <div className="scale" role="group" aria-label="Pain or discomfort score">
-            {Array.from({ length: 11 }, (_, n) => (
+          <div className="scale" role="group" aria-label="Pain or discomfort score, 1 to 10">
+            {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
               <button key={n} aria-pressed={a.severity === n} onClick={() => setA({ ...a, severity: n })}>
                 {n}
               </button>
             ))}
-          </div>
-          <div className="spread small muted">
-            <span>0 · none</span>
-            <span>5 · hard to ignore</span>
-            <span>10 · worst</span>
           </div>
         </div>
       )}

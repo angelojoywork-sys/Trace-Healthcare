@@ -17,7 +17,7 @@ export function ProfileForm({ value, onChange }: { value: Profile; onChange: (p:
     <div className="stack-lg">
       <label className="field">
         What should we call you?
-        <input type="text" value={value.name} onChange={(e) => set("name", e.target.value)} placeholder="First name or nickname" autoComplete="given-name" />
+        <input type="text" value={value.name} onChange={(e) => set("name", e.target.value)} placeholder="Enter your name" autoComplete="given-name" />
       </label>
 
       <div className="stack">
@@ -65,7 +65,7 @@ export function ProfileForm({ value, onChange }: { value: Profile; onChange: (p:
             <span>I work, or have worked, and paid <strong>PRSI</strong> <span className="muted small">(you may get free dental check-ups)</span></span>
           </label>
         </div>
-        <p className="tiny muted">Not sure? Leave it blank. HSE Live (1800 700 700) can check your entitlements.</p>
+        <p className="tiny muted">Not sure? Leave it blank.</p>
       </div>
     </div>
   );

@@ -111,6 +111,7 @@ export function BodyMap({ value, onChange }: { value: string | null; onChange: (
 
       {!showList && (
         <svg className="map" viewBox={vb} role="group" aria-label={`Body map, ${view} view`} style={{ maxHeight: "52dvh" }}>
+          {view === "face" && <rect x="-500" y="-500" width="1200" height="1200" fill="transparent" onClick={() => setView("front")} aria-hidden="true" />}
           {parts.map((p) => (
             <Shape
               key={view + p.id}
@@ -119,8 +120,6 @@ export function BodyMap({ value, onChange }: { value: string | null; onChange: (
               onPick={() => (p.id === "@face" ? setView("face") : onChange(p.id))}
             />
           ))}
-          {view === "front" && <text className="lbl" x={100} y={398}>Your right ← → Your left</text>}
-          {view === "face" && <text className="lbl" x={100} y={268}>Your right ← → Your left</text>}
         </svg>
       )}
 
@@ -133,6 +132,8 @@ export function BodyMap({ value, onChange }: { value: string | null; onChange: (
           ))}
         </div>
       )}
+
+      {!showList && view === "face" && <p className="tiny muted center">Tap outside the face to zoom back out.</p>}
 
       {!showList && (
         <div className="stack">

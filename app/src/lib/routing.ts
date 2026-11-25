@@ -70,7 +70,7 @@ export const DOORS: Record<DoorId, Door> = {
     short: "GP co-op",
     icon: "🌙",
     cost: "Usually a fee, unless you have a medical card or GP visit card. Check when you ring.",
-    howTo: "Ring first; most co-ops see you by appointment only. Examples: SouthDoc 0818 355 999 (Cork and Kerry), Caredoc (south-east), MIDOC (midlands). Not sure which one covers you? Ring HSE Live on 1800 700 700.",
+    howTo: "Ring first; most co-ops see you by appointment only. Examples: SouthDoc 0818 355 999 (Cork and Kerry), Caredoc (south-east), MIDOC (midlands).",
     sources: [S.ooh, S.hseLive],
   },
   gp: {
@@ -79,7 +79,7 @@ export const DOORS: Record<DoorId, Door> = {
     short: "GP",
     icon: "🩺",
     cost: "Private visits usually cost €40–€80. Free with a medical card or GP visit card, and for under-8s and over-70s.",
-    howTo: "Ring your GP. If you don't have one, or the lists near you are full, HSE Live (1800 700 700) can help you find one.",
+    howTo: "Ring your GP and ask for the earliest appointment.",
     sources: [S.gpCost, S.hseLive],
     mapsQuery: "GP practice",
   },
@@ -246,7 +246,7 @@ export function route(a: IntakeAnswers, profile: Profile | undefined, now = new 
     alsoConsider: alsoConsider ? DOORS[alsoConsider] : undefined,
     outOfHours: ooh,
     disclaimer:
-      "Trace gives general information from public HSE and other Irish sources. It does not diagnose. If you're unsure, ring a pharmacist, your GP, or HSE Live on 1800 700 700.",
+      "Trace gives general information. It does not diagnose. If you're unsure, ring a pharmacist or your GP.",
   };
 }
 

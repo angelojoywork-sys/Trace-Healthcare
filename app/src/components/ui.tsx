@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { go, useRoute } from "../lib/router";
 import { speechSupported, useDictation } from "../lib/speech";
 
@@ -93,9 +93,7 @@ export function RedFlagScreen({ reason, onSafe }: { reason: string; onSafe: () =
           <a className="btn outline block" href="tel:116123">Samaritans · 116 123 (free, 24/7)</a>
         )}
         {!mind && (
-          <a className="btn outline block" href="https://www.google.com/maps/search/emergency+department+near+me" target="_blank" rel="noreferrer">
-            🏥 Find my nearest ED
-          </a>
+          <NearMe query="emergency department" label="🏥 Find my nearest ED" className="btn outline block" />
         )}
         <p className="small">
           112 and 999 both reach the emergency services in Ireland, and they're free from any phone.
@@ -111,8 +109,7 @@ export function RedFlagScreen({ reason, onSafe }: { reason: string; onSafe: () =
 const TABS = [
   { to: "/", ico: "🏠", label: "Home" },
   { to: "/timeline", ico: "🗓️", label: "Timeline" },
-  { to: "/doctor", ico: "🩺", label: "Show doctor" },
-  { to: "/settings", ico: "🔒", label: "Privacy" },
+  { to: "/doctor", ico: "🩺", label: "Doctor" },
 ];
 
 export function TabBar() {
@@ -144,6 +141,84 @@ export function Section({ title, children }: { title: string; children: ReactNod
     <section className="stack">
       <h2>{title}</h2>
       {children}
+    </section>
+  );
+}
+
+/** Opens Google Maps around the user's real position. Falls back to a plain search if location is denied. */
+export function NearMe({ query, label, className = "btn block" }: { query: string; label: string; className?: string }) {
+  const [msg, setMsg] = useState("");
+  const [busy, setBusy] = useState(false);
+  const open = (w: Window | null, near: string) => {
+    const url = `https://www.google.com/maps/search/${encodeURIComponent(query)}${near}`;
+    if (w) w.location.href = url;
+    else window.open(url, "_blank", "noopener");
+  };
+  const onClick = () => {
+    // Open the tab now (inside the tap) so browsers don't block it after the async location lookup.
+    const w = window.open("", "_blank");
+    if (!navigator.geolocation) {
+      open(w, "+near+me");
+      return;
+    }
+    setBusy(true);
+    setMsg("");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setBusy(false);
+        open(w, `/@${pos.coords.latitude},${pos.coords.longitude},14z`);
+      },
+      () => {
+        setBusy(false);
+        setMsg("Couldn't get your location. Allow location for this site in your browser settings, or search by area.");
+        open(w, "+near+me");
+      },
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
+    );
+  };
+  return (
+    <div className="stack">
+      <button type="button" className={className} onClick={onClick} disabled={busy}>
+        {busy ? "Finding you…" : `${label} ↗`}
+      </button>
+      {msg && <p className="small" role="status">{msg}</p>}
+    </div>
+  );
+}
+
+const FB_KEY = "trace.feedback";
+/** Distinct, attention-grabbing prompt. Answers stay on this device (see the note under the form). */
+export function Feedback() {
+  const [score, setScore] = useState(0);
+  const [note, setNote] = useState("");
+  const [sent, setSent] = useState(false);
+  if (sent) return <div className="card feedback"><p><strong>Thank you.</strong> That helps make Trace easier.</p></div>;
+  return (
+    <section className="card feedback" aria-labelledby="fb-h">
+      <h3 id="fb-h">How easy was that to log?</h3>
+      <div className="scale five" role="group" aria-label="Ease from 1 (hard) to 5 (easy)">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <button key={n} type="button" aria-pressed={score === n} onClick={() => setScore(n)}>{n}</button>
+        ))}
+      </div>
+      <div className="spread tiny"><span>1 · Hard</span><span>5 · Easy</span></div>
+      <input type="text" aria-label="Anything we should change? (optional)" placeholder="Anything we should change? (optional)" value={note} onChange={(e) => setNote(e.target.value)} />
+      <button
+        type="button"
+        className="btn primary"
+        disabled={!score}
+        onClick={() => {
+          try {
+            const all = JSON.parse(localStorage.getItem(FB_KEY) ?? "[]");
+            all.push({ at: new Date().toISOString(), score, note: note.trim() });
+            localStorage.setItem(FB_KEY, JSON.stringify(all));
+          } catch { /* storage blocked */ }
+          setSent(true);
+        }}
+      >
+        Send
+      </button>
+      <p className="tiny">Your answer is stored only on this device. It isn't sent anywhere.</p>
     </section>
   );
 }

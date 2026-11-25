@@ -1,4 +1,4 @@
-import { TopBar } from "../components/ui";
+import { Feedback, NearMe, TopBar } from "../components/ui";
 import { fmtDate } from "../lib/format";
 import { findOption, regionById } from "../lib/regions";
 import { route } from "../lib/routing";
@@ -74,7 +74,7 @@ export function Result({ id }: { id: string }) {
         <p>{r.door.cost}</p>
         {r.entitlements.map((en) => (
           <p key={en.text} className="small">
-            ✅ {en.text} {en.source && <a href={en.source.url} target="_blank" rel="noreferrer">Source</a>}
+            ✅ {en.text}
           </p>
         ))}
         {!data.profile?.ageBand && !data.profile?.medicalCard && (
@@ -85,11 +85,7 @@ export function Result({ id }: { id: string }) {
       <section className="card">
         <h3>📍 What to do</h3>
         <p>{r.door.howTo}</p>
-        {r.door.mapsQuery && (
-          <a className="btn block" href={`https://www.google.com/maps/search/${encodeURIComponent(r.door.mapsQuery + " near me")}`} target="_blank" rel="noreferrer">
-            Find a {r.door.short.toLowerCase()} near me ↗
-          </a>
-        )}
+        {r.door.mapsQuery && <NearMe query={r.door.mapsQuery} label={`Find a ${r.door.short.toLowerCase()} near me`} />}
         {r.alsoConsider && <p className="small muted">Also worth considering: {r.alsoConsider.icon} {r.alsoConsider.name}.</p>}
       </section>
 
@@ -121,22 +117,12 @@ export function Result({ id }: { id: string }) {
         {e.answers.modifiers.length > 0 && <p className="small"><strong>Affected by:</strong> {e.answers.modifiers.join(", ")}</p>}
       </details>
 
-      {r.door.sources.length > 0 && (
-        <p className="tiny muted">
-          Sources:{" "}
-          {r.door.sources.map((s, n) => (
-            <span key={s.url}>
-              {n > 0 && " · "}
-              <a href={s.url} target="_blank" rel="noreferrer">{s.label}</a>
-            </span>
-          ))}
-        </p>
-      )}
       <p className="tiny muted">{r.disclaimer}</p>
 
       <div className="stack no-print">
+        <Feedback />
         <a className="btn primary block" href={`#/recap?episode=${e.id}`}>🎙️ After the visit: log what they said</a>
-        <button className="btn block" onClick={() => go("/")}>Saved. Back to home.</button>
+        <button className="btn block" onClick={() => go("/")}>Back to home</button>
       </div>
     </div>
   );

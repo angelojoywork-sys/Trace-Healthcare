@@ -21,7 +21,10 @@ export function Home() {
     <div className="stack-lg">
       <div className="spread">
         <Logo />
-        <a className="small" href="tel:112">Emergency? 112</a>
+        <div className="row" style={{ flexWrap: "nowrap" }}>
+          <a className="small" href="tel:112">Emergency? 112</a>
+          <a className="avatar" href="#/settings" aria-label="Privacy and profile">{(name?.[0] ?? "🔒").toUpperCase()}</a>
+        </div>
       </div>
       <h1>
         {greet}
@@ -56,7 +59,7 @@ export function Home() {
         <h2 id="checkin-h" style={{ fontSize: "1.1rem" }}>How are you feeling today?</h2>
         {todayCheck ? (
           <p className="muted">
-            {feelingOf(todayCheck.feeling)?.emoji} Logged: {feelingOf(todayCheck.feeling)?.label}. Thanks.
+            {feelingOf(todayCheck.feeling)?.emoji} Today: {feelingOf(todayCheck.feeling)?.label}
           </p>
         ) : (
           <div className="row" style={{ justifyContent: "space-between" }}>

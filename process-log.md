@@ -2,6 +2,13 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 13 Favicon: back to the previous DNA heart
+- **What we did:** The user preferred the earlier DNA heart (white tile, pixel squares, commit `5bcf04f`) over the rebuilt, cleaner version, so the icon files were restored from that commit. The rebuilt version stays in git history (`dcef04d`) if it is wanted later.
+- **Colours check:** The icon uses blue `#1e88e5` (MUI blue 600) to indigo `#9fa8da` (MUI indigo 200) to orange `#ffa726` (MUI orange 400), and squares `#c5cae9` (MUI indigo 100). The squares match the app's pixel colour exactly. The DNA colours match the welcome-screen DNA. They are not the same as the app's interface accent, blue 800 `#1565c0`.
+- **Known flaw:** the lump at the top dip the user circled earlier is back. Left as is, by choice.
+- **Process note:** The user's choice of the less polished version is a design decision to record; reasons given: liked the look.
+- **Artifacts saved in:** `app/public/` icon files
+
 ## 2026-11-25 — 12 Favicon polish: rebuilt the DNA heart cleanly
 - **What we did:** The user circled the top dip of the DNA heart: the two strands collapsed into a lump with a small heart-shaped blob, and strand ends collided. Rebuilt the logo geometry instead of nudging it: a smoothed heart outline (rounded dip and tip), strands that pass over each other exactly at the dip and the tip (a whole number of twists, four), a masked white gap at each crossing so every strand is drawn once, and no leftover seams or flat cut ends. The strands are bolder (about 19 px on a 512 grid). Updated `favicon.ico`, 16, 32, 180, 192, 512 px PNGs and the vector `icon.svg` (60 KB).
 - **What did not work (for the case study):** (1) Thin strands with seven twists chopped into pieces at every crossing. (2) Narrowing the twist only at the corners folded the strands. (3) Beaded "sausage" runs looked broken. (4) Keeping the original build and only changing the twist count still bunched up at the pointed corners. The fix that worked: fewer, bolder twists on a gently rounded heart, with crossings placed at the corners.

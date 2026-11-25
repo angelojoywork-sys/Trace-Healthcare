@@ -2,6 +2,13 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 08 Every load starts at the welcome screen
+- **What we did:** The app now starts at the welcome screen on every load or reload (Option B, chosen by the user). Saved logs, profile and photos are kept. For someone who already has a profile, "Log symptom" skips the name and gender screen and goes straight to the body; the close button there leads to Summary with their saved logs.
+- **Why:** User wanted a reload to show the welcome page.
+- **Trade-off flagged to the user:** Returning users no longer land on Summary; they reach it through the close button on the body screen. A visible "Open my log" button on the welcome screen is a possible follow-up if testers find that confusing (not built, not asked for).
+- **Verified:** headless run: fresh load shows welcome, then name and gender, then the body; after saving a log and reloading, the welcome shows again with profile and logs still stored; returning "Log symptom" opens the body; close reaches Summary with the saved log; no console errors.
+- **Artifacts saved in:** `app/src/trace/TraceApp.tsx`
+
 ## 2026-11-25 — 07 Removed the pastel colour wash
 - **What we did:** Removed the pastel colour wash (indigo, light blue, pink, orange) from behind the app, at the user's request. The Mist background with the square pattern and the version 6 glass panels stay.
 - **Why:** The wash was added without being asked for. The user asked "what do you think?" about making the white panels liquid glass; I should have proposed the idea and waited for approval. The user chose Mist, which has no pink or orange.

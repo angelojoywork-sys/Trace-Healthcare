@@ -23,7 +23,8 @@ type Step = { name: "welcome" } | { name: "profile" } | { name: "body" } | { nam
 export function TraceApp() {
   const [profile, setProfile] = useState<Profile | null>(() => loadProfile());
   const [entries, setEntries] = useState<Entry[]>(() => loadEntries());
-  const [step, setStep] = useState<Step>(() => (loadProfile() ? { name: "home" } : { name: "welcome" }));
+  // Every load starts at the welcome screen. Saved logs and the profile are kept.
+  const [step, setStep] = useState<Step>({ name: "welcome" });
   const [tab, setTab] = useState<Tab>("summary");
   const [saved, setSaved] = useState(false);
   const [query, setQuery] = useState("");
@@ -62,7 +63,7 @@ export function TraceApp() {
   return (
     <div className="relative isolate mx-auto flex h-dvh max-w-md flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-foreground">
       <PixelBackground />
-      {step.name === "welcome" && <WelcomeScreen onLog={() => { track("welcome_log_symptom"); setStep({ name: "profile" }); }} />}
+      {step.name === "welcome" && <WelcomeScreen onLog={() => { track("welcome_log_symptom"); if (profile) startLog("welcome"); else setStep({ name: "profile" }); }} />}
 
       {step.name === "profile" && (
         <ProfileScreen

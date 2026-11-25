@@ -2,6 +2,15 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06m Share pack for claims
+- **What we did:** Built Share visit (a share icon on Entry detail). The person ticks what to include (visit details always; name, symptom note, what the GP said, each file), then taps Share (phone share sheet, with the PDF and any PDF attachments as files), Save PDF, or Copy summary. The PDF is made on the phone: one summary page, then each selected photo on its own page (photos are resized to 1600 px and compressed).
+- **Why:** Insurance claims were part of the original problem (the girlfriend needing the prescription and visit details to claim).
+- **Decisions:** Nothing is uploaded; the user chooses where it goes. Name is opt-in per share. PDF attachments cannot be merged into the PDF client-side, so they are sent as separate files. jsPDF (MIT) is loaded only when a PDF is made. This also resizes photos for the PDF, but stored originals are not resized yet.
+- **Verified:** headless run: rows shown, PDF downloads (valid, 2 pages with a photo; 1 page when the photo is unticked and the GP note removed), copy summary text correct, no console errors. The native share sheet cannot be tested in a headless browser; test on a phone.
+- **Research:** HSE Health Directory API (doctors and locations) is available on request per HIQA and eHealth Ireland; no public application form found. Plan: email eHealth Ireland.
+- **Open:** Test share sheet on iPhone and Android; photo resizing at capture; delete entry; HSE API request.
+- **Artifacts saved in:** `app/src/trace/SharePack.tsx`, `app/src/lib/sharepack.ts`
+
 ## 2026-11-25 — 06l Find GP data loaded (OpenStreetMap, partial)
 - **What we did:** User exported Irish doctor data from Overpass Turbo (661 raw records; the GeoJSON and JSON exports held the same data). Converted with `tools/make_gp_data.py` to `app/public/data/gp-sites.json`: 524 practices (dropped nameless entries, dentists, podiatrists, physios and non-GP specialists). 199 have a phone, 190 a website, 339 an address. Raw file kept in `data/raw/`.
 - **Finding (important for the case study):** 524 of about 2,500 practices the HSE lists is roughly 21% coverage. Dublin is the best covered (75 with Dublin in the address); most counties have only a handful.

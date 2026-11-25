@@ -8,13 +8,14 @@ import { BrowseScreen } from "./BrowseScreen";
 import type { BodyView } from "./HologramCanvas";
 import { EntryScreen } from "./EntryScreen";
 import { ProfileScreen } from "./ProfileScreen";
+import { SharePack } from "./SharePack";
 import { SeverityScreen } from "./SeverityScreen";
 import { GpScreen } from "./GpScreen";
 import { SummaryScreen } from "./SummaryScreen";
 import { WelcomeScreen } from "./WelcomeScreen";
 
 type Draft = { area: string; note: string; via: "3d" | "list" };
-type Step = { name: "welcome" } | { name: "profile" } | { name: "body" } | { name: "severity"; draft: Draft } | { name: "home" } | { name: "entry"; id: string };
+type Step = { name: "welcome" } | { name: "profile" } | { name: "body" } | { name: "severity"; draft: Draft } | { name: "home" } | { name: "entry"; id: string } | { name: "share"; id: string };
 
 export function TraceApp() {
   const [profile, setProfile] = useState<Profile | null>(() => loadProfile());
@@ -77,7 +78,12 @@ export function TraceApp() {
 
       {step.name === "entry" && (() => {
         const entry = entries.find((e) => e.id === step.id);
-        return entry ? <EntryScreen entry={entry} onBack={() => { setEntries(loadEntries()); setStep({ name: "home" }); }} /> : null;
+        return entry ? <EntryScreen entry={entry} onBack={() => { setEntries(loadEntries()); setStep({ name: "home" }); }} onShare={() => { setEntries(loadEntries()); setStep({ name: "share", id: entry.id }); }} /> : null;
+      })()}
+
+      {step.name === "share" && (() => {
+        const entry = entries.find((e) => e.id === step.id);
+        return entry ? <SharePack entry={entry} name={profile?.name ?? ""} onBack={() => setStep({ name: "entry", id: entry.id })} /> : null;
       })()}
 
       {step.name === "home" && (

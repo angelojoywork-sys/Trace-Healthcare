@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Camera, ChevronLeft, FileText, Upload, X } from "lucide-react";
+import { Camera, ChevronLeft, FileText, Share2, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -33,9 +33,9 @@ function Thumb({ rec, onRemove }: { rec: FileRec; onRemove: () => void }) {
   );
 }
 
-type Props = { entry: Entry; onBack: () => void };
+type Props = { entry: Entry; onBack: () => void; onShare: () => void };
 
-export function EntryScreen({ entry, onBack }: Props) {
+export function EntryScreen({ entry, onBack, onShare }: Props) {
   const [gp, setGp] = useState(entry.gp ?? "");
   const [visitDate, setVisitDate] = useState(entry.visitDate ?? "");
   const [said, setSaid] = useState(entry.gpSaid ?? "");
@@ -73,6 +73,7 @@ export function EntryScreen({ entry, onBack }: Props) {
             {SEVERITY[entry.severity]} <span className="text-muted-foreground">· {relativeDay(entry.createdAt)}</span>
           </p>
         </div>
+        <Button variant="outline" size="icon" aria-label="Share visit" className="ml-auto size-11 rounded-sm" onClick={onShare}><Share2 className="size-5" /></Button>
       </header>
 
       <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-5 pt-6 pb-8">

@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 11 Favicon final: the DNA heart on a white tile
+- **What we did:** After about fifteen favicon explorations, the user chose to go back to the polished DNA heart (two strands weaving into a heart, blue at the bottom to orange at the top) with the tile background white and the app's pixel squares kept. Replaced the pale Mist tile colour with white in the vector logo, rendered PNGs (16, 32, 180, 192, 512, plus `favicon.ico`) and added the vector `icon.svg` for modern browsers and the manifest.
+- **Why:** The explorations moved through dotted hearts, network lines, pill rows, bristles, a helix, a person and a T mark. None beat the DNA heart that the user already liked; the user asked to return to it.
+- **Lessons for the case study:** (1) Agree one direction before building variations. (2) Test every icon at 16 px early; most reference styles (fine lines, gradients, glow) do not survive that size. (3) Keep the chosen option and change one thing at a time.
+- **Verified:** build passes; preview checked large, at real tab sizes on light and dark tabs, and as the 180 px home-screen icon.
+- **Note:** At 16 px the fine strands blur into a small heart with a blue-to-orange gradient; the white tile blends into a light browser tab. Browsers cache favicons, so a new tab or hard refresh may be needed.
+- **Artifacts saved in:** `app/public/` icons, `app/public/icon.svg`, `app/index.html`, `app/public/manifest.webmanifest`
+
 ## 2026-11-25 — 10 New web address
 - **What we did:** The user renamed the Vercel domain to `trace-health-ie.vercel.app` (the first choice, `trace-health`, was taken by another project). Updated the link and the reset link in `research/tester-note.md`.
 - **Note:** I could not open the new address from the build environment (network limits), so it has not been checked from here; the user should confirm it opens. If "Redirect old domain to new" was chosen in Vercel, links already shared still work.

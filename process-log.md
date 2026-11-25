@@ -2,6 +2,13 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06z Liquid glass: colour-fringe version applied
+- **What we did:** User picked version 6 (colour fringe) from the liquid glass options. Every glass panel now uses it: very light white, a little blur, a blue tint on the left edge and an orange tint on the right edge, a bright top edge and a soft shadow. Lists use the same look without blur. The note panel (text over the striped body) gets a stronger blur and a bit more white so the small labels stay readable.
+- **Why:** Matches the user's preferred liquid glass look from the comparison page.
+- **Verified:** headless screenshots at 2x of welcome, name and gender, note panel and summary; no console errors. Text contrast over the note panel checked by eye; small labels read clearly.
+- **Open:** If true edge bending is wanted later, the lens version (4) is the cross-browser way; real-phone performance check of blur plus colour wash; design system page still shows the old dark theme.
+- **Artifacts saved in:** `app/src/globals.css`, `app/src/trace/NoteSheet.tsx`
+
 ## 2026-11-25 — 06y Liquid glass: colour wash behind the panels, true circle for severity
 - **What we did:** (1) The severity ball is now a true circle (the ragged outline is gone); a thin rim of squares keeps the circle readable even at 1, and at 10 the disc is nearly solid. (2) Added a slowly drifting pastel colour wash (indigo, light blue, pink, orange from the Mist family) behind the square pattern. Glass panels are more transparent and saturate and blur the colour behind them, with a sheen and bright rim, so every panel now reads as liquid glass, not as a white card. Lists use a no-blur version for speed. (3) Built `design/liquid-glass-options.html`: six versions on the same background, including real edge bending (one using a browser filter that only Chrome and Edge have, one drawn by us that works on iPhone).
 - **Why:** User liked the note panel over the body as liquid glass; the other panels sat on a plain pale background and looked like flat white cards. Glass only looks like glass when there is colour and detail behind it. The earlier version was frosted glass, not liquid glass (no bending at the edges).

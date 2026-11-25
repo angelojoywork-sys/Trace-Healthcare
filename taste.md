@@ -32,6 +32,20 @@ This is the shared playbook for every product (mobile app or website). Every pro
 8. **Case study**
    - Turn the documentation into the portfolio piece: problem, research, insights, process, solution, results, reflection.
 
+## Design & UI principles
+Apply from the first wireframe onwards, even in low-fidelity.
+- **Hierarchy:** one primary action per screen. Size, weight and position show what matters most.
+- **Consistency:** same component, same place, same behaviour. Use design system tokens, never one-off values.
+- **Grouping and spacing:** related things sit close together, aligned to a grid. Spacing on a 4/8pt scale.
+- **Feedback and recovery:** every action responds. Every step can be undone (Back, Reset, Skip).
+- **Recognition over recall:** visible labels. Icon-only controls must have an accessible name.
+- **Progressive disclosure:** ask only what is needed, when it is needed. Say why. Mark optional fields as optional.
+- **Accessibility (WCAG 2.2 AA):** text contrast 4.5:1 (3:1 for large text and controls). Tap targets at least 44x44pt. Never use colour alone. Text scales up. Gesture, 3D and voice features always have a simple alternative. Respect reduced motion.
+- **Platform:** follow Apple HIG. Respect safe areas. Put primary actions within thumb reach.
+- **Content:** plain, calm, kind language. Short. No diagnosis or medical advice.
+- **Motion:** purposeful, under 500ms, with a reduced-motion fallback.
+- **Privacy and trust (health data):** private by default, explain what is stored and why, get consent (GDPR), minimise what we collect.
+
 ## Documentation conventions
 - Each project keeps its artifacts in folders that follow the steps above (this repo uses `research/` and `design/`).
 - Keep a running `process-log.md` per project: date, what we did, why, what we learned.

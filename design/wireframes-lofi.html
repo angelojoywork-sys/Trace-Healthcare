@@ -1,0 +1,170 @@
+<title>Trace Lo-Fi Wireframes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one section per user flow, each a horizontal row of grey phone mock-ups with handwritten notes beneath. */
+:root{
+  --bg:#f1f2f3; --paper:#ffffff; --line:#c5c9cd; --ink:#26292c; --mute:#666e75;
+  --fill:#e3e6e8; --mark:#1b6e69; --mark-soft:#d3ebe9;
+  --sans:'Geist',system-ui,sans-serif; --mono:'Geist Mono',ui-monospace,monospace; --hand:'Caveat','Segoe Print',cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1c1d1e; --paper:#262728; --line:#454749; --ink:#e8e9ea; --mute:#9a9fa4;
+  --fill:#323435; --mark:#3fe0d0; --mark-soft:#1c3a37; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1c1d1e; --paper:#262728; --line:#454749; --ink:#e8e9ea; --mute:#9a9fa4;
+  --fill:#323435; --mark:#3fe0d0; --mark-soft:#1c3a37; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:300 15px/1.5 var(--sans);margin:0;
+  padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1{font:300 clamp(1.8rem,5vw,2.6rem)/1.1 var(--sans);margin:0 0 6px;text-wrap:balance}
+h2{font:400 1.25rem/1.2 var(--sans);margin:0}
+.cap{font:400 .7rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.sub{color:var(--mute);max-width:66ch;margin:0}
+.links{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font:400 .75rem var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.links a{color:var(--mark)}
+.fhead{display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
+.goal{color:var(--mute);max-width:70ch}
+.lane{overflow-x:auto;padding-bottom:12px}
+.steps{display:flex;gap:0;align-items:flex-start;width:max-content;padding:4px 2px}
+.step{display:flex;flex-direction:column;gap:8px;width:220px;flex:none}
+.arrow{width:44px;flex:none;align-self:center;margin-top:-80px;text-align:center;color:var(--mute);font-size:1.3rem}
+.tag{font:400 .68rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.note{font-family:var(--hand);font-size:1.15rem;line-height:1.1;color:var(--mark);text-wrap:balance}
+.test{margin-top:10px;font:400 .72rem/1.5 var(--mono);letter-spacing:.04em;color:var(--mute)}
+.test b{color:var(--ink);font-weight:500}
+/* phone */
+.phone{width:220px;height:440px;background:var(--paper);border:2px solid var(--ink);border-radius:26px;padding:12px;display:flex;flex-direction:column;gap:9px;position:relative;overflow:hidden}
+.phone::before{content:"";width:60px;height:5px;border-radius:3px;background:var(--line);align-self:center;flex:none}
+.t{font-weight:400;font-size:.9rem;line-height:1.25}
+.big{font-weight:300;font-size:1.15rem;line-height:1.2}
+.s{font-size:.68rem;color:var(--mute);line-height:1.35}
+.k{font:400 .58rem/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.c{text-align:center}
+.grow{flex:1;min-height:0}
+.row{display:flex;gap:7px;align-items:center}
+.between{justify-content:space-between}
+.btn{background:var(--ink);color:var(--paper);font:500 .62rem var(--mono);letter-spacing:.1em;text-transform:uppercase;text-align:center;padding:12px 8px;border-radius:2px}
+.btn.o{background:none;color:var(--ink);border:1px solid var(--ink)}
+.btn.l{background:none;color:var(--mute);text-decoration:underline;padding:5px}
+.fld{border:1px solid var(--line);border-radius:2px;padding:9px;font-size:.7rem;color:var(--mute)}
+.fld.v{color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{border:1px solid var(--line);border-radius:2px;padding:6px 8px;font:400 .58rem var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.chip.on{border-color:var(--mark);color:var(--mark)}
+.img{background:linear-gradient(to top right,transparent calc(50% - 1px),var(--line),transparent calc(50% + 1px)),linear-gradient(to bottom right,transparent calc(50% - 1px),var(--line),transparent calc(50% + 1px));border:1px solid var(--line)}
+.frame{border-left:1px solid var(--line);border-right:1px solid var(--line);padding:9px;display:flex;flex-direction:column;gap:5px;
+  background:linear-gradient(var(--line),var(--line)) top left/9px 1px no-repeat,linear-gradient(var(--line),var(--line)) top right/9px 1px no-repeat,linear-gradient(var(--line),var(--line)) bottom left/9px 1px no-repeat,linear-gradient(var(--line),var(--line)) bottom right/9px 1px no-repeat}
+.cnt{color:var(--mark);font:400 .6rem var(--mono);letter-spacing:.08em}
+svg.i{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.cb{width:28px;height:28px;border:1px solid var(--line);border-radius:2px;display:grid;place-items:center;color:var(--ink);background:var(--paper);padding:0}
+.top{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.top .t{font:400 .62rem var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.nav{display:flex;justify-content:space-around;border-top:1px solid var(--line);padding-top:7px;margin-top:auto}
+.ni{width:44px;height:28px;display:grid;place-items:center;color:var(--mute);position:relative}
+.ni.on{color:var(--mark)}
+.ni.on::after{content:"";position:absolute;bottom:0;left:50%;width:14px;height:2px;margin-left:-7px;background:var(--mark)}
+.fab{position:absolute;right:14px;bottom:56px;width:36px;height:36px;background:var(--mark);color:var(--paper);display:grid;place-items:center;font-size:1.3rem;border-radius:2px}
+.holo{position:relative;display:grid;place-items:center;flex:1;min-height:0}
+.holo svg{height:100%;width:100%}
+.pin{position:absolute;width:14px;height:14px;border:1.5px solid var(--mark);background:var(--mark-soft);box-shadow:0 0 0 6px color-mix(in srgb,var(--mark) 14%,transparent)}
+.hud{position:absolute;left:10px;right:10px;bottom:10px;border:1px solid var(--line);background:color-mix(in srgb,var(--paper) 94%,transparent);padding:10px;display:flex;flex-direction:column;gap:7px}
+.xy{font:400 .62rem var(--mono);letter-spacing:.06em;color:var(--mute)}.xy b{color:var(--ink);font-weight:500;margin-right:3px}
+.mic{width:34px;height:34px;border:1px solid var(--mark);color:var(--mark);display:grid;place-items:center;flex:none;border-radius:2px}
+.glow{width:92px;height:92px;border-radius:44% 56% 52% 48%/48% 44% 56% 52%;background:var(--mark-soft);margin:0 auto;border:1px solid var(--mark);box-shadow:0 0 28px color-mix(in srgb,var(--mark) 40%,transparent)}
+.slider{height:2px;background:var(--line);position:relative;margin:8px 0}
+.slider::after{content:"";position:absolute;left:58%;top:-8px;width:18px;height:18px;border:1.5px solid var(--ink);background:var(--paper)}
+.banner{border:1px solid var(--mark);padding:8px;display:flex;flex-direction:column;gap:3px;color:var(--ink)}
+.dot{width:8px;height:8px;background:var(--mark);flex:none}
+.bar{height:7px;background:var(--fill)}.w60{width:60%}.w40{width:40%}.w80{width:80%}
+.open{border-top:1px solid var(--line);padding-top:20px;max-width:72ch}
+.open h2{margin-bottom:8px}
+.open ul{margin:0;padding-left:1.1rem;display:flex;flex-direction:column;gap:6px}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-sum" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol>
+  <symbol id="i-gp" viewBox="0 0 24 24"><path d="M12 21s-6-5.5-6-10a6 6 0 0 1 12 0c0 4.5-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></symbol>
+  <symbol id="i-browse" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5"/><rect x="13.5" y="4" width="6.5" height="6.5"/><rect x="4" y="13.5" width="6.5" height="6.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M5 13v6h14v-6"/></symbol>
+</svg>
+
+<div class="wrap">
+  <header>
+    <div class="cap">Version 3 · Low fidelity</div>
+    <h1>Trace wireframes and user flows</h1>
+    <p class="sub">Five flows a person can take, built from 14 screens. Grey boxes are placeholders and teal handwriting is the reasoning. Style follows the new design system direction (bracket frames, mono labels, one teal accent).</p>
+    <div class="links"><span>Earlier versions:</span><a href="https://claude.ai/artifact/6gYtg7kYkNA5SD4WcGv1co">v1</a><a href="https://claude.ai/artifact/63LJ7ryJYvvQXy7QEogtmm">v2</a></div>
+  </header>
+
+  <div id="flows" style="display:flex;flex-direction:column;gap:56px"></div>
+
+  <section class="open">
+    <h2>Questions for you</h2>
+    <ul>
+      <li>"Log symptom" lets people start without signing in, so email sign-in is gone. Guest data stays on the phone until they back it up with Google. Is that what you want?</li>
+      <li>Gender options are Female, Male, Prefer not to say. Add "Other"?</li>
+      <li>"List view" on the hologram screen is a fallback for people who can't use the 3D view (screen reader, motor difficulty, or a slow phone). Keep it as a small link or drop it for the MVP?</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+(function(){
+  var I=function(n){return '<svg class="i"><use href="#i-'+n+'"/></svg>'};
+  var nav=function(on){return '<nav class="nav" aria-label="Main">'+['sum:Summary','gp:Find GP','browse:Browse'].map(function(x){var p=x.split(':');return '<span class="ni'+(on===p[0]?' on':'')+'" role="img" aria-label="'+p[1]+'">'+I(p[0])+'</span>'}).join('')+'</nav>'};
+  var body='<svg viewBox="0 0 120 250" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3" aria-label="3D body hologram placeholder"><circle cx="60" cy="22" r="16"/><rect x="38" y="42" width="44" height="82" rx="14"/><rect x="14" y="46" width="18" height="78" rx="9"/><rect x="88" y="46" width="18" height="78" rx="9"/><rect x="40" y="128" width="18" height="108" rx="9"/><rect x="62" y="128" width="18" height="108" rx="9"/><ellipse cx="60" cy="242" rx="46" ry="6" stroke="var(--mark)" stroke-dasharray="none"/></svg>';
+  var entries=function(){return '<div class="frame"><div class="row between"><span class="t">Sore throat</span><span class="k">24 Nov</span></div><span class="k">Moderate · Dr. ______ · 1 file</span></div><div class="frame"><div class="row between"><span class="t">Headache</span><span class="k">9 Nov</span></div><span class="k">Mild · no visit</span></div>'};
+
+  var S={
+  welcome:{n:'Welcome',note:'Two ways in. Guests start logging at once.',h:
+    '<div class="grow"></div><div class="img" style="width:64px;height:64px;align-self:center"></div><div class="c"><div class="big">Remember every visit.</div><div class="s">Symptoms, doctors, prescriptions. One place.</div></div><div class="grow"></div><div class="btn">Continue with Google</div><div class="btn o">Log symptom</div><div class="s c">Private by default. Encrypted.</div>'},
+  name:{n:'About you',note:'Two fields. Nothing dramatic.',h:
+    '<div class="big" style="margin-top:8px">Tell us about you</div><div class="fld">Name</div><div class="k" style="margin-top:4px">Gender</div><div class="chips"><span class="chip on">Female</span><span class="chip">Male</span><span class="chip">Prefer not to say</span></div><div class="grow"></div><div class="btn">Continue</div><div class="btn l">Skip</div>'},
+  holo:{n:'Hologram',note:'Full focus, no tab bar. Rotate with a drag.',h:
+    '<div class="frame" style="flex:1;min-height:0"><div class="row between"><div><div class="t">Tap to log</div><div class="k">Drag to turn</div></div><span class="cnt">01 / 03</span></div><div class="holo">'+body+'<div class="pin" style="top:30%;left:58%"></div></div></div><div class="btn l">List view</div>'},
+  note:{n:'Zoom + note',note:'Zooms to the tap. Panel borrowed from the Archetype reference.',h:
+    '<div class="top"><span class="cb" role="img" aria-label="Back, zoom out">'+I('back')+'</span><span class="cnt">02 / 03</span><span class="cb" role="img" aria-label="Reset">'+I('reset')+'</span></div><div class="img" style="flex:1;position:relative"><div class="pin" style="top:36%;left:46%"></div></div><div style="height:218px"></div><div class="hud"><div class="xy"><b>X</b>212 &nbsp;<b>Y</b>121</div><div><div class="k">Area</div><div class="t">Throat</div></div><div><div class="k">When</div><div class="t">Today, 25 Nov</div></div><div class="row" style="align-items:flex-start"><div class="fld v" style="flex:1;height:40px">Sharp pain when I swallow</div><span class="mic" role="img" aria-label="Speak">'+I('mic')+'</span></div><div class="btn">Almost there</div></div>'},
+  severity:{n:'Severity',note:'Same placements as the Apple mood screen.',h:
+    '<div class="top"><span class="cb" role="img" aria-label="Back">'+I('back')+'</span><span class="t">Severity</span><span class="cb" role="img" aria-label="Close">'+I('x')+'</span></div><div class="big c" style="margin-top:8px">How bad is it<br>right now?</div><div class="grow"></div><div class="glow"></div><div class="grow"></div><div class="c t">Moderate</div><div class="slider"></div><div class="row between"><span class="k">Very mild</span><span class="k">Very severe</span></div><div class="btn">Next</div>'},
+  summary:{n:'Summary',note:'Overview first. "+" logs another.',h:
+    '<div class="big" style="margin-top:6px">Summary</div><div class="frame"><span class="k">Last logged</span><span class="t">Sore throat · Moderate</span><span class="k">Today · no visit yet</span></div><div class="row"><div class="frame" style="flex:1"><span class="k">This month</span><span class="t">4 logs</span></div><div class="frame" style="flex:1"><span class="k">Visits</span><span class="t">2</span></div></div><span class="k">Recent</span>'+entries()+'<div class="fab" role="img" aria-label="Log a symptom">+</div>'+nav('sum')},
+  summaryGuest:{n:'Summary (guest)',note:'Back-up prompt appears after the first save, not before.',h:
+    '<div class="big" style="margin-top:6px">Summary</div><div class="banner"><span class="t">Back up your logs</span><span class="s">Saved on this phone only.</span><span class="k" style="color:var(--mark)">Continue with Google →</span></div><div class="frame"><span class="k">Last logged</span><span class="t">Sore throat · Moderate</span><span class="k">Today · no visit yet</span></div><span class="k">Recent</span><div class="frame"><div class="row between"><span class="t">Sore throat</span><span class="k">Today</span></div><span class="k">Moderate</span></div><div class="fab" role="img" aria-label="Log a symptom">+</div>'+nav('sum')},
+  entry:{n:'Entry detail',note:'Everything about one episode, filled in after the GP.',h:
+    '<div class="top"><span class="cb" role="img" aria-label="Back">'+I('back')+'</span><span class="cb" role="img" aria-label="Share">'+I('share')+'</span></div><div class="t">Sore throat · Moderate</div><div><div class="k">Area</div><div class="s" style="color:var(--ink)">Throat</div></div><div class="fld">Date · 24 Nov 2026</div><div class="fld">GP · Dr. ______ ▾</div><div class="fld" style="height:46px">What the GP said</div><div class="k">Prescription or receipt</div><div class="row"><div class="img" style="width:54px;height:54px"></div><div class="chip">Take photo</div></div><div class="chip" style="align-self:flex-start">Upload file</div><div class="grow"></div><div class="btn">Save</div>'},
+  share:{n:'Share pack',note:'One pack for the insurer or Med 1: files plus dates.',h:
+    '<div class="top"><span class="cb" role="img" aria-label="Close">'+I('x')+'</span><span class="t">Share visit</span><span style="width:28px"></span></div><div class="frame"><span class="k">Included</span><div class="row between"><span class="s" style="color:var(--ink)">Prescription.jpg</span><span class="dot"></span></div><div class="row between"><span class="s" style="color:var(--ink)">Receipt.jpg</span><span class="dot"></span></div><div class="row between"><span class="s" style="color:var(--ink)">Dates and GP name</span><span class="dot"></span></div></div><div class="s">Nothing is sent until you choose where.</div><div class="grow"></div><div class="btn">Share</div><div class="btn o">Save to phone</div>'},
+  browse:{n:'Browse',note:'The full timeline, newest first.',h:
+    '<div class="big" style="margin-top:6px">Browse</div><div class="fld">Search symptoms, GPs, dates</div><span class="k" style="margin-top:2px">November 2026</span>'+entries()+'<span class="k">September 2026</span><div class="frame"><div class="row between"><span class="t">Headache</span><span class="k">12 Sep</span></div><span class="k">Dr. ______ · 2 files</span></div><div class="grow"></div>'+nav('browse')},
+  results:{n:'Search: headache',note:'The payoff. Every time, in one list.',h:
+    '<div class="big" style="margin-top:6px">Browse</div><div class="fld v">headache</div><span class="k" style="margin-top:2px">3 results</span><div class="frame"><div class="row between"><span class="t">Headache</span><span class="k">9 Nov</span></div><span class="k">Mild · no visit</span></div><div class="frame"><div class="row between"><span class="t">Headache</span><span class="k">12 Sep</span></div><span class="k">Moderate · Dr. ______ · 2 files</span></div><div class="frame"><div class="row between"><span class="t">Headache</span><span class="k">3 Jun</span></div><span class="k">Severe · Dr. ______ · 1 file</span></div><div class="grow"></div>'+nav('browse')},
+  gpAsk:{n:'Find GP',note:'Ask for location here, with the reason.',h:
+    '<div class="big" style="margin-top:6px">Find a GP</div><div class="grow"></div><div class="hud" style="position:static"><div class="k">Location</div><div class="t">See GPs near you</div><div class="s">Used only to search nearby. Not stored.</div><div class="btn">Allow location</div><div class="btn o">Enter Eircode</div><div class="btn l">Not now</div></div><div class="grow"></div>'+nav('gp')},
+  gpList:{n:'GP list',note:'Nearby clinics. Call or get directions.',h:
+    '<div class="big" style="margin-top:6px">Find a GP</div><div class="fld">Near D04, Dublin</div><div class="chips"><span class="chip on">All</span><span class="chip">Open now</span><span class="chip">My GPs</span></div><div class="frame"><span class="t">Practice name</span><span class="k">0.8 km · Open until 6pm</span><div class="row"><span class="chip">Call</span><span class="chip">Directions</span></div></div><div class="frame"><span class="t">Practice name</span><span class="k">1.4 km · Closed</span><div class="row"><span class="chip">Call</span><span class="chip">Directions</span></div></div><div class="grow"></div>'+nav('gp')}
+  };
+
+  var F=[
+   {t:'A · First log, new user',g:'Sign in, then log the first symptom end to end.',q:'Can they log a symptom from the hologram without help? How long does it take?',s:['welcome','name','holo','note','severity','summary']},
+   {t:'B · Quick log, guest',g:'Someone in pain who just wants to write it down, no account.',q:'Do they notice the back-up prompt afterwards? Do they tap it?',s:['welcome','holo','note','severity','summaryGuest']},
+   {t:'C · After the GP visit',g:'Add what the doctor said and the prescription, then share it for a claim.',q:'Do they find the entry and attach a photo on their own? Does the share pack feel complete?',s:['summary','entry','share']},
+   {t:'D · It happened again',g:'Months later, the same symptom. Find every time it happened.',q:'Do they use search first or scroll? Do they read the old GP notes?',s:['summary','browse','results','entry']},
+   {t:'E · Find a GP',g:'Look for a nearby GP when you need one.',q:'Are they comfortable giving location? Do they use Eircode instead?',s:['summary','gpAsk','gpList']}
+  ];
+
+  var root=document.getElementById('flows');
+  F.forEach(function(f,fi){
+    var sec=document.createElement('section');
+    var steps=f.s.map(function(k,i){var sc=S[k];
+      return (i?'<div class="arrow" aria-hidden="true">→</div>':'')+'<div class="step"><div class="tag">'+'ABCDE'[fi]+(i+1)+' · '+sc.n+'</div><div class="phone">'+sc.h+'</div><div class="note">'+(sc.note||'')+'</div></div>'}).join('');
+    sec.innerHTML='<div class="fhead"><div class="cap">Flow '+'ABCDE'[fi]+'</div><h2>'+f.t.slice(4)+'</h2><p class="goal">'+f.g+'</p></div><div class="lane"><div class="steps">'+steps+'</div></div><div class="test"><b>Test:</b> '+f.q+'</div>';
+    root.appendChild(sec);
+  });
+})();
+</script>

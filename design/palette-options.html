@@ -1,0 +1,110 @@
+<title>Trace Colour Options</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a grid of ten mini app screens, each wearing one calm light palette with a slow drifting colour wash behind it. */
+:root{
+  --pg:#f4f4f2; --pg-ink:#1f2326; --pg-mute:#5d646a; --pg-line:#d9dbdc; --pg-card:#ffffff;
+  --sans:'Geist',system-ui,sans-serif; --mono:'Geist Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --pg:#1b1d1f; --pg-ink:#ecedee; --pg-mute:#a1a7ad; --pg-line:#34383b; --pg-card:#25282b; color-scheme:dark}}
+:root[data-theme="dark"]{--pg:#1b1d1f; --pg-ink:#ecedee; --pg-mute:#a1a7ad; --pg-line:#34383b; --pg-card:#25282b; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--pg);color:var(--pg-ink);font:300 15px/1.55 var(--sans);
+  padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:32px}
+h1{font:300 clamp(1.8rem,5vw,2.6rem)/1.1 var(--sans);margin:0 0 8px;text-wrap:balance}
+.sub{color:var(--pg-mute);max-width:68ch;margin:0}
+.cap{font:400 .7rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--pg-mute)}
+.pick{border:1px solid var(--pg-line);background:var(--pg-card);padding:16px 18px;max-width:68ch;display:flex;flex-direction:column;gap:6px}
+.pick b{font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:28px 22px}
+.opt{min-width:0;display:flex;flex-direction:column;gap:10px}
+.opt h2{margin:0;font:400 1.05rem/1.2 var(--sans);display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.opt h2 span{font:400 .7rem var(--mono);color:var(--pg-mute);letter-spacing:.08em}
+.mood{margin:0;color:var(--pg-mute);font-size:.85rem}
+/* the mini screen */
+.screen{position:relative;overflow:hidden;border:1px solid color-mix(in srgb,var(--ink) 14%,transparent);border-radius:22px;aspect-ratio:9/15;background:var(--bg);color:var(--ink)}
+.wash{position:absolute;inset:-25%;pointer-events:none;
+  background:
+    radial-gradient(40% 35% at 20% 22%,var(--t1),transparent 70%),
+    radial-gradient(38% 34% at 82% 30%,var(--t2),transparent 70%),
+    radial-gradient(45% 38% at 50% 88%,var(--t3),transparent 70%);
+  opacity:.95;animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{0%{transform:translate3d(-3%,-2%,0) rotate(0deg) scale(1)}50%{transform:translate3d(3%,2%,0) rotate(6deg) scale(1.06)}100%{transform:translate3d(-2%,4%,0) rotate(-5deg) scale(1.02)}}
+@media (prefers-reduced-motion:reduce){.wash{animation:none}}
+.inner{position:relative;height:100%;padding:16px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.k{font:400 .55rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.inner h3{margin:0;font:300 1.45rem/1.1 var(--sans)}
+.card{border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);background:color-mix(in srgb,#fff 55%,transparent);backdrop-filter:blur(6px);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.card .t{font-size:1.05rem;font-weight:300}
+.tag{display:flex;align-items:center;gap:6px;font:400 .6rem var(--mono);letter-spacing:.08em}
+.tag i{width:8px;height:8px;background:var(--accent);display:block}
+.dots{height:62px;position:relative}
+.dots i{position:absolute;border-radius:50%;background:var(--accent)}
+.btn{margin-top:auto;border-radius:999px;background:var(--ink);color:var(--bg);text-align:center;font:500 .62rem var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:11px}
+.nav{align-self:center;display:flex;gap:2px;padding:4px;border-radius:999px;background:color-mix(in srgb,var(--bg) 70%,#fff);border:1px solid color-mix(in srgb,var(--ink) 12%,transparent);box-shadow:0 6px 18px color-mix(in srgb,var(--ink) 14%,transparent)}
+.nav span{width:62px;height:40px;border-radius:999px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:.5rem;font-weight:500;color:var(--mute)}
+.nav span b{width:11px;height:11px;border:1.5px solid currentColor;border-radius:50%;display:block}
+.nav .on{background:#fff;color:var(--accent)}
+.sw{display:flex;gap:6px}
+.sw span{flex:1;height:30px;border-radius:6px;border:1px solid var(--pg-line);display:flex;align-items:flex-end;padding:2px 4px;font:400 .5rem var(--mono);color:#0008;overflow:hidden;white-space:nowrap}
+.mui{margin:0;font:400 .65rem/1.5 var(--mono);color:var(--pg-mute)}
+.ratio{margin:0;font:400 .68rem var(--mono);color:var(--pg-mute);letter-spacing:.04em}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="cap">Colour direction · 10 options</div>
+    <h1>Calmer, lighter, with a slow colour wash</h1>
+    <p class="sub">Every option is built from the MUI palette, with a very soft colour wash that drifts slowly behind the screens (it stays still if the phone has reduced motion on). Text colours were checked for readable contrast. Dots and the "+" button use each option's accent.</p>
+  </header>
+
+  <div class="pick">
+    <span class="cap">My picks</span>
+    <span><b>Aurora</b> is closest to your Apple Health reference: soft pink, lilac and sky behind white-ish screens. <b>Cloud</b> is the whitest and calmest. <b>Mist</b> feels the most clinical and trustworthy. If you like none, tell me which two you almost liked and I'll blend them.</span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+(function(){
+  // MUI shades used for each option: [name, mood, bg, ink, mute, accent, [wash1, wash2, wash3], MUI names]
+  var O=[
+   ["Cloud","Bright white, quiet teal","#FFFFFF","#212121","#616161","#00695C",["#E1F5FE","#E0F2F1","#E8EAF6"],"white · grey 900/700 · teal 800 · lightBlue/teal/indigo 50"],
+   ["Mist","Cool blue-grey, clinical","#ECEFF1","#263238","#455A64","#1565C0",["#CFD8DC","#E1F5FE","#FAFAFA"],"blueGrey 50/900/700 · blue 800"],
+   ["Sage","Soft green, restful","#E8F5E9","#212121","#424242","#2E7D32",["#E0F2F1","#C8E6C9","#F9FBE7"],"green 50/800 · teal 50 · lime 50"],
+   ["Lavender","Gentle purple, dreamy","#EDE7F6","#212121","#424242","#512DA8",["#E8EAF6","#FCE4EC","#D1C4E9"],"deepPurple 50/700 · indigo 50 · pink 50"],
+   ["Peach","Warm and human","#FFF3E0","#3E2723","#6D4C41","#BF360C",["#FBE9E7","#FFF8E1","#FCE4EC"],"orange 50 · brown 900/600 · deepOrange 900"],
+   ["Rose","Soft pink, caring","#FCE4EC","#212121","#424242","#AD1457",["#EDE7F6","#FFF3E0","#F8BBD0"],"pink 50/800/100 · deepPurple 50"],
+   ["Sky","Open, airy blue","#E1F5FE","#263238","#455A64","#01579B",["#E0F7FA","#E3F2FD","#E8EAF6"],"lightBlue 50/900 · cyan 50 · blueGrey"],
+   ["Sand","Warm neutral, grounded","#FFF8E1","#3E2723","#6D4C41","#5D4037",["#FFF3E0","#EFEBE9","#F9FBE7"],"amber 50 · brown 900/700"],
+   ["Aurora","Pink, lilac and sky wash","#FAFAFA","#212121","#424242","#3949AB",["#F8BBD0","#D1C4E9","#B3E5FC"],"grey 50 · pink/deepPurple/lightBlue 100 · indigo 600"],
+   ["Stone","Neutral grey, minimal","#F5F5F5","#212121","#616161","#37474F",["#EEEEEE","#ECEFF1","#FAFAFA"],"grey 100/900 · blueGrey 800"]
+  ];
+  function lum(h){h=h.replace('#','');var c=[0,2,4].map(function(i){var v=parseInt(h.substr(i,2),16)/255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4)});return 0.2126*c[0]+0.7152*c[1]+0.0722*c[2]}
+  function cr(a,b){var x=lum(a),y=lum(b);return ((Math.max(x,y)+0.05)/(Math.min(x,y)+0.05)).toFixed(1)}
+  var dots=[[78,6,9,.25],[70,22,7,.2],[86,30,10,.4],[60,12,6,.15],[92,10,8,.45],[74,40,11,.5],[88,48,9,.6],[66,34,5,.18],[96,26,7,.35],[82,18,12,.55],[54,28,5,.12],[93,42,6,.5],[48,8,4,.1],[80,52,8,.45],[62,48,5,.2]];
+  var grid=document.getElementById('grid');
+  O.forEach(function(o){
+    var d=dots.map(function(p){return '<i style="left:'+p[0]+'%;top:'+p[1]+'%;width:'+p[2]+'px;height:'+p[2]+'px;opacity:'+p[3]+'"></i>'}).join('');
+    var el=document.createElement('article');el.className='opt';
+    el.innerHTML=
+     '<h2>'+o[0]+'<span>OPTION '+(O.indexOf(o)+1)+'</span></h2><p class="mood">'+o[1]+'</p>'+
+     '<div class="screen" style="--bg:'+o[2]+';--ink:'+o[3]+';--mute:'+o[4]+';--accent:'+o[5]+';--t1:'+o[6][0]+';--t2:'+o[6][1]+';--t3:'+o[6][2]+'">'+
+       '<div class="wash"></div><div class="inner">'+
+         '<div class="k">Your health log</div><h3>Summary</h3>'+
+         '<div class="card"><div class="k">Last logged</div><div class="t">Stomach</div><div class="tag"><i></i>6/10 · TODAY</div></div>'+
+         '<div class="dots" aria-hidden="true">'+d+'</div>'+
+         '<div class="btn">Log symptom</div>'+
+         '<div class="nav"><span class="on"><b></b>Summary</span><span><b></b>Find GP</span><span><b></b>Browse</span></div>'+
+       '</div></div>'+
+     '<div class="sw"><span style="background:'+o[2]+'">bg</span><span style="background:'+o[3]+';color:#fff8">ink</span><span style="background:'+o[4]+';color:#fff8">mute</span><span style="background:'+o[5]+';color:#fff8">accent</span></div>'+
+     '<p class="ratio">Text '+cr(o[3],o[2])+' · Labels '+cr(o[4],o[2])+' · Accent '+cr(o[5],o[2])+'</p>'+
+     '<p class="mui">'+o[7]+'</p>';
+    grid.appendChild(el);
+  });
+})();
+</script>

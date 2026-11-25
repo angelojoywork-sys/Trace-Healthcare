@@ -1,0 +1,148 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: var(--font-sans);
+    --font-sans: 'Geist Variable', sans-serif;
+    --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
+    --color-line: var(--line);
+    --color-highlight: var(--highlight);
+    --color-highlight-foreground: var(--highlight-foreground);
+    --color-severity-mild: var(--severity-mild);
+    --color-severity-moderate: var(--severity-moderate);
+    --color-severity-severe: var(--severity-severe);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+    /* Trace tokens: the Mist palette (MUI blueGrey + blue + indigo). Light, calm. */
+    --background: #eceff1;            /* blueGrey 50 */
+    --foreground: #263238;            /* blueGrey 900, 11:1 on background */
+    --card: #ffffff;
+    --card-foreground: #263238;
+    --popover: #ffffff;
+    --popover-foreground: #263238;
+    --primary: #263238;               /* the one filled button */
+    --primary-foreground: #eceff1;
+    --secondary: #e1e7ea;
+    --secondary-foreground: #263238;
+    --muted: #e1e7ea;
+    --muted-foreground: #455a64;      /* blueGrey 700, 6.3:1 */
+    --accent: #dde4e8;                /* shadcn "accent" = hover surface */
+    --accent-foreground: #263238;
+    --destructive: #bf360c;           /* deepOrange 900 */
+    --border: #607d8b;                /* blueGrey 500, control outlines (3:1 or more) */
+    --input: #607d8b;
+    --ring: #1565c0;                  /* blue 800, focus */
+    --line: #b0bec5;                  /* blueGrey 200, decorative frames */
+    --highlight: #1565c0;             /* blue 800, "you can act on this" */
+    --highlight-foreground: #ffffff;
+    --pixel: #c5cae9;                 /* indigo 100, page background squares */
+    --pixel-strong: #9fa8da;          /* indigo 200, severity squares */
+    --severity-mild: #43a047;         /* green 600 */
+    --severity-moderate: #f9a825;     /* yellow 800 */
+    --severity-severe: #e64a19;       /* deepOrange 700 */
+    --chart-1: #1565c0;
+    --chart-2: #43a047;
+    --chart-3: #f9a825;
+    --chart-4: #e64a19;
+    --chart-5: #607d8b;
+    --radius: 0.875rem;               /* soft corners to sit with the glass panels */
+    --sidebar: #eceff1;
+    --sidebar-foreground: #263238;
+    --sidebar-primary: #263238;
+    --sidebar-primary-foreground: #eceff1;
+    --sidebar-accent: #dde4e8;
+    --sidebar-accent-foreground: #263238;
+    --sidebar-border: #607d8b;
+    --sidebar-ring: #1565c0;
+    color-scheme: light;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  html {
+    @apply font-sans;
+    }
+}
+@layer components {
+  /* Liquid glass, "colour fringe" version: very light, only a little blur, a blue tint on the left edge and an orange tint on the
+     right edge (light splitting in thick glass), a bright top edge and a soft shadow. Use it wherever text sits over the page. */
+  .glass {
+    background: linear-gradient(160deg, rgb(255 255 255 / 0.42), rgb(255 255 255 / 0.14));
+    -webkit-backdrop-filter: blur(6px) saturate(190%);
+    backdrop-filter: blur(6px) saturate(190%);
+    border: 1px solid rgb(255 255 255 / 0.62);
+    border-radius: 1.5rem;
+    box-shadow:
+      inset 3px 0 5px -2px rgb(30 136 229 / 0.55),
+      inset -3px 0 5px -2px rgb(255 112 67 / 0.55),
+      inset 0 2px 2px rgb(255 255 255 / 0.95),
+      inset 0 -2px 3px rgb(38 50 56 / 0.12),
+      0 14px 30px -14px rgb(38 50 56 / 0.4);
+  }
+  /* For panels with text over busy detail (the note panel over the body): same look, more blur. */
+  .glass-dense {
+    background: linear-gradient(160deg, rgb(255 255 255 / 0.62), rgb(255 255 255 / 0.4));
+    -webkit-backdrop-filter: blur(18px) saturate(190%);
+    backdrop-filter: blur(18px) saturate(190%);
+  }
+  /* The same look without the blur, for long lists where many blurred layers would slow a phone down. */
+  .glass-lite, .bracket {
+    background: linear-gradient(160deg, rgb(255 255 255 / 0.5), rgb(255 255 255 / 0.26));
+    border: 1px solid rgb(255 255 255 / 0.65);
+    border-radius: 1.25rem;
+    box-shadow:
+      inset 2px 0 4px -2px rgb(30 136 229 / 0.4),
+      inset -2px 0 4px -2px rgb(255 112 67 / 0.4),
+      inset 0 1.5px 1.5px rgb(255 255 255 / 0.9),
+      0 8px 20px -14px rgb(38 50 56 / 0.3);
+  }
+}

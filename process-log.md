@@ -2,6 +2,15 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 09 Favicon: the welcome-screen DNA on the app background
+- **What we did:** After several favicon explorations (dotted heart, DNA heart, network heart, fluid helix), the user chose to use the same glossy 3D DNA as the welcome screen, placed on the app's background. Rendered the DNA from the app's own `DnaMark` scene on a transparent 2048px canvas (reduced motion, so a still pose), cropped it, and composed it on a rounded Mist tile with the faint indigo square pattern and a soft shadow. Exported `favicon.ico` (16, 32, 48), `favicon-16.png`, `favicon-32.png`, `apple-touch-icon.png` (180), `icon-192.png`, `icon-512.png`; updated `index.html` and the manifest (icons, theme and background colour now Mist); removed the old teal `icon.svg`.
+- **Why:** The earlier options did not feel right; the user wanted the same DNA symbol seen in the app, with the app background.
+- **Process note:** The previews went to the user before anything was applied; this last step was applied because the user said "make that the favicon".
+- **Verified:** build passes; every icon file and the manifest are served with the right content type.
+- **Note:** Browsers cache favicons hard; a new tab, a hard refresh, or re-adding to the home screen may be needed to see it.
+- **Domain:** The user's Vercel rename to `trace-health.vercel.app` failed because the name is taken by another project. Advised trying other names and choosing "Redirect old domain to new" so shared links keep working.
+- **Artifacts saved in:** `app/public/` icons, `app/index.html`, `app/public/manifest.webmanifest`
+
 ## 2026-11-25 — 08 Every load starts at the welcome screen
 - **What we did:** The app now starts at the welcome screen on every load or reload (Option B, chosen by the user). Saved logs, profile and photos are kept. For someone who already has a profile, "Log symptom" skips the name and gender screen and goes straight to the body; the close button there leads to Summary with their saved logs.
 - **Why:** User wanted a reload to show the welcome page.

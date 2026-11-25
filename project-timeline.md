@@ -75,3 +75,60 @@ Hologram body (female, male, neutral) · name and gender onboarding · welcome s
 - Removing the Find GP partial-list notice means the app no longer says its list covers only about a fifth of practices. The tester note still says it.
 - Removing the speech-service line removed the only in-app mention that voice goes to the browser vendor. For a health app, consider restoring it.
 - `research/06` still lists "no trackers" as a principle.
+
+## 10. From the transcript "Starting over step by step"
+
+Read: all of your own typed messages in that session (about 85 in total, tool output excluded), 25 Nov 2026, 00:07 to 18:34 UTC. Two agents read it in two parts and I spot-checked the quotes in the earlier part against the saved messages. Short quotes are as written. Gaps: there are no messages from you between 00:20 and 10:53 UTC, so what happened in that window comes only from the log and git, and I can't confirm the "wireframes v1 to v3" numbering from your messages.
+
+### 10a. 00:07 to 15:58 UTC
+
+| Time (UTC) | What you said or decided |
+|---|---|
+| 00:07 | "start over on this, step by step, simple process" |
+| 00:20 | The origin story: a partner saw several GPs and forgot what each said and what the symptoms were. You wanted a symptom log, prescription photos for insurance claims, and a history over months. You asked to stress-test the idea from every angle. |
+| 10:53 | The user flow: login or guest, name, location, gender. A rotating body hologram that zooms to a tapped spot and opens a note pop-up. A main screen with the log and Find GP. An entry with date, GP, what the GP said and the prescription. |
+| 11:04 | Country is Ireland. "I ran the user interviews already - dont push me on that now". The MVP goes to testers the same day and the case study is posted that evening. You asked for sketches or low-fi wireframes before hi-fi, and for App Store screengrabs as reference. |
+| 11:32 to 11:51 | Wireframe revisions (hologram only on the body screen, a "how bad is it" screen, bottom icon nav, voice in the note, copy changes). You supplied a futuristic style reference. You asked for the design and UI principles to go into `taste.md`. |
+| 12:01 to 12:11 | Decisions: guest session, "Other" gender option, keep "List view", "The 3D should not fail." You asked how to set up shadcn and MUI. You chose to skip Figma for now. You asked about Netlify and Supabase for deploy, and Vercel was used. |
+| 12:23 to 13:02 | Hologram build: "Please dont move to any other screens until we perfect the hologram". Three bodies (female, male, neutral), teal glow, a smooth full body. You asked about MakeHuman bodies and a free model, and whether it costs money. At 13:02: "deploy it to Vercel so I can test on my phone". |
+| 13:10 to 13:27 | First deploy failed (`cd app && npm ci`: no such file). Cause: Root Directory set to `app`. Fixed by clearing it, switching the framework preset to Other and Node to 22.x. Live on a first Vercel address. |
+| 13:29 | Body switching by gender wasn't working for you. |
+| 13:32 to 14:43 | Screens built in this order: Welcome, Summary, Entry detail, Browse, Find GP, share pack, delete, feedback prompt and tester note. You asked for a DNA illustration on the first screen and noise that grows with severity. |
+| 15:48 | A large batch of design feedback (see 10b), which became "Feedback round 1". |
+
+### 10b. Corrections, rejections and rules (all times UTC)
+
+- 11:04 "dont push me on that now" (about user interviews).
+- 11:32 "make sure the design principles and ui principles are followed, add that to the tastemd. i know this is a wireframe but its important."
+- 12:06 "The 3D should not fail."
+- 12:23 "Please dont move to any other screens until we perfect the hologram", and "a bunch of shapes, thats not professional".
+- 12:59 "can you not get a clean figures from makehuman yourself".
+- 13:29 "I was not able to switch people bodies."
+- 14:48 "it should not have a form so rigid like that".
+- 14:57 "Why can't I see the first Google login and all those things?"
+- 15:09 "whats that box around this?" (led to the box fix around the 3D canvases).
+- 15:48 "not a 100% sold" on the colours; asked for a lighter, calmer background; "remove x and y coordinates", "remove the copy - partial list and all that stuff", "dont promote hse find a gp", "whats with the copy - saved,noted,take care".
+- 16:49 to 16:50 "who asked you to add the colors?" and "dont act without my approval".
+- 18:05 "why is this all turning out to be so shit" (favicon).
+
+### 10c. Decisions that were yours
+
+Ireland as the market; guest session with no email sign-in; gender options including "Other" and "Prefer not to say"; three bodies with a teal glow; the build order (Summary, Entry detail, Browse, Find GP, then share pack, delete, feedback prompt and tester note); skip Figma for now; floating bottom nav, 1 to 10 severity and a lighter background; return to the DNA heart favicon; the domain name `trace-health-ie`.
+
+### 10d. Tools and connectors your messages mention
+
+shadcn and MUI (colours), Figma (skipped), Netlify and Supabase (asked about), Vercel (used), Blender (asked about), a free body model and MakeHuman (the body was built from a ready-made mesh), Chrome and the desktop app to inspect Vercel, and an HSE API and GP data files (asked how to get them). Your messages in this session don't mention Mobbin, Miro, PostHog or Playwright. PostHog and Playwright appear in the log and git, so they were used.
+
+### 10e. Late session (15:58 to 18:34 UTC, read earlier)
+
+- Liquid glass took several tries: you rejected the first attempt ("this is not liquid glass effect"), then picked "version 6". You asked twice for a true circle for the severity ball.
+- The Mist theme came from disliking "that particular animated tiny circles".
+- "The location is not enabled, the user should be able to enable it" led to the location help.
+- "when i reload it doesnt reset to the welcome page" led to the welcome screen on every load.
+- The rename to `trace-health` failed. You chose `trace-health-ie`.
+- The favicon took about 30 messages between 17:01 and 18:33 and ended with a return to the earlier DNA heart.
+- You asked for "the latest link" at least five times.
+
+### 10f. Evidence problem to resolve before the case study
+
+At 11:04 you said you had already run user interviews. The log (`02 Problem framing`) says evidence is n=1 and primary research is still needed, and `research/` has an interview guide but no interview notes. For the case study, every claim needs data. Add the interview dates, sample size and notes, or describe the research as desk research only.

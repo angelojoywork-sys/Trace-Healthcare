@@ -1,6 +1,26 @@
+import { lazy, Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { hasWebGL } from "./areas";
+
+const DnaMark = lazy(() => import("./DnaMark"));
+
+/** The calm glow shown while the 3D helix loads, and when 3D is not available. */
+function GlowFallback() {
+  return (
+    <div
+      aria-hidden="true"
+      className="size-28 animate-pulse motion-reduce:animate-none"
+      style={{
+        borderRadius: "44% 56% 52% 48% / 48% 44% 56% 52%",
+        background: "radial-gradient(circle at 40% 35%, #2b5f5a, #12302e 70%)",
+        boxShadow: "0 0 48px rgba(100,255,218,0.45)",
+      }}
+    />
+  );
+}
 
 export function WelcomeScreen({ onLog }: { onLog: () => void }) {
+  const [gl, setGl] = useState(() => hasWebGL());
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-6 px-5 pt-6 pb-5">
       <header className="flex items-center justify-between font-mono text-xs tracking-widest uppercase">
@@ -8,16 +28,16 @@ export function WelcomeScreen({ onLog }: { onLog: () => void }) {
         <span className="text-muted-foreground">Ireland</span>
       </header>
 
-      <div className="bracket flex flex-1 flex-col items-center justify-center gap-10 px-6 py-8 text-center">
-        <div
-          aria-hidden="true"
-          className="size-28 animate-pulse motion-reduce:animate-none"
-          style={{
-            borderRadius: "44% 56% 52% 48% / 48% 44% 56% 52%",
-            background: "radial-gradient(circle at 40% 35%, #2b5f5a, #12302e 70%)",
-            boxShadow: "0 0 48px rgba(100,255,218,0.45)",
-          }}
-        />
+      <div className="bracket flex flex-1 flex-col items-center justify-center gap-6 px-6 py-6 text-center">
+        <div className="grid h-72 w-full max-w-80 place-items-center">
+          {gl ? (
+            <Suspense fallback={<GlowFallback />}>
+              <DnaMark onFail={() => setGl(false)} />
+            </Suspense>
+          ) : (
+            <GlowFallback />
+          )}
+        </div>
         <div className="flex flex-col gap-3">
           <h1 className="text-4xl leading-tight font-light">Remember<br />every visit.</h1>
           <p className="mx-auto max-w-[28ch] text-muted-foreground">Log symptoms, doctors and prescriptions in one place.</p>

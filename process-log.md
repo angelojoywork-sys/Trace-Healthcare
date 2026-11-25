@@ -2,6 +2,15 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06q DNA on the welcome screen, letter helix on severity
+- **What we did:** Welcome screen: replaced the glow ball with a glossy 3D double helix in the brand colours (teal at the bottom to amber at the top, with rungs), built in code with three.js (no model file), slowly turning; the old glow shape is the fallback while it loads and when 3D is unavailable. Severity screen: replaced the glow shape with a helix made of letters that spell the chosen severity word; as severity rises the letters drift away from the helix, fan out and jitter (very mild is a clean spiral, very severe is scattered and warmer in colour). Plain 2D canvas, no WebGL.
+- **Why:** User references (glossy DNA, lettered helix, numbered helix, stone-and-glow). The letter helix makes the severity slider a felt, visual change instead of a label; the DNA gives the welcome screen an identity.
+- **Decisions:** Used the glossy reference for the welcome DNA rather than the stone texture. Severity is still shown as a word, so colour and scatter are never the only signal. Respects reduced motion (static drawing). DNA imagery does not mean genetic data: copy still says symptoms, doctors, prescriptions.
+- **Tuning:** First version had too many letters, so the mild state looked like a dense column; reduced the count and turns until the helix reads clearly.
+- **Verified:** headless screenshots at very mild, moderate and very severe; no console errors.
+- **Open:** Test frame rate of the severity canvas on a real phone; stone-texture variant of the DNA if wanted; numbered rungs (Anthrogen idea).
+- **Artifacts saved in:** `app/src/trace/DnaMark.tsx`, `app/src/trace/LetterHelix.tsx`
+
 ## 2026-11-25 — 06p Tester note
 - **What we did:** Wrote `research/tester-note.md`: a short message to send with the link, six tasks (about 5 minutes) taken from the flows, what is and is not measured, known limits (partial GP list, optional location and mic, recent browsers), a contact line, and a pre-send checklist.
 - **Why:** Testers need a clear, honest brief, and the privacy promise must match what the app actually sends.

@@ -3,6 +3,7 @@ import { ChevronLeft, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { SEVERITY } from "@/lib/entries";
+import { LetterHelix } from "./LetterHelix";
 
 type Props = { onBack: () => void; onClose: () => void; onNext: (severity: number) => void };
 
@@ -18,17 +19,8 @@ export function SeverityScreen({ onBack, onClose, onNext }: Props) {
 
       <h2 className="text-center text-3xl leading-tight font-light">How bad is it<br />right now?</h2>
 
-      <div className="flex flex-1 items-center justify-center">
-        <div
-          aria-hidden="true"
-          className="size-36 transition-all duration-300 motion-reduce:transition-none"
-          style={{
-            borderRadius: "44% 56% 52% 48% / 48% 44% 56% 52%",
-            background: "radial-gradient(circle at 40% 35%, #2b5f5a, #12302e 70%)",
-            transform: `scale(${0.8 + v * 0.1})`,
-            boxShadow: `0 0 ${20 + v * 14}px rgba(100,255,218,${0.25 + v * 0.12})`,
-          }}
-        />
+      <div className="min-h-0 flex-1">
+        <LetterHelix word={SEVERITY[v]} level={v} />
       </div>
 
       <div className="flex flex-col gap-3">

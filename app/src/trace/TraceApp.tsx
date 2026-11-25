@@ -14,7 +14,6 @@ import { SharePack } from "./SharePack";
 import { SeverityScreen } from "./SeverityScreen";
 import { GpScreen } from "./GpScreen";
 import { SummaryScreen } from "./SummaryScreen";
-import { ColorWash } from "./ColorWash";
 import { PixelBackground } from "./SquareField";
 import { WelcomeScreen } from "./WelcomeScreen";
 
@@ -62,7 +61,6 @@ export function TraceApp() {
 
   return (
     <div className="relative isolate mx-auto flex h-dvh max-w-md flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-foreground">
-      <ColorWash />
       <PixelBackground />
       {step.name === "welcome" && <WelcomeScreen onLog={() => { track("welcome_log_symptom"); setStep({ name: "profile" }); }} />}
 

@@ -2,6 +2,13 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 07 Removed the pastel colour wash
+- **What we did:** Removed the pastel colour wash (indigo, light blue, pink, orange) from behind the app, at the user's request. The Mist background with the square pattern and the version 6 glass panels stay.
+- **Why:** The wash was added without being asked for. The user asked "what do you think?" about making the white panels liquid glass; I should have proposed the idea and waited for approval. The user chose Mist, which has no pink or orange.
+- **Process note:** Visual changes beyond what is asked get proposed first, with a recommendation, and wait for a yes.
+- **Verified:** headless screenshots of welcome, note panel, severity 10 and summary show the plain Mist background; no console errors.
+- **Artifacts saved in:** `app/src/trace/TraceApp.tsx`, `app/src/globals.css` (`ColorWash.tsx` deleted)
+
 ## 2026-11-25 — 06z Liquid glass: colour-fringe version applied
 - **What we did:** User picked version 6 (colour fringe) from the liquid glass options. Every glass panel now uses it: very light white, a little blur, a blue tint on the left edge and an orange tint on the right edge, a bright top edge and a soft shadow. Lists use the same look without blur. The note panel (text over the striped body) gets a stronger blur and a bit more white so the small labels stay readable.
 - **Why:** Matches the user's preferred liquid glass look from the comparison page.

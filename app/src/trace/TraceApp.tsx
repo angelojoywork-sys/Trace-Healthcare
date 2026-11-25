@@ -5,15 +5,16 @@ import { loadEntries, saveEntry, SEVERITY, type Entry } from "@/lib/entries";
 import { loadProfile, saveProfile, type Profile } from "@/lib/profile";
 import type { BodyView } from "./HologramCanvas";
 import { ProfileScreen } from "./ProfileScreen";
+import { WelcomeScreen } from "./WelcomeScreen";
 import { BodyScreen } from "./BodyScreen";
 import { SeverityScreen } from "./SeverityScreen";
 
 type Draft = { area: string; note: string; via: "3d" | "list" };
-type Step = { name: "profile" } | { name: "body" } | { name: "severity"; draft: Draft } | { name: "done"; entry: Entry };
+type Step = { name: "welcome" } | { name: "profile" } | { name: "body" } | { name: "severity"; draft: Draft } | { name: "done"; entry: Entry };
 
 export function TraceApp() {
   const [profile, setProfile] = useState<Profile | null>(() => loadProfile());
-  const [step, setStep] = useState<Step>(() => (loadProfile() ? { name: "body" } : { name: "profile" }));
+  const [step, setStep] = useState<Step>(() => (loadProfile() ? { name: "body" } : { name: "welcome" }));
   useEffect(() => { track("app_open"); }, []);
   const changeBody = (body: BodyView) => {
     const next: Profile = { name: profile?.name ?? "", gender: profile?.gender ?? null, body };
@@ -24,6 +25,7 @@ export function TraceApp() {
 
   return (
     <div className="mx-auto flex h-dvh max-w-md flex-col bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-foreground">
+      {step.name === "welcome" && <WelcomeScreen onLog={() => { track("welcome_log_symptom"); setStep({ name: "profile" }); }} />}
       {step.name === "profile" && (
         <ProfileScreen
           onDone={(p) => {

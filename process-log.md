@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06g Welcome screen
+- **What we did:** Built the welcome screen (bracket frame, pulsing glow mark, "Remember every visit.", Log symptom, Continue with Google). New users see it first, then name and gender, then the hologram. Returning users go straight to the hologram.
+- **Why:** First screen of the happy path (wireframe 1).
+- **Decisions:** "Continue with Google" is shown but disabled, with a line saying back-up is coming soon, because real Google sign-in needs a backend (Supabase) we have not set up. No dead buttons: the filled primary button is the one that works. "Log symptom" leads to name and gender (skippable) so the body choice is never skipped by accident. Wireframe flow B (guest) now includes that skippable step.
+- **Verified:** headless run: welcome, profile, skip, hologram; reload skips welcome; no console errors.
+- **Open:** Real Google sign-in (Supabase, EU region), then Summary, Entry, Browse, Find GP.
+- **Artifacts saved in:** `app/src/trace/WelcomeScreen.tsx`
+
 ## 2026-11-25 — 06f Name and gender screen drives the hologram body
 - **What we did:** Built the name and gender screen (first screen for new users). Gender picks the body: Female = female, Male = male, Other / Prefer not to say / Skip = neutral. Saved on the phone (`trace.profile`). Added a "Change body" control on the hologram screen (Female / Male / Neutral). The `?body=` test switch is gone.
 - **Why:** User: the body should be established at the start from the gender choice, and be changeable later.

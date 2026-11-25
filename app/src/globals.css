@@ -110,3 +110,15 @@
     @apply font-sans;
     }
 }
+@layer components {
+  /* Bracket frame from the design system: side rules with short ticks top and bottom. */
+  .bracket {
+    border-left: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    background:
+      linear-gradient(var(--line), var(--line)) top left / 12px 1px no-repeat,
+      linear-gradient(var(--line), var(--line)) top right / 12px 1px no-repeat,
+      linear-gradient(var(--line), var(--line)) bottom left / 12px 1px no-repeat,
+      linear-gradient(var(--line), var(--line)) bottom right / 12px 1px no-repeat;
+  }
+}

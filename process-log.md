@@ -2,6 +2,13 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06e Deploy: first Vercel attempt
+- **What we did:** Imported the repo into Vercel. First build failed: `cd app: No such file or directory`.
+- **Why:** Vercel built `main`, which has no `app/` folder; the work lives on the feature branch.
+- **Fix:** Set the Vercel Production Branch to the feature branch and pushed a new commit to trigger a build (redeploying the failed `main` build would have repeated the failure).
+- **Learnings:** Redeploy reuses the old deployment's source, so a branch change needs a new push. Preview links are protected by default; turn off Vercel Authentication before sharing with testers.
+- **Tools used / where AI helped (and what a human verified):** Claude reproduced the build from a clean checkout (it passed) and read the log the user pasted; the user changed the Vercel settings and confirmed.
+
 ## 2026-11-25 — 06d Hologram v4: clean face via mesh segmentation
 - **What we did:** Replaced the geometric mouth hack with Anny's own face segmentation: the exporter now drops the mouth cavity, tongue and eye sockets (`mouth_cavity`, `tongue`, `eye_cavity.*`, `eye_back.*`) before conversion. Eyeball fronts stay. Orphan vertices are removed. Bodies shrank to ~500 KB each (12.5k verts).
 - **Why:** User asked whether clean figures can come straight from MakeHuman. Anny is built from MakeHuman's data and exposes its labelled mesh parts, so removing the cavities at source is cleaner than hand-cleaning in Blender or guessing in code.

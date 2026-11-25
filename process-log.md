@@ -2,6 +2,13 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06p Tester note
+- **What we did:** Wrote `research/tester-note.md`: a short message to send with the link, six tasks (about 5 minutes) taken from the flows, what is and is not measured, known limits (partial GP list, optional location and mic, recent browsers), a contact line, and a pre-send checklist.
+- **Why:** Testers need a clear, honest brief, and the privacy promise must match what the app actually sends.
+- **Decisions:** Tasks mirror flows A to E and the events in the test plan. The note says plainly that symptoms, notes, GP names, photos and search words never leave the phone. Placeholders left for the tester's name and the researcher's contact (not filled in on the user's behalf).
+- **Open:** Set `VITE_POSTHOG_KEY`, turn off Vercel Authentication, try it on a real phone, then run 5 to 8 testers and record date, method and sample size here.
+- **Artifacts saved in:** `research/tester-note.md`
+
 ## 2026-11-25 — 06o In-app feedback prompt and measurement clean-up
 - **What we did:** Added a feedback card on Summary after the first saved log: "How easy was it to log that?" (1-5), "Would you use this after a GP visit?" (1-5), then an optional comment. Can be dismissed ("Not now") and reopened from a link on Summary. Added a one-line test notice on the welcome screen. Updated `research/test-plan.md`.
 - **Why:** The case study needs "did it help" evidence: ease and intent scores, plus quotes.

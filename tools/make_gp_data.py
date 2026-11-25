@@ -10,6 +10,27 @@ src, out = sys.argv[1], sys.argv[2]
 stamp = sys.argv[3] if len(sys.argv) > 3 else datetime.date.today().isoformat()
 raw = json.load(open(src))
 
+def centroid(geom):
+    pts = []
+    def walk(c):
+        if c and isinstance(c[0], (int, float)): pts.append(c)
+        else:
+            for x in c: walk(x)
+    walk(geom.get("coordinates", []))
+    if not pts: return None, None
+    return sum(p[1] for p in pts) / len(pts), sum(p[0] for p in pts) / len(pts)
+
+# Accept both raw Overpass JSON ("elements") and GeoJSON ("features", as exported by Overpass Turbo).
+if "features" in raw:
+    elements = []
+    for f in raw["features"]:
+        lat, lon = centroid(f.get("geometry") or {})
+        props = dict(f.get("properties") or {})
+        ident = str(f.get("id") or props.get("@id") or len(elements))
+        tags = {k: v for k, v in props.items() if not k.startswith("@")}
+        elements.append({"type": ident.split("/")[0] if "/" in ident else "n", "id": ident.split("/")[-1], "lat": lat, "lon": lon, "tags": tags})
+    raw = {"elements": elements}
+
 def first(t, *keys):
     for k in keys:
         v = (t.get(k) or "").strip()

@@ -2,6 +2,15 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06i Entry detail + GP data research
+- **What we did:** Built Entry detail: visit date, GP (free text with last-used suggestions), what the GP said, and prescription or receipt photos or files. Everything saves as you type (no Save button). Photos are stored in the phone's IndexedDB, never uploaded. Summary rows and the Last logged card now open it; the Visits count is live; a prompt "Add GP visit details" shows until a visit is recorded. Researched GP location data for Find GP.
+- **Why:** This is the part that solves the original problem (remembering what each GP said and keeping prescriptions for claims).
+- **Decisions:** GP is free text, not a managed list (user agreed). Share/export deferred until Browse exists. Photos are not resized yet.
+- **Research (desk, Nov 2025):** No open GP-search API in Ireland. HSE "Family Practice (GP) Sites" dataset on data.gov.ie has GPS coordinates but is a 2022 snapshot. The HSE Health Directory Doctors/Locations API is available on request, not open. OpenStreetMap is free but patchy. Google Places gives the best data but needs a billing account. None gives GP gender or whether a practice takes new patients.
+- **Verified:** headless run: open entry, fill fields, attach a file, back (Visits becomes 1), reload (all kept, thumbnail kept), no console errors.
+- **Open:** Browse and search, Find GP, share pack for claims, photo resizing, delete entry.
+- **Artifacts saved in:** `app/src/trace/EntryScreen.tsx`, `app/src/lib/files.ts`, `app/src/lib/entries.ts`
+
 ## 2026-11-25 — 06h Summary screen and icon nav
 - **What we did:** Built the Summary home (last logged, this month and all-time counts, recent list, empty state, "+" button, saved confirmation) and the three-icon bottom nav (Summary, Find GP, Browse). After a save, people land on Summary. The hologram screen gained a Close button so people can leave without logging. Returning users open on Summary.
 - **Why:** It completes the first loop (log, save, see it) and is where people land most often.

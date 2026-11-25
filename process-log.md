@@ -2,6 +2,13 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 09b Favicon on a white tile
+- **What we did:** Changed the favicon and app icon tile from pale Mist to white (keeping the indigo squares, the DNA and the soft shadow) so the icon is easier to see. Regenerated `favicon.ico`, the 16 and 32 px PNGs, the 180 px Apple icon, and the 192 and 512 px icons.
+- **Why:** User asked for a white background with the pixels so it can be seen properly.
+- **Note:** On a light browser tab the white tile blends into the tab, so the DNA and squares appear to float; on a dark tab the tile stands out. Browsers cache favicons, so a new tab or hard refresh may be needed.
+- **Verified:** build passes; preview checked at large size and at real tab sizes on light and dark strips.
+- **Artifacts saved in:** `app/public/` icon files
+
 ## 2026-11-25 — 09 Favicon: the welcome-screen DNA on the app background
 - **What we did:** After several favicon explorations (dotted heart, DNA heart, network heart, fluid helix), the user chose to use the same glossy 3D DNA as the welcome screen, placed on the app's background. Rendered the DNA from the app's own `DnaMark` scene on a transparent 2048px canvas (reduced motion, so a still pose), cropped it, and composed it on a rounded Mist tile with the faint indigo square pattern and a soft shadow. Exported `favicon.ico` (16, 32, 48), `favicon-16.png`, `favicon-32.png`, `apple-touch-icon.png` (180), `icon-192.png`, `icon-512.png`; updated `index.html` and the manifest (icons, theme and background colour now Mist); removed the old teal `icon.svg`.
 - **Why:** The earlier options did not feel right; the user wanted the same DNA symbol seen in the app, with the app background.

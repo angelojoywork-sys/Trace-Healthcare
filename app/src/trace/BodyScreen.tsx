@@ -1,5 +1,5 @@
 import { lazy, Suspense, useState } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
 import { AREAS, hasWebGL, type Pick3D } from "./areas";
@@ -10,9 +10,9 @@ import { NoteSheet } from "./NoteSheet";
 const HologramCanvas = lazy(() => import("./HologramCanvas"));
 
 type Sel = { area: string; via: "3d" | "list"; pick?: Pick3D };
-type Props = { view: BodyView; onViewChange: (v: BodyView) => void; onDone: (r: { area: string; note: string; via: "3d" | "list" }) => void };
+type Props = { onClose?: () => void; view: BodyView; onViewChange: (v: BodyView) => void; onDone: (r: { area: string; note: string; via: "3d" | "list" }) => void };
 
-export function BodyScreen({ view, onViewChange, onDone }: Props) {
+export function BodyScreen({ view, onViewChange, onDone, onClose }: Props) {
   const [gl, setGl] = useState(() => hasWebGL());
   const [list, setList] = useState(false);
   const [sel, setSel] = useState<Sel | null>(null);
@@ -26,11 +26,15 @@ export function BodyScreen({ view, onViewChange, onDone }: Props) {
     <div className="relative flex min-h-0 flex-1 flex-col">
       <header className="flex items-start justify-between gap-3 border-b border-line px-5 pt-4 pb-3">
         <div className="flex items-start gap-3">
-          {sel && (
+          {sel ? (
             <Button variant="outline" size="icon" aria-label="Back" className="size-11 rounded-sm" onClick={() => setSel(null)}>
               <ChevronLeft className="size-5" />
             </Button>
-          )}
+          ) : onClose ? (
+            <Button variant="outline" size="icon" aria-label="Close" className="size-11 rounded-sm" onClick={onClose}>
+              <X className="size-5" />
+            </Button>
+          ) : null}
           <div>
             <h1 className="font-mono text-sm tracking-widest uppercase">{sel ? sel.area : "Tap to log"}</h1>
             <p className="font-mono text-xs tracking-widest text-muted-foreground uppercase">{sel ? "Add a note" : showList ? "Choose an area" : "Drag to turn"}</p>

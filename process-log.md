@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06h Summary screen and icon nav
+- **What we did:** Built the Summary home (last logged, this month and all-time counts, recent list, empty state, "+" button, saved confirmation) and the three-icon bottom nav (Summary, Find GP, Browse). After a save, people land on Summary. The hologram screen gained a Close button so people can leave without logging. Returning users open on Summary.
+- **Why:** It completes the first loop (log, save, see it) and is where people land most often.
+- **Decisions:** Find GP and Browse are honest placeholders until built. Recent rows are not tappable until Entry detail exists. "Visits" count left out until GPs can be recorded. Severity always shows a word plus a coloured marker. The old separate "Saved" screen was replaced by a confirmation on Summary.
+- **Verified:** headless run: welcome, profile, close to empty state, log, save, Summary with confirmation, second log via "+", Browse placeholder, Summary again; 2 entries stored; no console errors.
+- **Open:** Entry detail (date, GP, what the GP said, photo or file), Browse and search, Find GP.
+- **Artifacts saved in:** `app/src/trace/SummaryScreen.tsx`, `BottomNav.tsx`, `dates.ts`, `TraceApp.tsx`
+
 ## 2026-11-25 — 06g Welcome screen
 - **What we did:** Built the welcome screen (bracket frame, pulsing glow mark, "Remember every visit.", Log symptom, Continue with Google). New users see it first, then name and gender, then the hologram. Returning users go straight to the hologram.
 - **Why:** First screen of the happy path (wireframe 1).

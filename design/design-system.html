@@ -1,0 +1,327 @@
+<title>Trace Design System</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Direction: dark graphite, bracket frames, mono caps labels, one teal glow. Single committed look, built from the Matteron and Archetype references. */
+:root{
+  --bg:#212121; --panel:#2C2C2C; --ink:#F5F5F5; --mute:#9E9E9E;
+  --line:#424242; --border:#757575;
+  --accent:#64FFDA; --on-accent:#0B1B1A; --accent-soft:rgba(100,255,218,.10);
+  --on-ink:#212121;
+  --sev-mild:#81C784; --sev-mod:#FFD54F; --sev-high:#FF8A65; --danger:#FF8A65;
+  --font-sans:'Geist',system-ui,sans-serif; --font-mono:'Geist Mono',ui-monospace,monospace;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;
+  --r:2px; --ease:cubic-bezier(.2,.8,.2,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:300 16px/1.5 var(--font-sans);margin:0;
+  padding-block:var(--s6) var(--s7);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .05 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+.wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:var(--s7)}
+h1{font:300 clamp(2rem,6vw,3rem)/1.1 var(--font-sans);margin:0;text-wrap:balance;letter-spacing:-.01em}
+h2{font:300 1.75rem/1.2 var(--font-sans);margin:0 0 var(--s3)}
+.cap,h3{font:400 .75rem/1.3 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin:0 0 var(--s2)}
+p{margin:0;max-width:64ch}
+.lead{color:var(--mute);margin-top:var(--s3)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--s5)}
+.cols>*{min-width:0}
+.sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--s3)}
+.sw{border:1px solid var(--line);font-size:.8rem}
+.sw i{display:block;height:48px}
+.sw div{padding:var(--s2) var(--s3);line-height:1.35}
+.sw b{display:block;font-weight:400}.sw span{color:var(--mute);font:400 .72rem var(--font-mono)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.85rem;min-width:440px}
+th,td{text-align:left;padding:var(--s2) var(--s3);border-bottom:1px solid var(--line);vertical-align:top}
+th{font:400 .72rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.num{font-variant-numeric:tabular-nums;font-family:var(--font-mono)}
+/* bracket frame: side rules with short ticks top and bottom */
+.frame{position:relative;border-left:1px solid var(--line);border-right:1px solid var(--line);padding:var(--s5);
+  background:
+   linear-gradient(var(--line),var(--line)) top left/12px 1px no-repeat,
+   linear-gradient(var(--line),var(--line)) top right/12px 1px no-repeat,
+   linear-gradient(var(--line),var(--line)) bottom left/12px 1px no-repeat,
+   linear-gradient(var(--line),var(--line)) bottom right/12px 1px no-repeat;
+  display:flex;flex-direction:column;gap:var(--s4)}
+.frame-head{display:flex;justify-content:space-between;gap:var(--s3);font:400 .8rem var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
+.frame-head .count{color:var(--accent)}
+.frame-head .sub{display:block;color:var(--mute)}
+.btn{min-height:48px;padding:0 var(--s5);border-radius:var(--r);border:0;font:500 .8rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  background:var(--ink);color:var(--on-ink);transition:transform 150ms var(--ease),opacity 150ms}
+.btn:active{transform:scale(.98)}
+.btn.secondary{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--border)}
+.btn.text{background:none;color:var(--mute);text-decoration:underline;text-underline-offset:4px;padding:0 var(--s3)}
+.btn.block{width:100%}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.chip{min-height:44px;padding:0 var(--s4);border-radius:var(--r);border:0;background:transparent;color:var(--ink);font:400 .8rem var(--font-mono);letter-spacing:.08em;text-transform:uppercase;box-shadow:inset 0 0 0 1px var(--border);cursor:pointer}
+.chip[aria-pressed="true"]{color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+.chip[aria-pressed="true"]::before{content:"■ ";font-size:.7em;vertical-align:.1em}
+.field{display:flex;flex-direction:column;gap:var(--s2)}
+.field label{font:400 .72rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.input{min-height:48px;width:100%;padding:var(--s3);border-radius:var(--r);border:1px solid var(--border);background:transparent;color:var(--ink);font:300 1rem var(--font-sans)}
+textarea.input{min-height:84px;resize:vertical}
+.row{display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center}
+.demo{display:flex;flex-direction:column;gap:var(--s4);min-width:0}
+/* HUD panel: the note pop-up (Archetype reference) */
+.hud{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid #424242;padding:var(--s5);display:flex;flex-direction:column;gap:var(--s4);backdrop-filter:blur(8px)}
+.hud .xy{font:400 .8rem var(--font-mono);letter-spacing:.06em;color:var(--mute)}
+.hud .xy b{color:var(--ink);font-weight:500;margin-right:4px}
+.hud .xy span{margin-right:var(--s3)}
+.kv{display:flex;flex-direction:column;gap:2px}
+.kv .k{font:400 .72rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.kv .v{font:300 1.05rem/1.4 var(--font-sans);color:var(--ink)}
+.mic{width:48px;height:48px;border-radius:var(--r);border:1px solid var(--border);background:transparent;color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:none}
+.mic[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.comfort[hidden]{display:none}
+/* severity */
+.phone{width:min(100%,340px);margin:0 auto;border:1px solid var(--line);padding:var(--s4);display:flex;flex-direction:column;gap:var(--s4)}
+.top{display:grid;grid-template-columns:44px 1fr 44px;align-items:center}
+.top .ttl{text-align:center;font:400 .8rem var(--font-mono);letter-spacing:.12em;text-transform:uppercase}
+.ib{width:44px;height:44px;border:1px solid var(--line);border-radius:var(--r);background:none;color:var(--ink);display:grid;place-items:center;cursor:pointer}
+.sev{display:flex;flex-direction:column;align-items:center;gap:var(--s4);text-align:center}
+.sev h4{font:300 1.6rem/1.2 var(--font-sans);margin:0}
+.glow{width:120px;height:120px;border-radius:44% 56% 52% 48%/48% 44% 56% 52%;background:radial-gradient(circle at 40% 35%,#2b5f5a,#12302e 70%);
+  box-shadow:0 0 var(--g,40px) var(--ga,rgba(100,255,218,.45));transition:transform 250ms var(--ease),box-shadow 250ms var(--ease)}
+.sev .lbl{font:400 1rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase}
+.range{width:100%;height:44px;background:none;accent-color:var(--accent)}
+.ends{display:flex;justify-content:space-between;width:100%;font:400 .68rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+/* nav */
+.nav{display:flex;justify-content:space-around;border:1px solid var(--line);padding:var(--s2);background:var(--panel)}
+.ni{width:72px;height:44px;border:0;border-radius:var(--r);background:none;color:var(--mute);display:grid;place-items:center;cursor:pointer;position:relative}
+.ni[aria-current="page"]{color:var(--accent)}
+.ni[aria-current="page"]::after{content:"";position:absolute;bottom:2px;left:50%;width:16px;height:2px;margin-left:-8px;background:var(--accent)}
+.sevtag{display:inline-flex;align-items:center;gap:8px;font:400 .72rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase}
+.sevtag::before{content:"";width:8px;height:8px;background:var(--c)}
+.entry{display:flex;justify-content:space-between;gap:var(--s3);align-items:baseline}
+.entry b{font-weight:400;font-size:1.1rem}
+.meta{font:400 .72rem var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.holo{position:relative;aspect-ratio:4/3;display:grid;place-items:center;cursor:crosshair;overflow:hidden;
+  background:radial-gradient(55% 55% at 50% 52%,rgba(100,255,218,.20),transparent 70%)}
+.holo svg{height:92%;filter:drop-shadow(0 0 8px rgba(100,255,218,.6))}
+.holo .tick{position:absolute;width:18px;height:18px;border:1px solid var(--accent);transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 0 14px var(--accent)}
+.rule{display:grid;grid-template-columns:auto 1fr;gap:var(--s2) var(--s5);font-size:.9rem}
+.rule dt{font:400 .75rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase}.rule dd{margin:0;color:var(--mute)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-sum" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol>
+  <symbol id="i-gp" viewBox="0 0 24 24"><path d="M12 21s-6-5.5-6-10a6 6 0 0 1 12 0c0 4.5-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></symbol>
+  <symbol id="i-browse" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5"/><rect x="13.5" y="4" width="6.5" height="6.5"/><rect x="4" y="13.5" width="6.5" height="6.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+</svg>
+
+<div class="wrap">
+
+  <header>
+    <h1>Trace design system</h1>
+    <p class="lead">Modern and futuristic, but quiet. Graphite surfaces, bracket frames, small mono labels and a single teal glow that marks whatever you can act on. Version 3. Colors come from the MUI palette.</p>
+  </header>
+
+  <section>
+    <h2>Direction</h2>
+    <div class="tw"><table>
+      <tr><th>From the reference</th><th>Becomes in Trace</th></tr>
+      <tr><td>Bracket frame, "01 / 04" counter</td><td>Frame around the hologram and entry cards. Counter shows progress through a log.</td></tr>
+      <tr><td>Mono caps labels</td><td>All labels, buttons, chips and nav captions.</td></tr>
+      <tr><td>Teal glow on a dark object</td><td>The hologram body, the selected point, the severity shape.</td></tr>
+      <tr><td>Archetype info panel (X / Y, label and value rows)</td><td>The note pop-up: tap coordinates, area, date, note.</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Color</h2>
+    <div class="sw-grid">
+      <div class="sw"><i style="background:var(--bg)"></i><div><b>bg</b><span>grey 900 · #212121</span></div></div>
+      <div class="sw"><i style="background:var(--panel)"></i><div><b>panel</b><span>bg + 5% white · #2C2C2C</span></div></div>
+      <div class="sw"><i style="background:var(--ink)"></i><div><b>ink</b><span>grey 100 · #F5F5F5</span></div></div>
+      <div class="sw"><i style="background:var(--mute)"></i><div><b>mute</b><span>grey 500 · #9E9E9E</span></div></div>
+      <div class="sw"><i style="background:var(--border)"></i><div><b>border</b><span>grey 600 · #757575</span></div></div>
+      <div class="sw"><i style="background:var(--line)"></i><div><b>line</b><span>grey 800 · #424242</span></div></div>
+      <div class="sw"><i style="background:var(--accent)"></i><div><b>accent</b><span>teal A200 · #64FFDA</span></div></div>
+      <div class="sw"><i style="background:var(--sev-mild)"></i><div><b>severity mild</b><span>green 300 · #81C784</span></div></div>
+      <div class="sw"><i style="background:var(--sev-mod)"></i><div><b>severity moderate</b><span>amber 300 · #FFD54F</span></div></div>
+      <div class="sw"><i style="background:var(--sev-high)"></i><div><b>severity severe</b><span>deep orange 300 · #FF8A65</span></div></div>
+    </div>
+    <h3 style="margin-top:var(--s5)">Contrast (WCAG 2.2 AA)</h3>
+    <div class="tw"><table>
+      <tr><th>Pair</th><th>Ratio</th><th>Needs</th><th>Use</th></tr>
+      <tr><td>ink on bg</td><td class="num">14.8</td><td class="num">4.5</td><td>Body text</td></tr>
+      <tr><td>mute on bg</td><td class="num">6.0</td><td class="num">4.5</td><td>Labels, secondary text</td></tr>
+      <tr><td>mute on panel</td><td class="num">5.21</td><td class="num">4.5</td><td>Labels inside the note pop-up</td></tr>
+      <tr><td>accent on bg</td><td class="num">12.9</td><td class="num">3.0</td><td>Counters, selected, focus</td></tr>
+      <tr><td>on-ink on ink</td><td class="num">14.8</td><td class="num">4.5</td><td>Primary button</td></tr>
+      <tr><td>border on bg</td><td class="num">3.5</td><td class="num">3.0</td><td>Field and chip outlines</td></tr>
+    </table></div>
+    <p class="lead" style="margin-top:var(--s3)">Teal is for attention only, never for body text. Severity always carries a word and a marker, never color alone. The grey 800 line is decoration, not a control edge.</p>
+  </section>
+
+  <section>
+    <h2>Type</h2>
+    <div class="cols">
+      <div class="demo">
+        <h3>Display · Geist 300</h3>
+        <div style="font:300 2.25rem/1.1 var(--font-sans);letter-spacing:-.01em">Almost there.</div>
+        <h3>Body · Geist 300</h3>
+        <p>Sharp pain when I swallow, started yesterday evening. Dr. Byrne said to rest and gave me a prescription.</p>
+      </div>
+      <div class="demo">
+        <h3>Label · Geist Mono 400, caps, +10%</h3>
+        <div class="kv"><span class="k">Client</span><span class="v">Dr. Byrne, Dublin 4</span></div>
+        <div class="num" style="font-size:2.5rem;line-height:1">04 / 12</div>
+        <p style="color:var(--mute)">Mono carries labels, counters and buttons. Sans carries everything a person reads.</p>
+      </div>
+    </div>
+    <div class="tw" style="margin-top:var(--s4)"><table>
+      <tr><th>Role</th><th>Size / line</th><th>Font</th></tr>
+      <tr><td>Display</td><td class="num">36 / 40</td><td>Geist 300</td></tr>
+      <tr><td>Title</td><td class="num">24 / 29</td><td>Geist 300</td></tr>
+      <tr><td>Body</td><td class="num">16 / 24</td><td>Geist 300</td></tr>
+      <tr><td>Label</td><td class="num">12 / 16, caps</td><td>Geist Mono 400</td></tr>
+      <tr><td>Button</td><td class="num">13 / 16, caps</td><td>Geist Mono 500</td></tr>
+    </table></div>
+    <p class="lead" style="margin-top:var(--s3)">Body never goes below 16 and scales with the user's text setting. Labels may be 12 because they are never the only way to understand a screen.</p>
+  </section>
+
+  <section>
+    <h2>Space, shape, motion</h2>
+    <div class="tw"><table>
+      <tr><th>Token</th><th>Value</th><th>Used for</th></tr>
+      <tr><td>space 1–7</td><td class="num">4 · 8 · 12 · 16 · 24 · 32 · 48</td><td>All padding and gaps</td></tr>
+      <tr><td>radius</td><td class="num">2</td><td>Everything. Near-square is part of the look.</td></tr>
+      <tr><td>tap target</td><td class="num">44 × 44 min</td><td>Every control. Primary buttons 48.</td></tr>
+      <tr><td>motion fast / base / zoom</td><td class="num">150 · 250 · 450 ms</td><td>Press / reveal / hologram zoom. Reduced motion removes all.</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Components</h2>
+    <div class="cols">
+
+      <div class="demo">
+        <h3>Buttons</h3>
+        <button class="btn block" id="b-primary">Continue with Google</button>
+        <button class="btn secondary block" id="b-secondary">Log symptom</button>
+        <div class="row"><button class="btn text" id="b-text">Skip</button></div>
+      </div>
+
+      <div class="demo">
+        <h3>Chips and fields</h3>
+        <div class="field"><label for="f-name">Name</label><input class="input" id="f-name" placeholder="Aoife" autocomplete="given-name"></div>
+        <div class="field"><span class="cap" id="g-l" style="margin:0">Gender</span>
+          <div class="row" role="group" aria-labelledby="g-l" id="gender">
+            <button class="chip" aria-pressed="true">Female</button>
+            <button class="chip" aria-pressed="false">Male</button>
+            <button class="chip" aria-pressed="false">Prefer not to say</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo" style="grid-column:1/-1">
+        <h3>Note pop-up (tap the body to move the coordinates)</h3>
+        <div class="cols" style="align-items:start">
+          <div class="frame" style="padding:var(--s4)">
+            <div class="frame-head"><span>Hologram<span class="sub">Tap where it hurts</span></span><span class="count">01 / 03</span></div>
+            <div class="holo" id="holo" role="img" aria-label="Body hologram demo. Click to place a point.">
+              <svg viewBox="0 0 120 250" fill="none" stroke="#64FFDA" stroke-width="1.2" aria-hidden="true">
+                <circle cx="60" cy="22" r="16"/><rect x="38" y="42" width="44" height="82" rx="14"/>
+                <rect x="14" y="46" width="18" height="78" rx="9"/><rect x="88" y="46" width="18" height="78" rx="9"/>
+                <rect x="40" y="128" width="18" height="108" rx="9"/><rect x="62" y="128" width="18" height="108" rx="9"/>
+                <ellipse cx="60" cy="242" rx="46" ry="6" opacity=".7"/>
+              </svg>
+              <div class="tick" id="tick" style="left:50%;top:14%"></div>
+            </div>
+          </div>
+          <div class="hud">
+            <div class="xy"><span><b>X</b><i id="px" style="font-style:normal">212</i></span><span><b>Y</b><i id="py" style="font-style:normal">121</i></span></div>
+            <div class="kv"><span class="k">Area</span><span class="v">Throat</span></div>
+            <div class="kv"><span class="k">When</span><span class="v">Today, 25 Nov</span></div>
+            <div class="field">
+              <label for="f-note">Note (optional)</label>
+              <div class="row" style="flex-wrap:nowrap;align-items:flex-start">
+                <textarea class="input" id="f-note" placeholder="What does it feel like?"></textarea>
+                <button class="mic" id="mic" aria-pressed="false" aria-label="Speak your note"><svg class="i"><use href="#i-mic"/></svg></button>
+              </div>
+              <span class="meta" id="mic-state" aria-live="polite"></span>
+            </div>
+            <button class="btn block comfort" id="comfort" hidden>Almost there</button>
+            <button class="btn text" id="notnow">Not now</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <h3>Severity</h3>
+        <div class="phone">
+          <div class="top">
+            <button class="ib" aria-label="Back"><svg class="i"><use href="#i-back"/></svg></button>
+            <div class="ttl">Severity</div>
+            <button class="ib" aria-label="Close"><svg class="i"><use href="#i-x"/></svg></button>
+          </div>
+          <div class="sev">
+            <h4>How bad is it<br>right now?</h4>
+            <div class="glow" id="glow"></div>
+            <div class="lbl" id="sevlbl" aria-live="polite">Moderate</div>
+            <input class="range" id="sevrange" type="range" min="0" max="4" step="1" value="2" aria-label="Severity">
+            <div class="ends"><span>Very mild</span><span>Very severe</span></div>
+          </div>
+          <button class="btn block">Next</button>
+        </div>
+      </div>
+
+      <div class="demo">
+        <h3>Navigation</h3>
+        <nav class="nav" aria-label="Main">
+          <button class="ni" aria-current="page" aria-label="Summary"><svg class="i"><use href="#i-sum"/></svg></button>
+          <button class="ni" aria-label="Find GP"><svg class="i"><use href="#i-gp"/></svg></button>
+          <button class="ni" aria-label="Browse"><svg class="i"><use href="#i-browse"/></svg></button>
+        </nav>
+        <p class="meta" style="max-width:none">Icons only, each with a name for screen readers. Hidden on the hologram, note and severity screens.</p>
+        <h3 style="margin-top:var(--s3)">Entry card</h3>
+        <div class="frame" style="padding:var(--s4);gap:var(--s2)">
+          <div class="entry"><b>Sore throat</b><span class="meta">24 Nov</span></div>
+          <span class="sevtag" style="--c:var(--sev-mod)">Moderate</span>
+          <span class="meta">Dr. Byrne · 1 file</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>Rules</h2>
+    <dl class="rule">
+      <dt>One action</dt><dd>One filled button per screen. The rest are outlined or text.</dd>
+      <dt>Teal means act</dt><dd>Accent marks what is selected, active or tappable on the hologram. Nothing else.</dd>
+      <dt>Undo</dt><dd>Back, Reset and Skip are always reachable.</dd>
+      <dt>Alternatives</dt><dd>3D has a list. Voice has typing. Color has words.</dd>
+      <dt>Tone</dt><dd>Short, plain, kind. Never diagnose.</dd>
+      <dt>Tokens only</dt><dd>No one-off colors, sizes or radii in the app.</dd>
+    </dl>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  var g=document.getElementById('gender');
+  g.addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;
+    g.querySelectorAll('.chip').forEach(function(c){c.setAttribute('aria-pressed',c===b?'true':'false')})});
+  var note=document.getElementById('f-note'),comfort=document.getElementById('comfort'),mic=document.getElementById('mic'),ms=document.getElementById('mic-state');
+  function sync(){comfort.hidden=!(note.value.trim().length||mic.getAttribute('aria-pressed')==='true')}
+  note.addEventListener('input',sync);
+  mic.addEventListener('click',function(){var on=mic.getAttribute('aria-pressed')!=='true';
+    mic.setAttribute('aria-pressed',on?'true':'false');ms.textContent=on?'Listening (demo, nothing is recorded)':'';sync()});
+  var holo=document.getElementById('holo'),tick=document.getElementById('tick'),px=document.getElementById('px'),py=document.getElementById('py');
+  holo.addEventListener('click',function(e){var r=holo.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+    tick.style.left=x+'px';tick.style.top=y+'px';px.textContent=Math.round(x);py.textContent=Math.round(y)});
+  var names=['Very mild','Mild','Moderate','Severe','Very severe'],r=document.getElementById('sevrange'),l=document.getElementById('sevlbl'),b=document.getElementById('glow');
+  function upd(){var v=+r.value;l.textContent=names[v];b.style.transform='scale('+(0.8+v*0.1)+')';
+    b.style.setProperty('--g',(20+v*14)+'px');b.style.setProperty('--ga','rgba(100,255,218,'+(0.25+v*0.12)+')')}
+  r.addEventListener('input',upd);upd();
+})();
+</script>

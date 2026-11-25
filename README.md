@@ -25,6 +25,8 @@ cd app && npm install && npm run dev
 
 Deploy: import the repo at [vercel.com/new](https://vercel.com/new) and leave the defaults (the root `vercel.json` builds `app/`). Details are in [`app/README.md`](app/README.md).
 
+Vercel settings that matter: Root Directory empty, Framework Preset Other, Node.js 22.x. Vercel builds the **Production Branch** (Settings, Environments, Production, Branch Tracking), so point it at the branch that contains `app/`. Optional env var for measurement: `VITE_POSTHOG_KEY` (see `app/.env.example`).
+
 ## Research index
 
 0. [Brief](research/00-brief.md): origin story, problem, goals, scope, ethics

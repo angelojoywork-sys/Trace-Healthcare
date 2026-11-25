@@ -18,8 +18,8 @@ export function Settings() {
       <section className="card accent">
         <h2>🔒 Where your data lives</h2>
         <ul className="dots small">
-          <li><strong>Only in this browser on this device.</strong> There's no account, and nothing is sent to a server.</li>
-          <li>No ads, analytics or trackers.</li>
+          <li><strong>What you write stays in this browser on this device.</strong> There's no account.</li>
+          <li>No ads. We count anonymous visits and button taps to improve the app, never your symptoms or notes.</li>
           <li>Voice is turned into text by your browser's built-in speech feature. Trace never stores or sends audio.</li>
           <li>Clearing your browser data will also delete your Trace data, so export a copy if you want to keep it.</li>
         </ul>

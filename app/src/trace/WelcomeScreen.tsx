@@ -1,0 +1,57 @@
+import { lazy, Suspense, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { hasWebGL } from "./areas";
+
+const DnaMark = lazy(() => import("./DnaMark"));
+
+/** The calm glow shown while the 3D helix loads, and when 3D is not available. */
+function GlowFallback() {
+  return (
+    <div
+      aria-hidden="true"
+      className="size-28 animate-pulse motion-reduce:animate-none"
+      style={{
+        borderRadius: "44% 56% 52% 48% / 48% 44% 56% 52%",
+        background: "radial-gradient(circle at 40% 35%, #90caf9, #1565c0 80%)",
+        boxShadow: "0 0 40px rgba(21,101,192,0.3)",
+      }}
+    />
+  );
+}
+
+export function WelcomeScreen({ onLog }: { onLog: () => void }) {
+  const [gl, setGl] = useState(() => hasWebGL());
+  return (
+    <div className="flex min-h-0 flex-1 flex-col gap-6 px-5 pt-6 pb-5">
+      <header className="flex items-center justify-between font-mono text-xs tracking-widest uppercase">
+        <span>Trace</span>
+        <span className="text-muted-foreground">Ireland</span>
+      </header>
+
+      <div className="glass flex flex-1 flex-col items-center justify-center gap-6 px-6 py-6 text-center">
+        <div className="grid h-72 w-full max-w-80 place-items-center">
+          {gl ? (
+            <Suspense fallback={<GlowFallback />}>
+              <DnaMark onFail={() => setGl(false)} />
+            </Suspense>
+          ) : (
+            <GlowFallback />
+          )}
+        </div>
+        <div className="flex flex-col gap-3">
+          <h1 className="text-4xl leading-tight font-light">Remember<br />every visit.</h1>
+          <p className="mx-auto max-w-[28ch] text-muted-foreground">Log symptoms, doctors and prescriptions in one place.</p>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <Button size="lg" className="h-12 rounded-sm font-mono tracking-widest uppercase" onClick={onLog}>Log symptom</Button>
+        <Button size="lg" variant="outline" disabled aria-describedby="google-note" className="h-12 rounded-sm font-mono tracking-widest uppercase">
+          Continue with Google
+        </Button>
+        <p id="google-note" className="text-center text-xs text-muted-foreground">Google back-up is coming soon. Your symptom notes stay on this phone.</p>
+        <p className="text-center text-xs text-muted-foreground">Test version. We measure how the app is used (which screens, how long, whether it worked), never what you log or write.</p>
+      </div>
+    </div>
+  );
+}

@@ -30,28 +30,14 @@ for i in range(nv):
     best = max(range(k), key=lambda j: W[i*k+j])
     dom.append(labels[B[i*k+best]])
 
-# Drop the eyeballs and tongue: inside the mouth and eyes they read as noise in the hologram.
-keep = [not dom[i].startswith(("eye", "tongue")) for i in range(nv)]
-# Also drop the inside of the mouth: vertices between the lips that sit well behind the lip surface.
-_toe = [i for i in range(nv) if dom[i].startswith("toe")]; _foot = [i for i in range(nv) if dom[i].startswith("foot")]
-_sF = 1 if sum(py[i] for i in _toe) / len(_toe) - sum(py[i] for i in _foot) / len(_foot) > 0 else -1
-_head = [i for i in range(nv) if dom[i] == "head" and keep[i] and abs(px[i]) < 0.035]
-_f = {i: _sF * py[i] for i in _head}
-_fmax = max(_f.values())
-_chin = min(pz[i] for i in _head if _f[i] > _fmax - 0.055)
-_cut = 0
-for i in _head:
-    z = pz[i]
-    if not (_chin + 0.010 <= z <= _chin + 0.037) or _f[i] < _fmax - 0.12: continue
-    surface = max(_f[j] for j in _head if abs(pz[j] - z) < 0.0025)
-    if _f[i] < surface - 0.012 and abs(px[i]) < 0.032:
-        keep[i] = False; _cut += 1
-print("mouth interior vertices removed:", _cut)
+# The exporter already removed the mouth interior, tongue and eye sockets. Drop vertices no face uses any more.
+used = set(F)
+keep = [i in used for i in range(nv)]
 remap, n2 = {}, 0
 for i in range(nv):
     if keep[i]: remap[i] = n2; n2 += 1
 faces = [(F[f*3], F[f*3+1], F[f*3+2]) for f in range(nf)]
-faces = [(remap[a], remap[b], remap[c]) for a, b, c in faces if keep[a] and keep[b] and keep[c]]
+faces = [(remap[a], remap[b], remap[c]) for a, b, c in faces]
 px = [px[i] for i in range(nv) if keep[i]]; py = [py[i] for i in range(nv) if keep[i]]; pz = [pz[i] for i in range(nv) if keep[i]]
 dom = [dom[i] for i in range(nv) if keep[i]]
 nv = n2; nf = len(faces)

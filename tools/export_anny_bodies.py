@@ -10,6 +10,7 @@ import json, os, sys
 import numpy as np
 import torch
 import anny
+from anny.face_segmentation import get_face_segmentation_mask
 
 out_dir = sys.argv[1]
 model = anny.Anny(local_changes="default").to(dtype=torch.float32)
@@ -30,7 +31,9 @@ for view, params in BODIES.items():
     kw.update(params)
     out = model(pose_parameters=pose, phenotype_kwargs=kw)
     verts = out["vertices"].squeeze(0).numpy()
-    faces = model.faces.numpy() if hasattr(model.faces, "numpy") else np.asarray(model.faces)
+    # Drop the inside of the mouth, the tongue and the eye sockets so the hologram face stays clean.
+    inner = get_face_segmentation_mask(model, ["mouth_cavity", "tongue", "eye_cavity.L", "eye_cavity.R", "eye_back.L", "eye_back.R"])
+    faces = model.faces[~inner].numpy()
     w = model.vertex_bone_weights.detach().numpy()
     idx = model.vertex_bone_indices.detach().numpy()
     parts, meta, off = [], {}, 0
@@ -41,4 +44,4 @@ for view, params in BODIES.items():
     open(os.path.join(d, "anny_model.bin"), "wb").write(b"".join(parts))
     json.dump({"arrays": meta, "bone_labels": list(model.bone_labels), "params": params}, open(os.path.join(d, "anny_model.json"), "w"))
     h = float(verts[:, 2].max() - verts[:, 2].min())
-    print(view, "verts", verts.shape, "height_m", round(h, 3), "weights", w.shape)
+    print(view, "faces kept", faces.shape[0], "of", int(model.faces.shape[0]), "verts", verts.shape, "height_m", round(h, 3), "weights", w.shape)

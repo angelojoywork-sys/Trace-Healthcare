@@ -2,6 +2,13 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06d Hologram v4: clean face via mesh segmentation
+- **What we did:** Replaced the geometric mouth hack with Anny's own face segmentation: the exporter now drops the mouth cavity, tongue and eye sockets (`mouth_cavity`, `tongue`, `eye_cavity.*`, `eye_back.*`) before conversion. Eyeball fronts stay. Orphan vertices are removed. Bodies shrank to ~500 KB each (12.5k verts).
+- **Why:** User asked whether clean figures can come straight from MakeHuman. Anny is built from MakeHuman's data and exposes its labelled mesh parts, so removing the cavities at source is cleaner than hand-cleaning in Blender or guessing in code.
+- **Learnings:** The MakeHuman desktop app is a GUI and cannot be driven from here. The labelled mesh parts in Anny give the same result without it.
+- **Open:** Muscle/anatomical detail (the reference shows more), real-phone frame rate, wiring body choice to the profile screen.
+- **Artifacts saved in:** `tools/export_anny_bodies.py`, `tools/make_body_glb.py`, `app/public/models/`
+
 ## 2026-11-25 — 06c Hologram v3: adult female, male and neutral bodies
 - **What we did:** Ran the Anny generator (PyPI `anny`, Apache-2.0, free, CPU only) in a scratch environment via `tools/export_anny_bodies.py` to produce adult female, male and neutral bodies (age 0.667). Converted each with `tools/make_body_glb.py` (relative heights kept, eyes, tongue and most of the mouth interior removed). `?body=female|male|neutral` selects the body until the profile screen exists.
 - **Why:** The single baked body in the npm package was child-like. The name/gender screen already offers three options.

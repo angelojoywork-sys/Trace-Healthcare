@@ -4,7 +4,7 @@
 
 Hi [name], I'm testing a small app called Trace and would love 5 minutes of your time. It helps you keep a log of symptoms and GP visits, so you can remember what each doctor said and find your prescription when you need to claim.
 
-Open this on your phone: https://trace-healthcare-vvkf.vercel.app
+Open this on your phone: https://trace-health-ie.vercel.app
 
 Try to do the things below, then answer the two quick questions the app shows you. There are no wrong answers. If something confuses you, that is exactly what I want to know.
 
@@ -24,7 +24,7 @@ Thank you! [your name]
 - This is a test version. I count how the app is used: which screens you open, how long things take, whether a step worked.
 - I do **not** see your symptoms, notes, GP names, photos or search words. Those stay on your phone.
 - The only thing I read in your own words is the optional comment at the end. Please don't put health details or names in it.
-- To remove everything the app saved and start over: open https://trace-healthcare-vvkf.vercel.app/?reset (or clear the site data for this page in your browser settings).
+- To remove everything the app saved and start over: open https://trace-health-ie.vercel.app/?reset (or clear the site data for this page in your browser settings).
 
 ## Good to know
 

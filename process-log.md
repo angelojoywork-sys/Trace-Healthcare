@@ -2,6 +2,11 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 10 New web address
+- **What we did:** The user renamed the Vercel domain to `trace-health-ie.vercel.app` (the first choice, `trace-health`, was taken by another project). Updated the link and the reset link in `research/tester-note.md`.
+- **Note:** I could not open the new address from the build environment (network limits), so it has not been checked from here; the user should confirm it opens. If "Redirect old domain to new" was chosen in Vercel, links already shared still work.
+- **Artifacts saved in:** `research/tester-note.md`
+
 ## 2026-11-25 — 09b Favicon on a white tile
 - **What we did:** Changed the favicon and app icon tile from pale Mist to white (keeping the indigo squares, the DNA and the soft shadow) so the icon is easier to see. Regenerated `favicon.ico`, the 16 and 32 px PNGs, the 180 px Apple icon, and the 192 and 512 px icons.
 - **Why:** User asked for a white background with the pixels so it can be seen properly.

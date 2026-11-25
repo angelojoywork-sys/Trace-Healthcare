@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { track } from "./analytics";
 import type { AppData, Entry, Profile } from "./types";
 
 const KEY = "trace.v1";
@@ -49,6 +50,7 @@ export function saveProfile(profile: Profile) {
 }
 
 export function addEntry(entry: Entry) {
+  track("entry_saved", { kind: entry.kind });
   commit({ ...state, entries: [...state.entries, entry] });
 }
 

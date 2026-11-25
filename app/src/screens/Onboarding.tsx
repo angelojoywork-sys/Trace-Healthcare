@@ -21,7 +21,7 @@ export function Onboarding() {
         <div className="card accent">
           <h3>🔒 Your data stays on this phone</h3>
           <ul className="dots small">
-            <li>Nothing you enter leaves this device. There's no account, no server and no trackers.</li>
+            <li>What you enter stays on this device. There's no account. We count anonymous visits and button taps, never your symptoms or notes.</li>
             <li>You can lock it with a PIN, export it, or delete everything at any time.</li>
             <li>Trace asks questions and points you to a service. It never tells you what you have.</li>
           </ul>

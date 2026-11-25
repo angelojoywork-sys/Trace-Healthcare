@@ -21,6 +21,8 @@ Born from a toothache that wouldn't go away, and nobody knowing who to call.
 cd app && npm install && npm run dev
 ```
 
+**Live:** https://trace-health-ie.vercel.app/
+
 Deploy: import the repo at [vercel.com/new](https://vercel.com/new) and leave the defaults (the root `vercel.json` builds `app/`). Details are in [`app/README.md`](app/README.md).
 
 ## Research index

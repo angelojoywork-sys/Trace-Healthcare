@@ -38,7 +38,8 @@ def first(t, *keys):
     return ""
 
 def is_gp(t):
-    if t.get("amenity") == "dentist" or t.get("healthcare") == "dentist": return False
+    hc = t.get("healthcare")
+    if t.get("amenity") == "dentist" or (hc and hc != "doctor"): return False  # drops dentists, podiatrists, physios
     spec = (t.get("healthcare:speciality") or "").lower()
     if spec and not any(w in spec for w in ("general", "family", "gp")): return False
     return True

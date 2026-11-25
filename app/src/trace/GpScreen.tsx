@@ -73,15 +73,20 @@ export function GpScreen() {
 
         {data && !here && loc !== "unavailable" && (
           <section aria-label="Location" className="flex flex-col gap-3 border border-line p-4">
-            <p className={cap}>Nearest first</p>
-            <p>See the closest practices to you. Your location stays on this phone and is only used to sort the list.</p>
+            <p className={cap}>Nearest in this list</p>
+            <p>Sort the list by distance from you. Your location stays on this phone and is only used to sort.</p>
             <Button className="h-12 rounded-sm font-mono tracking-widest uppercase" onClick={locate} disabled={loc === "asking"}>
               <MapPin className="size-4" />{loc === "asking" ? "Finding you" : "Use my location"}
             </Button>
             {loc === "denied" && <p role="alert" className="text-sm text-muted-foreground">Location is off for this site. You can search by name or town instead, or allow location in your browser settings.</p>}
           </section>
         )}
-        {data && here && <p className={cap} aria-live="polite">Sorted by distance from you</p>}
+        {data && here && <p className={cap} aria-live="polite">Nearest in this list</p>}
+        {data && (
+          <p className="border-l-2 border-highlight pl-3 text-sm text-muted-foreground">
+            Partial list: {data.sites.length} of about 2,500 GP practices in Ireland. Your nearest GP may be missing, so check {hseLink} too.
+          </p>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-5 pt-2 pb-6">

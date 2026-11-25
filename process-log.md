@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06l Find GP data loaded (OpenStreetMap, partial)
+- **What we did:** User exported Irish doctor data from Overpass Turbo (661 raw records; the GeoJSON and JSON exports held the same data). Converted with `tools/make_gp_data.py` to `app/public/data/gp-sites.json`: 524 practices (dropped nameless entries, dentists, podiatrists, physios and non-GP specialists). 199 have a phone, 190 a website, 339 an address. Raw file kept in `data/raw/`.
+- **Finding (important for the case study):** 524 of about 2,500 practices the HSE lists is roughly 21% coverage. Dublin is the best covered (75 with Dublin in the address); most counties have only a handful.
+- **Decision:** Ship it with honesty built in: a visible "Partial list: 524 of about 2,500" note, "Nearest in this list" wording instead of "nearest", and a standing link to HSE Find a GP. Not claiming completeness. Completing it needs a paid or licensed source (Google Places with a billing account, or the HSE Health Directory API on request).
+- **Verified:** headless run with the real file and a Dublin location: nearest practices are in central Dublin, search by town works, no console errors.
+- **Open:** Decide whether to pursue fuller data; share pack for claims; photo resizing; delete entry.
+- **Artifacts saved in:** `app/public/data/gp-sites.json`, `data/raw/overpass-ie-doctors-2026-11-25.json`
+
 ## 2026-11-25 — 06k Find GP (screen built, data pending)
 - **What we did:** Built the Find GP tab: "Use my location" (sorts nearest first, location never leaves the phone), search by practice name or town, Call / Directions / Website links, "Show more", a footer saying what the list cannot tell you (new-patient availability, doctor gender) with a link to HSE Find a GP, and OpenStreetMap attribution. Added `tools/make_gp_data.py` to turn a raw OpenStreetMap export into `app/public/data/gp-sites.json`. Allowed geolocation in `vercel.json` (it was blocked).
 - **Why:** The last tab; helps people find a practice, and shows honestly what public data can and cannot do.

@@ -2,7 +2,8 @@
 
 Input: the `assets/` folder of the `anny-js` npm package (anny_model.json + anny_model.bin).
 Output: a GLB with POSITION, NORMAL, COLOR_0 (R = region id, G = side) and indices.
-Run:  python3 -I tools/make_body_glb.py <path-to-anny-js/assets> <out.glb>
+Run:  python3 -I tools/make_body_glb.py <dir with anny_model.json/.bin> <out.glb> [reference_height_m]
+Pass the same reference height for every body so their relative heights are kept.
 Z-up Anny metres -> Y-up, person facing +Z, person's left on +X, 3.6 units tall, feet at y = -1.8.
 """
 import json, struct, sys, math
@@ -31,6 +32,21 @@ for i in range(nv):
 
 # Drop the eyeballs and tongue: inside the mouth and eyes they read as noise in the hologram.
 keep = [not dom[i].startswith(("eye", "tongue")) for i in range(nv)]
+# Also drop the inside of the mouth: vertices between the lips that sit well behind the lip surface.
+_toe = [i for i in range(nv) if dom[i].startswith("toe")]; _foot = [i for i in range(nv) if dom[i].startswith("foot")]
+_sF = 1 if sum(py[i] for i in _toe) / len(_toe) - sum(py[i] for i in _foot) / len(_foot) > 0 else -1
+_head = [i for i in range(nv) if dom[i] == "head" and keep[i] and abs(px[i]) < 0.035]
+_f = {i: _sF * py[i] for i in _head}
+_fmax = max(_f.values())
+_chin = min(pz[i] for i in _head if _f[i] > _fmax - 0.055)
+_cut = 0
+for i in _head:
+    z = pz[i]
+    if not (_chin + 0.010 <= z <= _chin + 0.037) or _f[i] < _fmax - 0.12: continue
+    surface = max(_f[j] for j in _head if abs(pz[j] - z) < 0.0025)
+    if _f[i] < surface - 0.012 and abs(px[i]) < 0.032:
+        keep[i] = False; _cut += 1
+print("mouth interior vertices removed:", _cut)
 remap, n2 = {}, 0
 for i in range(nv):
     if keep[i]: remap[i] = n2; n2 += 1
@@ -50,7 +66,8 @@ sL = 1 if mean([px[i] for i in arm]) > 0 else -1
 # new = (sL*x, z, sF*y)
 X = [sL * v for v in px]; Y = pz[:]; Z = [sF * v for v in py]
 det = -sL * sF
-ymin, ymax = min(Y), max(Y); H = ymax - ymin; s = 3.6 / H
+ymin, ymax = min(Y), max(Y); H = ymax - ymin
+s = 3.6 / (float(sys.argv[3]) if len(sys.argv) > 3 else H)
 cx = (min(X) + max(X)) / 2; cz = (min(Z) + max(Z)) / 2
 X = [(v - cx) * s for v in X]; Z = [(v - cz) * s for v in Z]; Y = [(v - ymin) * s - 1.8 for v in Y]
 

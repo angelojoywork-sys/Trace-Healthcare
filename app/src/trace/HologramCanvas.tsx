@@ -28,8 +28,9 @@ function areaFor(region: string, side: string, nz: number): string {
 }
 
 const VERT = /* glsl */ `
-varying vec3 vW; varying vec3 vN; varying vec3 vV;
+varying vec3 vW; varying vec3 vN; varying vec3 vV; varying float vHead;
 void main(){
+  vHead = step(color.r, 0.002); // region id 0 = head, baked into the vertex colour by tools/make_body_glb.py
   vec4 wp = modelMatrix * vec4(position, 1.0);
   vW = wp.xyz;
   vN = normalize(normalMatrix * normal);
@@ -42,7 +43,7 @@ void main(){
 const FRAG = /* glsl */ `
 uniform float uTime; uniform vec3 uColor;
 uniform vec3 uTap; uniform vec3 uTapT; uniform float uTapR;
-varying vec3 vW; varying vec3 vN; varying vec3 vV;
+varying vec3 vW; varying vec3 vN; varying vec3 vV; varying float vHead;
 
 float contour(float v, float freq, float width){
   float x = v * freq;
@@ -53,8 +54,8 @@ float contour(float v, float freq, float width){
 }
 
 void main(){
-  float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 2.0);
-  float lines = contour(vW.y, 58.0, 0.40);
+  float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 2.0) * (1.0 - 0.35 * vHead);
+  float lines = contour(vW.y, 58.0, 0.40) * (1.0 - 0.55 * vHead); // calmer face: the eye and mouth openings read as noise
   float sweepY = mod(uTime * 0.7, 5.0) - 2.5;
   float sweep = exp(-pow((vW.y - sweepY) * 5.0, 2.0));
 
@@ -113,6 +114,7 @@ function Body({ view, focus, onPick }: { view: BodyView; focus: Focus | null; on
       },
       vertexShader: VERT,
       fragmentShader: FRAG,
+      vertexColors: true,
       transparent: true,
       depthWrite: false,
       blending: THREE.AdditiveBlending,

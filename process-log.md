@@ -2,6 +2,15 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06c Hologram v3: adult female, male and neutral bodies
+- **What we did:** Ran the Anny generator (PyPI `anny`, Apache-2.0, free, CPU only) in a scratch environment via `tools/export_anny_bodies.py` to produce adult female, male and neutral bodies (age 0.667). Converted each with `tools/make_body_glb.py` (relative heights kept, eyes, tongue and most of the mouth interior removed). `?body=female|male|neutral` selects the body until the profile screen exists.
+- **Why:** The single baked body in the npm package was child-like. The name/gender screen already offers three options.
+- **Decisions:** male = gender 0, female = gender 1, neutral = 0.5. Face lines are softened in the shader. No cost: everything used is open source and run locally.
+- **Learnings:** The default rig puts all head vertices on one bone, so the mouth interior had to be found by geometry. Some mouth noise remains.
+- **Open:** Face polish (mouth/eyes), test frame rate on a real phone, wire body choice to the profile screen.
+- **Tools used / where AI helped (and what a human verified):** Claude generated and converted the meshes and checked screenshots; human to judge the final look.
+- **Artifacts saved in:** `tools/`, `app/public/models/body-{female,male,neutral}.glb`
+
 ## 2026-11-25 — 06b Hologram v2: real body model + hologram shader
 - **What we did:** Replaced the stacked shapes with a real human body mesh (Anny, Apache-2.0, built on MakeHuman CC0 assets) converted to GLB by `tools/make_body_glb.py` (13k verts, 535 KB, per-vertex body-region tags). New hologram shader: ~200 fine contour lines, glowing rim, slow scan sweep, bloom, and glowing lines that wrap the surface around a tap (from the rock reference). Camera zooms out further and aims below the tap so it clears the note panel.
 - **Why:** User: stacked shapes are not professional; wants the look of the two-body hologram reference at the same detail.

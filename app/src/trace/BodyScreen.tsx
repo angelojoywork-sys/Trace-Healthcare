@@ -3,12 +3,19 @@ import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
 import { AREAS, hasWebGL, type Pick3D } from "./areas";
+import type { BodyView } from "./HologramCanvas";
 import { NoteSheet } from "./NoteSheet";
 
 const HologramCanvas = lazy(() => import("./HologramCanvas"));
 
 type Sel = { area: string; via: "3d" | "list"; pick?: Pick3D };
 type Props = { onDone: (r: { area: string; note: string; via: "3d" | "list" }) => void };
+
+// Until the profile screen exists, pick the body with ?body=female|male|neutral.
+const bodyFromUrl = (): BodyView => {
+  const b = new URLSearchParams(location.search).get("body");
+  return b === "female" || b === "male" ? b : "neutral";
+};
 
 export function BodyScreen({ onDone }: Props) {
   const [gl, setGl] = useState(() => hasWebGL());
@@ -50,6 +57,7 @@ export function BodyScreen({ onDone }: Props) {
         ) : (
           <Suspense fallback={<p className="p-5 font-mono text-xs tracking-widest text-muted-foreground uppercase">Loading body</p>}>
             <HologramCanvas
+              view={bodyFromUrl()}
               focus={sel?.pick ? { point: sel.pick.point, normal: sel.pick.normal } : null}
               onPick={(p) => !sel && choose({ area: p.area, via: "3d", pick: p })}
               onFail={fail}

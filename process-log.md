@@ -2,6 +2,14 @@
 
 Newest first. One entry per working session.
 
+## 2026-11-25 — 06f Name and gender screen drives the hologram body
+- **What we did:** Built the name and gender screen (first screen for new users). Gender picks the body: Female = female, Male = male, Other / Prefer not to say / Skip = neutral. Saved on the phone (`trace.profile`). Added a "Change body" control on the hologram screen (Female / Male / Neutral). The `?body=` test switch is gone.
+- **Why:** User: the body should be established at the start from the gender choice, and be changeable later.
+- **Decisions:** Gender is asked as a plain optional choice with one line saying why; the body can be changed independently from the gender label. Analytics records only whether a name or gender was given, never the values.
+- **Verified:** headless run: profile, female body, change to male, reload keeps the choice, no console errors.
+- **Open:** Welcome screen (Google / Log symptom), Summary, Entry, Browse, Find GP. A profile/settings screen to change name and gender later.
+- **Artifacts saved in:** `app/src/lib/profile.ts`, `app/src/trace/ProfileScreen.tsx`, `app/src/trace/BodyScreen.tsx`
+
 ## 2026-11-25 — 06e Deploy: first Vercel attempt
 - **What we did:** Imported the repo into Vercel. First build failed: `cd app: No such file or directory`.
 - **Why:** Vercel built `main`, which has no `app/` folder; the work lives on the feature branch.

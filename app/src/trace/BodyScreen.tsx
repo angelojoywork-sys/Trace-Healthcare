@@ -3,24 +3,20 @@ import { ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
 import { AREAS, hasWebGL, type Pick3D } from "./areas";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import type { BodyView } from "./HologramCanvas";
 import { NoteSheet } from "./NoteSheet";
 
 const HologramCanvas = lazy(() => import("./HologramCanvas"));
 
 type Sel = { area: string; via: "3d" | "list"; pick?: Pick3D };
-type Props = { onDone: (r: { area: string; note: string; via: "3d" | "list" }) => void };
+type Props = { view: BodyView; onViewChange: (v: BodyView) => void; onDone: (r: { area: string; note: string; via: "3d" | "list" }) => void };
 
-// Until the profile screen exists, pick the body with ?body=female|male|neutral.
-const bodyFromUrl = (): BodyView => {
-  const b = new URLSearchParams(location.search).get("body");
-  return b === "female" || b === "male" ? b : "neutral";
-};
-
-export function BodyScreen({ onDone }: Props) {
+export function BodyScreen({ view, onViewChange, onDone }: Props) {
   const [gl, setGl] = useState(() => hasWebGL());
   const [list, setList] = useState(false);
   const [sel, setSel] = useState<Sel | null>(null);
+  const [picking, setPicking] = useState(false);
 
   const choose = (s: Sel) => { setSel(s); track("area_selected", { area: s.area, via: s.via }); };
   const fail = () => { setGl(false); setList(true); track("webgl_unavailable"); };
@@ -57,7 +53,7 @@ export function BodyScreen({ onDone }: Props) {
         ) : (
           <Suspense fallback={<p className="p-5 font-mono text-xs tracking-widest text-muted-foreground uppercase">Loading body</p>}>
             <HologramCanvas
-              view={bodyFromUrl()}
+              view={view}
               focus={sel?.pick ? { point: sel.pick.point, normal: sel.pick.normal } : null}
               onPick={(p) => !sel && choose({ area: p.area, via: "3d", pick: p })}
               onFail={fail}
@@ -75,10 +71,27 @@ export function BodyScreen({ onDone }: Props) {
       </div>
 
       {!sel && gl && (
-        <footer className="px-5 pt-2 pb-4 text-center">
-          <Button variant="ghost" className="font-mono underline underline-offset-4" onClick={() => { setList(!list); if (!list) track("list_view_opened"); }}>
-            {list ? "Back to body" : "List view"}
-          </Button>
+        <footer className="flex flex-col items-center gap-1 px-5 pt-2 pb-4">
+          {picking && !list && (
+            <ToggleGroup
+              variant="outline"
+              aria-label="Body view"
+              value={[view]}
+              onValueChange={(v) => { if (v[0]) { onViewChange(v[0] as BodyView); setPicking(false); } }}
+            >
+              {(["female", "male", "neutral"] as const).map((b) => (
+                <ToggleGroupItem key={b} value={b} className="h-11 rounded-sm font-mono text-xs tracking-widest uppercase data-pressed:border-highlight data-pressed:bg-highlight/10 data-pressed:text-highlight">{b}</ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          )}
+          <div className="flex gap-2">
+            <Button variant="ghost" className="font-mono underline underline-offset-4" onClick={() => { setList(!list); setPicking(false); if (!list) track("list_view_opened"); }}>
+              {list ? "Back to body" : "List view"}
+            </Button>
+            {!list && (
+              <Button variant="ghost" className="font-mono underline underline-offset-4" onClick={() => setPicking(!picking)}>Change body</Button>
+            )}
+          </div>
         </footer>
       )}
     </div>

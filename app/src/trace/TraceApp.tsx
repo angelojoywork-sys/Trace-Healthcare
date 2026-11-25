@@ -2,19 +2,39 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
 import { loadEntries, saveEntry, SEVERITY, type Entry } from "@/lib/entries";
+import { loadProfile, saveProfile, type Profile } from "@/lib/profile";
+import type { BodyView } from "./HologramCanvas";
+import { ProfileScreen } from "./ProfileScreen";
 import { BodyScreen } from "./BodyScreen";
 import { SeverityScreen } from "./SeverityScreen";
 
 type Draft = { area: string; note: string; via: "3d" | "list" };
-type Step = { name: "body" } | { name: "severity"; draft: Draft } | { name: "done"; entry: Entry };
+type Step = { name: "profile" } | { name: "body" } | { name: "severity"; draft: Draft } | { name: "done"; entry: Entry };
 
 export function TraceApp() {
-  const [step, setStep] = useState<Step>({ name: "body" });
+  const [profile, setProfile] = useState<Profile | null>(() => loadProfile());
+  const [step, setStep] = useState<Step>(() => (loadProfile() ? { name: "body" } : { name: "profile" }));
   useEffect(() => { track("app_open"); }, []);
+  const changeBody = (body: BodyView) => {
+    const next: Profile = { name: profile?.name ?? "", gender: profile?.gender ?? null, body };
+    setProfile(next);
+    saveProfile(next);
+    track("body_changed", { view: body });
+  };
 
   return (
     <div className="mx-auto flex h-dvh max-w-md flex-col bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-foreground">
-      {step.name === "body" && <BodyScreen onDone={(draft) => setStep({ name: "severity", draft })} />}
+      {step.name === "profile" && (
+        <ProfileScreen
+          onDone={(p) => {
+            setProfile(p);
+            saveProfile(p);
+            track("profile_saved", { has_name: !!p.name, has_gender: !!p.gender });
+            setStep({ name: "body" });
+          }}
+        />
+      )}
+      {step.name === "body" && <BodyScreen view={profile?.body ?? "neutral"} onViewChange={changeBody} onDone={(draft) => setStep({ name: "severity", draft })} />}
       {step.name === "severity" && (
         <SeverityScreen
           onBack={() => setStep({ name: "body" })}

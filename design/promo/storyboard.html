@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Trace promo storyboard</title>
+<style>
+*{box-sizing:border-box;margin:0}html,body{background:#eceff1;color:#263238;font-family:"Geist",Inter,system-ui,sans-serif}
+.board{width:1320px;padding:36px 30px 44px}
+h1{font-size:40px;font-weight:400;letter-spacing:-1px}h1 span{color:#78909c}
+.sub{font-size:16px;color:#546e7a;margin:6px 0 24px;max-width:1100px;line-height:1.5}
+.sub b.c{color:#1565c0}.sub b.m{color:#b26a00}.sub b.t{color:#2e7d32}
+.grid{display:grid;grid-template-columns:repeat(4,285px);gap:30px 26px}
+.frame{position:relative;width:285px;height:507px;border-radius:14px;overflow:hidden;background:#eceff1;border:1px solid #cfd8dc}
+.frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.num{position:absolute;left:10px;top:10px;width:34px;height:34px;border-radius:50%;background:#263238;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;z-index:3}
+.cap{position:absolute;left:0;right:0;text-align:center;font-size:25px;letter-spacing:-.8px;line-height:1.1;padding:0 22px;z-index:2}
+.sq{position:absolute;background:#c5cae9}
+.t{font:12px "Geist Mono",ui-monospace,monospace;letter-spacing:.1em;color:#78909c;margin-top:9px;text-transform:uppercase}
+.b{font-size:17px;margin:2px 0 3px}.c{color:#1565c0;font-size:13.5px}.d{font-size:13.5px;color:#455a64;line-height:1.4}
+.m{margin-top:5px;font-size:13px;color:#b26a00;line-height:1.35}.tr{margin-top:5px;font-size:13px;color:#2e7d32;line-height:1.35}
+.glass{position:absolute;border-radius:22px;background:linear-gradient(90deg,#bbdefb 0,#f4f7fb 4%,#f4f7fb 96%,#ffccbc 100%);box-shadow:0 10px 30px #26323822;border:1px solid #fff}
+.row{height:11px;border-radius:3px;background:#cfd8dc;position:absolute}
+</style></head><body><div class="board">
+<h1>Trace <span>· 20s vertical · storyboard v1</span></h1>
+<p class="sub">1080×1920, silent, captions only. One continuous camera. No cross dissolves: <b>every shot grows out of a square from the last</b> (the app's own pixel motif). <b class="c">Blue</b> = on-screen caption, <b class="m">yellow</b> = what moves, <b class="t">green</b> = how it becomes the next shot. Frames below are rough; the final uses the app's real 3D scenes and screens.</p>
+<div class="grid" id="g"></div></div>
+<script>
+const sq=(x,y,s=14)=>`<i class="sq" style="left:${x}%;top:${y}%;width:${s}px;height:${s}px"></i>`;
+const scatter=[[8,6],[22,9],[36,5],[64,8],[80,6],[90,14],[12,20],[70,22],[86,30],[6,36],[92,52],[10,64],[84,72],[20,86],[60,90],[76,84]].map(a=>sq(...a)).join('');
+const ball=(()=>{let h='';for(let i=0;i<150;i++){const a=i*2.4,r=Math.sqrt(i/150)*70;h+=`<i class="sq" style="left:${142+Math.cos(a)*r-5}px;top:${200+Math.sin(a)*r-5}px;width:10px;height:10px;background:#7986cb;opacity:${.35+i/260}"></i>`}return h})();
+const rows=[0,1,2,3].map(i=>`<div class="glass" style="left:22px;right:22px;top:${150+i*70}px;height:56px;border-radius:14px"><i class="sq" style="left:14px;top:21px;width:12px;height:12px;background:#1565c0"></i><div class="row" style="left:40px;top:14px;width:${120-i*10}px"></div><div class="row" style="left:40px;top:32px;width:70px;background:#e0e6ea"></div></div>`).join('');
+const S=[
+['0.0–2.8s','','<div style="position:absolute;inset:0">'+scatter+'</div><div class="cap" style="top:44%">What did the last GP say?</div>','The question','“What did the last GP say?”','Pixel field drifts on Mist. The words fade up one by one, blurred to sharp.','A small square near centre squashes ~8%, then grows.','It grows into the rounded glass card of the welcome screen.'],
+['2.8–5.6s','img/01-welcome.png','','Welcome','“Remember every visit.” (the app’s own headline, no extra caption)','Slow push-in on the glossy DNA, which keeps turning. Real welcome screen.','Camera drifts up the helix; mono labels TRACE / IRELAND stay fixed.','Strands straighten and thin into the horizontal contour lines of the body hologram.'],
+['5.6–9.0s','img/03-body.png','<div class="cap" style="top:5%">Tap where it is.</div>','Body map','“Tap where it is.”','Camera arcs slowly from low-left to centre, rising with the body (real 3D). Contour lines scan.','Shallow depth of field: floor rings go soft. An orange dot lands on the chest.','Camera dollies into the dot, which becomes the crosshair centre.'],
+['9.0–12.4s','img/04-note.png','<div class="cap" style="top:5%;background:#eceff1cc;padding:6px 20px;border-radius:12px">Say it or type it.</div>','The note','“Say it or type it.”','Orange crosshair lines draw out along the contours. Glass note panel rises; the text types “tight, since morning”. Counter ticks 01 / 03 → 02 / 03.','Mic icon pulses once.','The orange dot detaches, drops to centre and becomes the severity ball.'],
+['12.4–14.8s','','<div style="position:absolute;inset:0">'+ball+'</div><div style="position:absolute;left:0;right:0;top:56%;text-align:center;font-size:64px;font-weight:300">6<span style="font-size:20px;color:#78909c"> /10</span></div><div class="cap" style="bottom:9%">How bad, 1 to 10.</div>','Severity','“How bad, 1 to 10.”','Ball of squares fills in as the number climbs 1 → 6; edge flickers, warm tint grows.','Slow continuous push; number rolls like an odometer.','The ball’s squares fall and line up as row markers in the Summary list.'],
+['14.8–17.4s','','<div class="glass" style="left:22px;right:22px;top:80px;height:42px;border-radius:14px"><div class="row" style="left:16px;top:15px;width:80px;background:#90a4ae"></div></div>'+rows+'<div class="cap" style="bottom:8%">Next time, it’s all there.</div>','Find it again','“Next time, it’s all there.”','Rows slide up; the search field types “headache” and the list narrows to every time it happened (real Browse screen).','Camera tilts down the list at a steady speed.','Rows collapse into one square at centre, then that square settles into the app icon.'],
+['17.4–20.0s','img/icon.png','<div style="position:absolute;left:0;right:0;top:57%;text-align:center;font:600 13px \'Geist Mono\',monospace;letter-spacing:.2em">TRACE</div><div style="position:absolute;left:20px;right:20px;top:64%;height:44px;border-radius:22px;background:#fff;border:1px solid #cfd8dc;display:flex;align-items:center;padding:0 16px;font-size:14px">trace-health-ie.vercel.app<i style="width:2px;height:18px;background:#1565c0;margin-left:2px"></i></div><div class="cap" style="bottom:7%;font-size:12px;color:#78909c;font-family:\'Geist Mono\',monospace;letter-spacing:.1em">TEST VERSION · IRELAND · STAYS ON YOUR PHONE</div>','End card','(URL typed into a search box)','Icon centred and still. The URL types into a search field with a caret; no camera drift on the last frame.','Last line is small and low, honest about the test version.','Holds 1.5s, then ends.']
+];
+document.getElementById('g').innerHTML=S.map(([t,img,overlay,b,cap,d,m,tr],i)=>`<div><div class="frame"><div class="num">${i+1}</div>${img?`<img src="${img}" ${i==6?'style="inset:auto;left:72px;top:150px;width:140px;height:140px;border-radius:30px"':''}>`:''}${overlay}</div><div class="t">${t}</div><div class="b">${b}</div><div class="c">${cap}</div><div class="d">${d}</div><div class="m">${m}</div><div class="tr">→ ${tr}</div></div>`).join('');
+</script></body></html>

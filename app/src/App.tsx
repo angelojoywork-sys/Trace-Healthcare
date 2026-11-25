@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { track } from "./lib/analytics";
+import { useState } from "react";
 import { TabBar } from "./components/ui";
 import { useRoute } from "./lib/router";
 import { getData, useData } from "./lib/store";
@@ -16,11 +15,6 @@ export function App() {
   const data = useData();
   const { path, params, visit } = useRoute();
   const [unlocked, setUnlocked] = useState(() => !getData().pin);
-
-  // Screen path only (no query string: it holds record ids).
-  useEffect(() => {
-    track("screen_view", { screen: path });
-  }, [path, visit]);
 
   if (data.pin && !unlocked)
     return (
